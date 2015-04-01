@@ -34,4 +34,4 @@ while True:
         elif tag == "Reboot":
             os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
         elif tag == "Update":
-            os.system("curl https://gist.githubusercontent.com/noplay/4058b2f5417fd3b40327/raw/ |bash")
+            os.system("curl https://raw.githubusercontent.com/GNS3/gns3-packer/master/scripts/update.sh |bash")
