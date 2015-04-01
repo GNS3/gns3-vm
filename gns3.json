@@ -1,0 +1,70 @@
+{
+    "variables": {
+        "ssh_name": "gns3",
+        "ssh_pass": "gns3",
+        "hostname": "gns3"
+    },
+    "builders": [{
+        "type": "virtualbox-iso",
+        "guest_os_type": "Ubuntu_64",
+        "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.2-server-amd64.iso",
+        "iso_checksum": "3bfa6eac84d527380d0cc52db9092cde127f161e",
+        "iso_checksum_type": "sha1",
+        "ssh_username": "{{user `ssh_name`}}",
+        "ssh_password": "{{user `ssh_pass`}}",
+        "ssh_wait_timeout": "120m",
+        "shutdown_command": "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+        "boot_wait": "6s",
+        "guest_additions_mode": "disable",
+        "http_directory": "http",
+        "vm_name": "gns3vm",        
+        "boot_command" : [
+            "<esc><wait>",
+            "<esc><wait>",
+            "<enter><wait>",
+            "/install/vmlinuz",
+            " auto",
+            " fb=false",
+            " initrd=/install/initrd.gz",
+            " netcfg/get_domain=vm",
+            " netcfg/get_hostname={{user `hostname`}}",
+            " netcfg/choose_interface=eth0",
+            " debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+            " keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+            " keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+            " noapic",
+            " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+            " -- ",
+            "<enter><wait>"
+        ],
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--memory", "512"],
+            ["modifyvm", "{{.Name}}", "--cpus", "1"],
+            ["modifyvm", "{{.Name}}", "--nic2", "hostonly"],
+            ["modifyvm", "{{.Name}}", "--hostonlyadapter2", "vboxnet0"],
+            ["createhd", "--format", "VMDK", "--filename", "opt.vmdk", "--variant", "STREAM", "--size", "40000"],
+            ["storagectl", "{{.Name}}", "--name", "SATA Controller", "--add", "sata", "--controller", "IntelAHCI"],
+            ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "2", "--type", "hdd", "--medium", "opt.vmdk"]
+        ]
+    }],
+    "provisioners": [
+        {
+            "type": "shell",
+            "execute_command": "echo  {{user `ssh_name`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+            "script": "scripts/setup_ubuntu.sh"
+        },
+        {
+            "type": "file",
+            "source": "scripts/welcome.py",
+            "destination": "/tmp/gns3welcome.py"
+        },
+        {
+            "type": "shell",
+            "script": "scripts/provision.sh"
+        },
+        {
+            "type": "shell",
+            "script": "scripts/cleaner.sh"
+        }
+    ]
+}

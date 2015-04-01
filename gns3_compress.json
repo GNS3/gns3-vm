@@ -1,0 +1,34 @@
+{
+    "variables": {
+        "ssh_name": "gns3",
+        "ssh_pass": "gns3",
+        "hostname": "gns3"
+    },
+
+    "builders": [
+        {
+          "type": "virtualbox-ovf",
+          "source_path": "output-virtualbox-iso/gns3vm.ovf",
+          "guest_additions_mode": "disable",
+          "ssh_username": "{{user `ssh_name`}}",
+          "ssh_password": "{{user `ssh_pass`}}",
+          "ssh_wait_timeout": "20m",
+          "shutdown_command": "sudo shutdown -P now",
+          "format": "ova",
+          "vm_name": "gns3",
+          "boot_wait": "30s",
+          "boot_command": [
+            "<enter><wait><wait><down><enter><wait>",
+            "sudo pip3 uninstall gns3-server -y<enter>",
+            "sudo service ssh stop<enter>",
+            "sudo service rsyslog stop<enter>",
+            "sudo service dbus stop<enter>",
+            "sudo telinit 1<enter><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
+            "mount -o remount,ro /dev/sda1<enter>",
+            "zerofree /dev/sda1<enter>",
+            "mount -o remount,rw /dev/sda1<enter>",
+            "service ssh start<enter>"
+          ]
+        }
+    ]
+}
