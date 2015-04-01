@@ -82,7 +82,6 @@ sudo pip3 install gns3-server==1.3.0rc2
 #Dialog
 sudo apt-get install -y dialog
 sudo pip3 install pythondialog
-#TODO: download gns3welcome.py from internet
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py" 
 sudo chmod 700 "/usr/local/bin/gns3welcome.py"
 echo "/usr/local/bin/gns3welcome.py" >> ~/.bash_profile
