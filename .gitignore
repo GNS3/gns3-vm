@@ -1,3 +1,4 @@
 output-virtualbox-iso
 output-virtualbox-ovf
 packer_cache
+opt.vmdk
