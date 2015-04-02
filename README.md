@@ -7,6 +7,10 @@ Build a GNS3 appliance
 * Support GNS3 update without losing your data
 * No need to release a new VM when a new release is out
 * By default you can use it in gns3 and  access to the internet (the VM as two network interfaces)
+* sudo is allowed without password
+* Default account: gns3 / gns3
+* A graphical interface allow gns3 management
+* GNS3 data are installed in /opt on a seperate disk
 
 ## Building 
 
