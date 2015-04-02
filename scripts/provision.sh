@@ -151,7 +151,7 @@ stop on shutdown
 script
     echo \$\$ > /var/run/gns3.pid
     if [ ! -f /usr/local/bin/gns3server ]; then
-        pip3 install gns3-server==1.3.0rc2
+        pip3 install gns3-server
     fi
     exec start-stop-daemon --start -c gns3 --exec /usr/local/bin/gns3server
 end script

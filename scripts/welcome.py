@@ -26,12 +26,15 @@ while True:
     code, tag = d.menu("Some text that will be displayed above the menu entries",
                        choices=[("Update", "Update GNS3"),
                         ("Shell", "Open a console"),
-                        ("Reboot", "Reboot the VM")])
+                        ("Reboot", "Reboot the VM"),
+                        ("Shutdown", "Shutdown the VM")])
     d.clear()
     if code == Dialog.OK:
         if tag == "Shell":
             os.execvp("bash", ['/bin/bash'])
         elif tag == "Reboot":
             os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+        elif tag == "Shutdown":
+            os.execvp("sudo", ['/usr/bin/sudo', "poweroff"])
         elif tag == "Update":
             os.system("curl https://raw.githubusercontent.com/GNS3/gns3-packer/master/scripts/update.sh |bash && sudo reboot")
