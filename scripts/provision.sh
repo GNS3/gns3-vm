@@ -72,6 +72,9 @@ fi
 
 echo "127.0.0.254 xml.cisco.com" | sudo tee --append /etc/hosts
 
+#Force hostid
+sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
+
 # Setup Python 3
 sudo apt-get install -y python3-pip
 
