@@ -17,7 +17,8 @@
         "boot_wait": "6s",
         "guest_additions_mode": "disable",
         "http_directory": "http",
-        "vm_name": "gns3vm",        
+        "vm_name": "gns3vm",
+        "headless": true,
         "boot_command" : [
             "<esc><wait>",
             "<esc><wait>",
