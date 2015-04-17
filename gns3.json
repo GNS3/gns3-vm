@@ -3,6 +3,7 @@
       "ssh_pass" : "gns3",
       "ssh_name" : "gns3",
       "hostname" : "gns3"
+      "memory": "2048"
    },
    "provisioners" : [
       {
@@ -36,7 +37,7 @@
                "modifyvm",
                "{{.Name}}",
                "--memory",
-               "512"
+               "{{user `memory`}}"
             ],
             [
                "modifyvm",
@@ -129,7 +130,7 @@
          "iso_checksum" : "3bfa6eac84d527380d0cc52db9092cde127f161e",
          "ssh_username" : "{{user `ssh_name`}}",
          "vmx_data" : {
-            "memsize" : "512",
+            "memsize" : "{{user `memory`}} ",
             "cpuid.coresPerSocket" : "1",
             "numvcpus": "1"
          },
