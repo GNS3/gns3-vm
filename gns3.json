@@ -58,6 +58,12 @@
                "vboxnet0"
             ],
             [
+               "modifyvm",
+               "{{.Name}}",
+               "--nic3",
+               "bridge"
+            ],
+            [
                "createhd",
                "--format",
                "VMDK",
@@ -132,7 +138,19 @@
          "vmx_data" : {
             "memsize" : "{{user `memory`}} ",
             "cpuid.coresPerSocket" : "1",
-            "numvcpus": "1"
+            "numvcpus": "1",
+            "ethernet0.present": "true",
+            "ethernet0.virtualdev": "e1000",
+            "ethernet0.startConnected": "true",
+            "ethernet0.connectionType" : "nat",
+            "ethernet1.present": "true",
+            "ethernet1.virtualdev": "e1000",
+            "ethernet1.startConnected": "true",
+            "ethernet1.connectionType" : "hostonly",
+            "ethernet2.present": "true",
+            "ethernet2.virtualdev": "e1000",
+            "ethernet2.startConnected": "true",
+            "ethernet2.connectionType" : "bridge",
          },
          "iso_checksum_type" : "sha1",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",

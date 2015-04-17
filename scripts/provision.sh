@@ -89,6 +89,7 @@ sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 700 "/usr/local/bin/gns3welcome.py"
 echo "/usr/local/bin/gns3welcome.py" >> ~/.bash_profile
 
+
 # Setup server
 if [ -f ~/.config/GNS3/server.conf ]
 then
@@ -104,7 +105,7 @@ projects_path = /opt/gns3/projects
 EOF
 fi
 
-sudo mkdir /opt/gns3
+sudo mkdir -p /opt/gns3
 sudo chown gns3 /opt/gns3
 
 # Setup the message display on console
