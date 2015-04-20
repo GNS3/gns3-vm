@@ -59,17 +59,9 @@
             "ethernet1.wakeOnPcktRcv": "FALSE",
             "ethernet1.addressType": "generated",
             "ethernet1.linkStatePropagation.enable": "FALSE",
-            "ethernet2.present": "TRUE",
-            "ethernet2.connectionType": "hostonly",
-            "ethernet2.virtualDev": "e1000",
-            "ethernet2.wakeOnPcktRcv": "FALSE",
-            "ethernet2.addressType": "generated",
             "ethernet1.pciSlotNumber": "32",
-            "ethernet2.pciSlotNumber": "34",
             "ethernet1.generatedAddress": "00:0c:29:e1:d7:2a",
             "ethernet1.generatedAddressOffset": "10",
-            "ethernet2.generatedAddress": "00:0c:29:e1:d7:34",
-            "ethernet2.generatedAddressOffset": "20"
           }
         }
     ]

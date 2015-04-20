@@ -7,7 +7,7 @@ Build a GNS3 appliance
 * Support GNS3 update without losing your data
 * No need to release a new VM when a new release is out
 * By default you can use it in gns3 and access to the internet
-* The VM as Nat, HostOnly and Bridge adapter
+* The VM as Nat and HostOnly adapter
 * sudo is allowed without password
 * Default account: gns3 / gns3
 * A graphical interface allow gns3 management
@@ -22,7 +22,7 @@ You need to install packer before.
 Run:
 ```
 packer build -only=virtualbox-iso gns3.json
-packer build gns3_compress.json
+packer build -only=virtualbox-ovf gns3_compress.json
 ```
 
 Output is located here: *output-virtualbox-ovf/gns3.ova*
@@ -32,4 +32,5 @@ Output is located here: *output-virtualbox-ovf/gns3.ova*
 Run:
 ```
 packer build -only=vmare-iso gns3.json
+packer build -only=virtualbox-vmx gns3_compress.json
 ```
