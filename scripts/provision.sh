@@ -7,6 +7,8 @@ sudo apt-get dist-upgrade -y
 
 sudo apt-get install -y curl
 
+# netficaces
+sudo apt-get install python3-netifaces
 
 # Install dynamips
 if [ -x /usr/local/bin/dynamips ]
@@ -79,7 +81,7 @@ sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 sudo apt-get install -y python3-pip
 
 # Install GNS 3
-sudo pip3 install gns3-server==1.3.0rc2
+sudo pip3 install gns3-server
 
 
 #Dialog

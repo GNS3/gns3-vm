@@ -2,7 +2,7 @@
    "variables" : {
       "ssh_pass" : "gns3",
       "ssh_name" : "gns3",
-      "hostname" : "gns3"
+      "hostname" : "gns3",
       "memory": "2048"
    },
    "provisioners" : [
@@ -56,12 +56,6 @@
                "{{.Name}}",
                "--hostonlyadapter2",
                "vboxnet0"
-            ],
-            [
-               "modifyvm",
-               "{{.Name}}",
-               "--nic3",
-               "bridge"
             ],
             [
                "createhd",
@@ -126,31 +120,19 @@
          "iso_url" : "http://releases.ubuntu.com/14.04/ubuntu-14.04.2-server-amd64.iso"
       },
       {
-         "boot_wait" : "20s",
+         "boot_wait" : "10s",
          "type" : "vmware-iso",
          "guest_os_type": "ubuntu-64",
          "ssh_wait_timeout" : "120m",
          "vm_name" : "gns3vm",
          "http_directory" : "http",
-         "output_directory": "vmware",
          "iso_checksum" : "3bfa6eac84d527380d0cc52db9092cde127f161e",
          "ssh_username" : "{{user `ssh_name`}}",
          "vmx_data" : {
-            "memsize" : "{{user `memory`}} ",
+            "memsize" : "{{user `memory`}}",
             "cpuid.coresPerSocket" : "1",
             "numvcpus": "1",
-            "ethernet0.present": "true",
-            "ethernet0.virtualdev": "e1000",
-            "ethernet0.startConnected": "true",
-            "ethernet0.connectionType" : "nat",
-            "ethernet1.present": "true",
-            "ethernet1.virtualdev": "e1000",
-            "ethernet1.startConnected": "true",
-            "ethernet1.connectionType" : "hostonly",
-            "ethernet2.present": "true",
-            "ethernet2.virtualdev": "e1000",
-            "ethernet2.startConnected": "true",
-            "ethernet2.connectionType" : "bridge",
+            "vhv.enable": "TRUE"
          },
          "iso_checksum_type" : "sha1",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
@@ -165,7 +147,7 @@
             " initrd=/install/initrd.gz",
             " netcfg/get_domain=vm",
             " netcfg/get_hostname={{user `hostname`}}",
-            " netcfg/choose_interface=eth0",
+            " netcfg/choose_interface=auto",
             " debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
             " keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
             " keyboard-configuration/variant=USA console-setup/ask_detect=false ",
