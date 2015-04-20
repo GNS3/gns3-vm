@@ -7,6 +7,8 @@ sudo apt-get dist-upgrade -y
 
 sudo apt-get install -y curl
 
+# netficaces
+sudo apt-get install python3-netifaces
 
 # Install dynamips
 if [ -x /usr/local/bin/dynamips ]
@@ -79,7 +81,7 @@ sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 sudo apt-get install -y python3-pip
 
 # Install GNS 3
-sudo pip3 install gns3-server==1.3.0rc2
+sudo pip3 install gns3-server
 
 
 #Dialog
@@ -88,6 +90,7 @@ sudo pip3 install pythondialog
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py" 
 sudo chmod 700 "/usr/local/bin/gns3welcome.py"
 echo "/usr/local/bin/gns3welcome.py" >> ~/.bash_profile
+
 
 # Setup server
 if [ -f ~/.config/GNS3/server.conf ]
@@ -104,7 +107,7 @@ projects_path = /opt/gns3/projects
 EOF
 fi
 
-sudo mkdir /opt/gns3
+sudo mkdir -p /opt/gns3
 sudo chown gns3 /opt/gns3
 
 # Setup the message display on console

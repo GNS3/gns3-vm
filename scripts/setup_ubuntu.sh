@@ -5,6 +5,9 @@
 echo "auto eth1" >> /etc/network/interfaces
 echo "iface eth1 inet dhcp" >> /etc/network/interfaces
 
+# Enable eth2
+echo "auto eth2" >> /etc/network/interfaces
+echo "iface eth2 inet dhcp" >> /etc/network/interfaces
 
 # Enable sudo without password
 echo "gns3 ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/gns3

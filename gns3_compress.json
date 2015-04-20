@@ -29,6 +29,48 @@
             "mount -o remount,rw /dev/sda1<enter>",
             "service ssh start<enter>"
           ]
+        },
+        {
+          "type": "vmware-vmx",
+          "source_path": "output-vmware-iso/gns3vm.vmx",
+          "ssh_username": "{{user `ssh_name`}}",
+          "ssh_password": "{{user `ssh_pass`}}",
+          "ssh_wait_timeout": "20m",
+          "shutdown_command": "sudo shutdown -P now",
+          "vm_name": "gns3",
+          "boot_wait": "30s",
+          "boot_command": [
+            "<enter><wait><wait><down><enter><wait>",
+            "sudo pip3 uninstall gns3-server -y<enter>",
+            "sudo service ssh stop<enter>",
+            "sudo service rsyslog stop<enter>",
+            "sudo service dbus stop<enter>",
+            "sudo telinit 1<enter><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
+            "mount -o remount,ro /dev/sda1<enter>",
+            "zerofree /dev/sda1<enter>",
+            "mount -o remount,rw /dev/sda1<enter>",
+            "service ssh start<enter>"
+          ],
+          "vmx_data":
+          {
+            "ethernet1.present": "TRUE",
+            "ethernet1.connectionType": "hostonly",
+            "ethernet1.virtualDev": "e1000",
+            "ethernet1.wakeOnPcktRcv": "FALSE",
+            "ethernet1.addressType": "generated",
+            "ethernet1.linkStatePropagation.enable": "FALSE",
+            "ethernet2.present": "TRUE",
+            "ethernet2.connectionType": "hostonly",
+            "ethernet2.virtualDev": "e1000",
+            "ethernet2.wakeOnPcktRcv": "FALSE",
+            "ethernet2.addressType": "generated",
+            "ethernet1.pciSlotNumber": "32",
+            "ethernet2.pciSlotNumber": "34",
+            "ethernet1.generatedAddress": "00:0c:29:e1:d7:2a",
+            "ethernet1.generatedAddressOffset": "10",
+            "ethernet2.generatedAddress": "00:0c:29:e1:d7:34",
+            "ethernet2.generatedAddressOffset": "20"
+          }
         }
     ]
 }

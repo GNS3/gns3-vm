@@ -1,25 +1,103 @@
 {
-    "variables": {
-        "ssh_name": "gns3",
-        "ssh_pass": "gns3",
-        "hostname": "gns3"
-    },
-    "builders": [{
-        "type": "virtualbox-iso",
-        "guest_os_type": "Ubuntu_64",
-        "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.2-server-amd64.iso",
-        "iso_checksum": "3bfa6eac84d527380d0cc52db9092cde127f161e",
-        "iso_checksum_type": "sha1",
-        "ssh_username": "{{user `ssh_name`}}",
-        "ssh_password": "{{user `ssh_pass`}}",
-        "ssh_wait_timeout": "120m",
-        "shutdown_command": "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
-        "boot_wait": "6s",
-        "guest_additions_mode": "disable",
-        "http_directory": "http",
-        "vm_name": "gns3vm",
-        "headless": true,
-        "boot_command" : [
+   "variables" : {
+      "ssh_pass" : "gns3",
+      "ssh_name" : "gns3",
+      "hostname" : "gns3",
+      "memory": "2048"
+   },
+   "provisioners" : [
+      {
+         "type" : "shell",
+         "script" : "scripts/setup_ubuntu.sh",
+         "execute_command" : "echo  {{user `ssh_name`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'"
+      },
+      {
+         "destination" : "/tmp/gns3welcome.py",
+         "type" : "file",
+         "source" : "scripts/welcome.py"
+      },
+      {
+         "type" : "shell",
+         "script" : "scripts/provision.sh"
+      },
+      {
+         "script" : "scripts/cleaner.sh",
+         "type" : "shell"
+      }
+   ],
+   "builders" : [
+      {
+         "type" : "virtualbox-iso",
+         "ssh_wait_timeout" : "120m",
+         "boot_wait" : "6s",
+         "iso_checksum_type" : "sha1",
+         "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+         "vboxmanage" : [
+            [
+               "modifyvm",
+               "{{.Name}}",
+               "--memory",
+               "{{user `memory`}}"
+            ],
+            [
+               "modifyvm",
+               "{{.Name}}",
+               "--cpus",
+               "1"
+            ],
+            [
+               "modifyvm",
+               "{{.Name}}",
+               "--nic2",
+               "hostonly"
+            ],
+            [
+               "modifyvm",
+               "{{.Name}}",
+               "--hostonlyadapter2",
+               "vboxnet0"
+            ],
+            [
+               "createhd",
+               "--format",
+               "VMDK",
+               "--filename",
+               "opt.vmdk",
+               "--variant",
+               "STREAM",
+               "--size",
+               "40000"
+            ],
+            [
+               "storagectl",
+               "{{.Name}}",
+               "--name",
+               "SATA Controller",
+               "--add",
+               "sata",
+               "--controller",
+               "IntelAHCI"
+            ],
+            [
+               "storageattach",
+               "{{.Name}}",
+               "--storagectl",
+               "SATA Controller",
+               "--port",
+               "2",
+               "--type",
+               "hdd",
+               "--medium",
+               "opt.vmdk"
+            ]
+         ],
+         "http_directory" : "http",
+         "vm_name" : "gns3vm",
+         "ssh_username" : "{{user `ssh_name`}}",
+         "iso_checksum" : "3bfa6eac84d527380d0cc52db9092cde127f161e",
+         "guest_os_type" : "Ubuntu_64",
+         "ssh_password" : "{{user `ssh_pass`}}",
+         "boot_command" : [
             "<esc><wait>",
             "<esc><wait>",
             "<enter><wait>",
@@ -37,35 +115,48 @@
             " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
             " -- ",
             "<enter><wait>"
-        ],
-        "vboxmanage": [
-            ["modifyvm", "{{.Name}}", "--memory", "512"],
-            ["modifyvm", "{{.Name}}", "--cpus", "1"],
-            ["modifyvm", "{{.Name}}", "--nic2", "hostonly"],
-            ["modifyvm", "{{.Name}}", "--hostonlyadapter2", "vboxnet0"],
-            ["createhd", "--format", "VMDK", "--filename", "opt.vmdk", "--variant", "STREAM", "--size", "40000"],
-            ["storagectl", "{{.Name}}", "--name", "SATA Controller", "--add", "sata", "--controller", "IntelAHCI"],
-            ["storageattach", "{{.Name}}", "--storagectl", "SATA Controller", "--port", "2", "--type", "hdd", "--medium", "opt.vmdk"]
-        ]
-    }],
-    "provisioners": [
-        {
-            "type": "shell",
-            "execute_command": "echo  {{user `ssh_name`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
-            "script": "scripts/setup_ubuntu.sh"
-        },
-        {
-            "type": "file",
-            "source": "scripts/welcome.py",
-            "destination": "/tmp/gns3welcome.py"
-        },
-        {
-            "type": "shell",
-            "script": "scripts/provision.sh"
-        },
-        {
-            "type": "shell",
-            "script": "scripts/cleaner.sh"
-        }
-    ]
+         ],
+         "guest_additions_mode" : "disable",
+         "iso_url" : "http://releases.ubuntu.com/14.04/ubuntu-14.04.2-server-amd64.iso"
+      },
+      {
+         "boot_wait" : "10s",
+         "type" : "vmware-iso",
+         "guest_os_type": "ubuntu-64",
+         "ssh_wait_timeout" : "120m",
+         "vm_name" : "gns3vm",
+         "http_directory" : "http",
+         "iso_checksum" : "3bfa6eac84d527380d0cc52db9092cde127f161e",
+         "ssh_username" : "{{user `ssh_name`}}",
+         "vmx_data" : {
+            "memsize" : "{{user `memory`}}",
+            "cpuid.coresPerSocket" : "1",
+            "numvcpus": "1",
+            "vhv.enable": "TRUE"
+         },
+         "iso_checksum_type" : "sha1",
+         "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+         "ssh_password" : "{{user `ssh_pass`}}",
+         "boot_command" : [
+            "<esc><wait>",
+            "<esc><wait>",
+            "<enter><wait>",
+            "/install/vmlinuz",
+            " auto",
+            " fb=false",
+            " initrd=/install/initrd.gz",
+            " netcfg/get_domain=vm",
+            " netcfg/get_hostname={{user `hostname`}}",
+            " netcfg/choose_interface=auto",
+            " debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
+            " keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+            " keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+            " noapic",
+            " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+            " -- ",
+            "<enter><wait>"
+         ],
+         "iso_url" : "http://releases.ubuntu.com/14.04/ubuntu-14.04.2-server-amd64.iso"
+      }
+   ]
 }
