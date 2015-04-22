@@ -163,7 +163,7 @@ script
 end script
 
 pre-start script
-    echo "[\`date\`] GN3 Starting" >> /var/log/gns3.log
+    echo "[\`date\`] GNS3 Starting" >> /var/log/gns3.log
 end script
 
 pre-stop script
