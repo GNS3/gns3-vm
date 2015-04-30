@@ -31,6 +31,6 @@ Output is located here: *output-virtualbox-ovf/gns3.ova*
 
 Run:
 ```
-packer build -only=vmare-iso gns3.json
-packer build -only=virtualbox-vmx gns3_compress.json
+packer build -only=vmware-iso gns3.json
+packer build -only=vmware-vmx gns3_compress.json
 ```

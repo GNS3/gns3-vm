@@ -61,7 +61,7 @@
             "ethernet1.linkStatePropagation.enable": "FALSE",
             "ethernet1.pciSlotNumber": "32",
             "ethernet1.generatedAddress": "00:0c:29:e1:d7:2a",
-            "ethernet1.generatedAddressOffset": "10",
+            "ethernet1.generatedAddressOffset": "10"
           }
         }
     ]
