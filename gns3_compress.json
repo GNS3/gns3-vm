@@ -53,6 +53,7 @@
           ],
           "vmx_data":
           {
+            "vhv.enable": "TRUE",            
             "ethernet1.present": "TRUE",
             "ethernet1.connectionType": "hostonly",
             "ethernet1.virtualDev": "e1000",

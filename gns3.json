@@ -120,7 +120,7 @@
          "iso_url" : "http://releases.ubuntu.com/14.04/ubuntu-14.04.2-server-amd64.iso"
       },
       {
-         "boot_wait" : "10s",
+         "boot_wait" : "15s",
          "type" : "vmware-iso",
          "guest_os_type": "ubuntu-64",
          "ssh_wait_timeout" : "120m",
