@@ -11,5 +11,7 @@ sudo chmod 700 "/usr/local/bin/gns3welcome.py"
 
 sudo pip3 install --upgrade gns3-server
 
+sudo /etc/rc.local
+
 echo "Reboot in 5s"
 sleep 5

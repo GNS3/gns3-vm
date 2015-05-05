@@ -17,7 +17,7 @@ then
 else
   sudo apt-get install -y cmake libelf-dev uuid-dev libpcap0.8-dev
   cd /tmp
-  curl --silent "https://codeload.github.com/GNS3/dynamips/tar.gz/v0.2.14" > dynamips.tgz
+  curl --location --silent "https://codeload.github.com/GNS3/dynamips/tar.gz/v0.2.14" > dynamips.tgz
   tar -xvzf dynamips.tgz
   cd dynamips-0.2.14/
   mkdir -p build
@@ -31,7 +31,7 @@ if [ -x /usr/local/bin/vpcs ]
 then
   echo "VPCS is already installed skip download"  
 else
-  curl --silent 'http://kent.dl.sourceforge.net/project/vpcs/0.6/vpcs_0.6_Linux64' > vpcs
+  curl --location --silent 'http://kent.dl.sourceforge.net/project/vpcs/0.6/vpcs_0.6_Linux64' > vpcs
   sudo mv vpcs /usr/local/bin/vpcs
   sudo chmod 755 /usr/local/bin/vpcs
 fi
@@ -158,6 +158,7 @@ script
     echo \$\$ > /var/run/gns3.pid
     if [ ! -f /usr/local/bin/gns3server ]; then
         pip3 install gns3-server
+        /etc/rc.local
     fi
     exec start-stop-daemon --start -c gns3 --exec /usr/local/bin/gns3server
 end script
