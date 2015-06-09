@@ -54,25 +54,28 @@ def update(force=False):
     elif get_release() == "unstable":
         os.system("curl https://raw.githubusercontent.com/GNS3/gns3-packer/master/scripts/update_unstable.sh |bash && sudo reboot")
 
+def informations():
+    try:
+        with open('/etc/issue') as f:
+            content = f.read()
+    except FileNotFoundError:
+        content = """Welcome to GNS3 appliance"""
 
-try:
-    with open('/etc/issue') as f:
-        content = f.read()
-except FileNotFoundError:
-    content = """Welcome to GNS3 appliance"""
+    content += "\nRelease channel: " + get_release()
 
-content += "\nRelease channel: " + get_release()
+    try:
+        d.msgbox(content)
+    # If it's an scp command or any bugs
+    except:
+        os.execvp("bash", ['/bin/bash'])
 
-try:
-    d.msgbox(content)
-# If it's an scp command or any bugs
-except:
-    os.execvp("bash", ['/bin/bash'])
+informations()
 
 while True:
     code, tag = d.menu("Main menu",
                        choices=[("Update", "Update GNS3"),
                         ("Shell", "Open a console"),
+                        ("Informations", "Show IP, SSH informations"),
                         ("Version", "Select the GNS3 version"),
                         ("Reboot", "Reboot the VM"),
                         ("Shutdown", "Shutdown the VM")])
@@ -88,3 +91,5 @@ while True:
             os.execvp("sudo", ['/usr/bin/sudo', "poweroff"])
         elif tag == "Update":
             update()
+        elif tag == "Informations":
+            informations()
