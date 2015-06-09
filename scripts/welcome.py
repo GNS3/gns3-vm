@@ -2,7 +2,9 @@
 
 import locale
 import os
+import subprocess
 from dialog import Dialog, PythonDialogBug
+
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -54,7 +56,21 @@ def update(force=False):
     elif get_release() == "unstable":
         os.system("curl https://raw.githubusercontent.com/GNS3/gns3-packer/master/scripts/update_unstable.sh |bash && sudo reboot")
 
+
+def gns3_version():
+    """
+    Return the GNS3 server version
+    """
+    try:
+        return subprocess.check_output(["gns3server", "--version"]).strip().decode()
+    except subprocess.CalledProcessError:
+        return ""
+
+
 def informations():
+    """
+    Show IP, SSH settings....
+    """
     try:
         with open('/etc/issue') as f:
             content = f.read()
@@ -72,7 +88,7 @@ def informations():
 informations()
 
 while True:
-    code, tag = d.menu("Main menu",
+    code, tag = d.menu("GNS3 {}".format(gns3_version()),
                        choices=[("Update", "Update GNS3"),
                         ("Shell", "Open a console"),
                         ("Informations", "Show IP, SSH informations"),
