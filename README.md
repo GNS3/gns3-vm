@@ -1,6 +1,6 @@
-# Packer
+# GNS3 VM
 
-Build a GNS3 appliance
+Build a GNS3 Virtual Machine 
 
 * Support Qemu, dynamips, VPCS and IOU
 * It's based on a ubuntu-server LTS 14.04 64 bits

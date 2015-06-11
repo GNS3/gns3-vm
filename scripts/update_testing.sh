@@ -5,7 +5,7 @@
 
 set -e
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-packer/master/scripts/welcome.py" > /tmp/gns3welcome.py
+curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/welcome.py" > /tmp/gns3welcome.py
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 700 "/usr/local/bin/gns3welcome.py"
 
