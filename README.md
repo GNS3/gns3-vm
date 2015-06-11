@@ -2,7 +2,7 @@
 
 Build a GNS3 Virtual Machine 
 
-* Support Qemu, dynamips, VPCS and IOU
+* Support Qemu, dynamips, VPCS, IOU and Docker
 * It's based on a ubuntu-server LTS 14.04 64 bits
 * Support GNS3 update without losing your data
 * No need to release a new VM when a new release is out

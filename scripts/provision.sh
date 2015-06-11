@@ -76,6 +76,11 @@ fi
 
 echo "127.0.0.254 xml.cisco.com" | sudo tee --append /etc/hosts
 
+# Install docker
+curl -sSL https://get.docker.com > /tmp/docker.sh
+sudo bash /tmp/docker.sh
+sudo usermod -aG docker gns3
+
 #Force hostid
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 
