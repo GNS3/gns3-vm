@@ -24,6 +24,7 @@ else
   cd build
   cmake ..
   sudo make install
+  sudo setcap cap_net_raw,cap_net_admin+eip /usr/local/bin/dynamips
 fi
 
 #Install VPCS
@@ -38,6 +39,7 @@ fi
 
 # Install qemu
 sudo apt-get install -y qemu-system-x86 qemu-kvm
+sudo setcap cap_net_admin=ei /usr/bin/qemu-system*
 
 # Install iouyap
 if [ -x /usr/local/bin/iouyap ]
