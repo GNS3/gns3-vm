@@ -125,7 +125,7 @@ cat > /tmp/rc.local << EOFRC
 #
 # By default this script does nothing.
 
-IP=\$(ifconfig eth1 | grep 'inet addr' | cut -d: -f2 | cut -d' ' -f1)
+IP=\$(ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | cut -d' ' -f1)
 cat << EOF > /etc/issue
 Welcome to GNS3 \$(/usr/local/bin/gns3server --version) appliance
 Use \$IP to configure a remote server in GNS3
