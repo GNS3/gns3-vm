@@ -32,7 +32,7 @@ if [ -x /usr/local/bin/vpcs ]
 then
   echo "VPCS is already installed skip download"  
 else
-  curl --location --silent 'http://kent.dl.sourceforge.net/project/vpcs/0.6/vpcs_0.6_Linux64' > vpcs
+  curl --location --silent 'https://github.com/GNS3/vpcs/releases/download/v0.6.1/vpcs' > vpcs
   sudo mv vpcs /usr/local/bin/vpcs
   sudo chmod 755 /usr/local/bin/vpcs
 fi
