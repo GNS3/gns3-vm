@@ -134,10 +134,11 @@ cat > /tmp/rc.local << EOFRC
 IP=\$(ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | cut -d' ' -f1)
 cat << EOF > /etc/issue
 Welcome to GNS3 \$(/usr/local/bin/gns3server --version) appliance
+
 Use \$IP to configure a remote server in GNS3
 Use your browser with http://\$IP:8000/upload to upload images
 
-You can also ssh on the box with:
+To log in using SSH:
 ssh gns3@\$IP
 Password: gns3
 
