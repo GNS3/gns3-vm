@@ -7,11 +7,8 @@ sudo apt-get dist-upgrade -y
 
 sudo apt-get install -y curl
 
-# netficaces
-sudo apt-get install python3-netifaces
-
 # VMware open-vm-tools
-sudo apt-get install open-vm-tools-lts-trusty
+sudo apt-get install -y open-vm-tools-lts-trusty
 
 # Install dynamips
 if [ -x /usr/local/bin/dynamips ]
