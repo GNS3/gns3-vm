@@ -39,7 +39,6 @@ fi
 
 # Install qemu
 sudo apt-get install -y qemu-system-x86 qemu-kvm
-sudo setcap cap_net_admin=ei /usr/bin/qemu-system*
 
 # Install iouyap
 if [ -x /usr/local/bin/iouyap ]
