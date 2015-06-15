@@ -18,10 +18,12 @@ fi
 
 cd gns3-server
 git fetch origin
-git checkout unstable 
+git checkout unstable
+git pull -u
 sudo python3 setup.y install
-
-sudo /etc/rc.local
 
 echo "Reboot in 5s"
 sleep 5
+
+sudo reboot
+
