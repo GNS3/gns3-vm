@@ -8,36 +8,14 @@
     "builders": [
         {
           "type": "virtualbox-ovf",
-          "source_path": "output-virtualbox-iso/gns3vm.ovf",
+          "source_path": "output-virtualbox-iso/GNS3 VM.ovf",
           "guest_additions_mode": "disable",
           "ssh_username": "{{user `ssh_name`}}",
           "ssh_password": "{{user `ssh_pass`}}",
           "ssh_wait_timeout": "20m",
           "shutdown_command": "sudo shutdown -P now",
           "format": "ova",
-          "vm_name": "gns3",
-          "boot_wait": "30s",
-          "boot_command": [
-            "<enter><wait><wait><down><enter><wait>",
-            "sudo pip3 uninstall gns3-server -y<enter>",
-            "sudo service ssh stop<enter>",
-            "sudo service rsyslog stop<enter>",
-            "sudo service dbus stop<enter>",
-            "sudo telinit 1<enter><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
-            "mount -o remount,ro /dev/sda1<enter>",
-            "zerofree /dev/sda1<enter>",
-            "mount -o remount,rw /dev/sda1<enter>",
-            "service ssh start<enter>"
-          ]
-        },
-        {
-          "type": "vmware-vmx",
-          "source_path": "output-vmware-iso/gns3vm.vmx",
-          "ssh_username": "{{user `ssh_name`}}",
-          "ssh_password": "{{user `ssh_pass`}}",
-          "ssh_wait_timeout": "20m",
-          "shutdown_command": "sudo shutdown -P now",
-          "vm_name": "gns3",
+          "vm_name": "GNS3 VM",
           "boot_wait": "30s",
           "boot_command": [
             "<enter><wait><wait><down><enter><wait>",
@@ -51,18 +29,64 @@
             "mount -o remount,rw /dev/sda1<enter>",
             "service ssh start<enter>"
           ],
-          "vmx_data":
+          "vboxmanage_post" : [
+            [
+               "modifyvm",
+               "{{.Name}}",
+               "--nic1",
+               "hostonly"
+            ],
+            [
+               "modifyvm",
+               "{{.Name}}",
+               "--hostonlyadapter1",
+               "vboxnet0"
+            ],
+            [
+               "modifyvm",
+               "{{.Name}}",
+               "--nic2",
+               "nat"
+            ]
+          ]
+        },
+        {
+          "type": "vmware-vmx",
+          "source_path": "output-vmware-iso/GNS3 VM.vmx",
+          "ssh_username": "{{user `ssh_name`}}",
+          "ssh_password": "{{user `ssh_pass`}}",
+          "ssh_wait_timeout": "20m",
+          "shutdown_command": "sudo shutdown -P now",
+          "vm_name": "GNS3 VM",
+          "boot_wait": "30s",
+          "boot_command": [
+            "<enter><wait><wait><down><enter><wait>",
+            "sudo pip3 uninstall gns3-server -y<enter>",
+            "sudo service ssh stop<enter>",
+            "sudo service rsyslog stop<enter>",
+            "sudo service dbus stop<enter>",
+            "sudo telinit 1<enter><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
+            "mount -o remount,ro /dev/sda1<enter>",
+            "zerofree /dev/sda1<enter>",
+            "mount -o remount,rw /dev/sda1<enter>",
+            "service ssh start<enter>"
+          ],
+         "vmx_data_post":
           {
-            "vhv.enable": "TRUE",            
+            "ethernet0.present": "TRUE",
+            "ethernet0.startConnected": "TRUE",
+            "ethernet0.connectionType": "hostonly",
+            "ethernet0.addressType": "generated",
+            "ethernet0.generatedAddressOffset": "0",
+            "ethernet0.wakeOnPcktRcv": "FALSE",
+            "ethernet0.pciSlotNumber": "32",
             "ethernet1.present": "TRUE",
-            "ethernet1.connectionType": "hostonly",
-            "ethernet1.virtualDev": "e1000",
-            "ethernet1.wakeOnPcktRcv": "FALSE",
+            "ethernet1.startConnected": "TRUE",
+            "ethernet1.connectionType": "nat",
             "ethernet1.addressType": "generated",
-            "ethernet1.linkStatePropagation.enable": "FALSE",
-            "ethernet1.pciSlotNumber": "32",
-            "ethernet1.generatedAddress": "00:0c:29:e1:d7:2a",
-            "ethernet1.generatedAddressOffset": "10"
+            "ethernet1.generatedAddressOffset": "10",
+            "ethernet1.wakeOnPcktRcv": "FALSE",
+            "ethernet1.pciSlotNumber": "33"
           }
         }
     ]

@@ -30,6 +30,7 @@
          "type" : "virtualbox-iso",
          "ssh_wait_timeout" : "120m",
          "boot_wait" : "6s",
+         "disk_size" : "20000",
          "iso_checksum_type" : "sha1",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
          "vboxmanage" : [
@@ -46,27 +47,15 @@
                "1"
             ],
             [
-               "modifyvm",
-               "{{.Name}}",
-               "--nic2",
-               "hostonly"
-            ],
-            [
-               "modifyvm",
-               "{{.Name}}",
-               "--hostonlyadapter2",
-               "vboxnet0"
-            ],
-            [
                "createhd",
                "--format",
-               "VMDK",
+               "VDI",
                "--filename",
                "opt.vmdk",
                "--variant",
-               "STREAM",
+               "Standard",
                "--size",
-               "40000"
+               "100000"
             ],
             [
                "storagectl",
@@ -92,7 +81,7 @@
             ]
          ],
          "http_directory" : "http",
-         "vm_name" : "gns3vm",
+         "vm_name" : "GNS3 VM",
          "ssh_username" : "{{user `ssh_name`}}",
          "iso_checksum" : "3bfa6eac84d527380d0cc52db9092cde127f161e",
          "guest_os_type" : "Ubuntu_64",
@@ -122,9 +111,12 @@
       {
          "boot_wait" : "15s",
          "type" : "vmware-iso",
+         "disk_size" : 100000,
+         "disk_type_id" : 0,
          "guest_os_type": "ubuntu-64",
          "ssh_wait_timeout" : "120m",
-         "vm_name" : "gns3vm",
+         "vm_name" : "GNS3 VM",
+         "vmdk_name": "GNS3 VM",
          "http_directory" : "http",
          "iso_checksum" : "3bfa6eac84d527380d0cc52db9092cde127f161e",
          "ssh_username" : "{{user `ssh_name`}}",
@@ -147,7 +139,7 @@
             " initrd=/install/initrd.gz",
             " netcfg/get_domain=vm",
             " netcfg/get_hostname={{user `hostname`}}",
-            " netcfg/choose_interface=auto",
+            " netcfg/choose_interface=eth0",
             " debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
             " keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
             " keyboard-configuration/variant=USA console-setup/ask_detect=false ",
