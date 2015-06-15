@@ -45,8 +45,7 @@ def mode():
     code, tag = d.menu("Select the GNS3 version",
                        choices=[("Stable", "Last stable GNS3 version RECOMMENDED"),
                                 ("Testing", "Next stable release"),
-                                ("Unstable", "Totaly unstable version")
-                               ])
+                                ("Unstable", "Totaly unstable version")])
     d.clear()
     if code == Dialog.OK:
         os.makedirs(os.path.expanduser("~/.config/gns3"), exist_ok=True)
@@ -82,6 +81,7 @@ def update(force=False):
     elif get_release() == "unstable":
         os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_unstable.sh |bash && sudo reboot")
 
+
 def vm_information():
     """
     Show IP, SSH settings....
@@ -105,7 +105,7 @@ vm_information()
 
 while True:
     code, tag = d.menu("GNS3 {}".format(gns3_version()),
-                       choices=[("VM information", "Display VM information"),
+                       choices=[("Information", "Display VM information"),
                         ("Update", "Update GNS3"),
                         ("Shell", "Open a console"),
                         ("Version", "Select the GNS3 version"),
@@ -123,5 +123,5 @@ while True:
             os.execvp("sudo", ['/usr/bin/sudo', "poweroff"])
         elif tag == "Update":
             update()
-        elif tag == "VM information":
+        elif tag == "Information":
             vm_information()
