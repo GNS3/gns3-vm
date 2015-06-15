@@ -80,17 +80,19 @@ curl -sSL https://get.docker.com > /tmp/docker.sh
 sudo bash /tmp/docker.sh
 sudo usermod -aG docker gns3
 
-#Force hostid
+# Force hostid
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 
 # Setup Python 3
 sudo apt-get install -y python3-pip
 
+# Install netifaces
+sudo apt-get install python3-netifaces
+
 # Install GNS 3
 sudo pip3 install gns3-server
 
-
-#Dialog
+# Dialog
 sudo apt-get install -y dialog
 sudo pip3 install pythondialog
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py" 
