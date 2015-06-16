@@ -23,3 +23,4 @@ sudo rm -fr /var/cache/debconf/*
 sudo rm -fr /var/cache/man/*
 sudo rm -Rf /var/log/installer/*
 sudo rm -Rf /usr/share/doc
+sudo rm -Rf /var/lib/docker/devicemapper

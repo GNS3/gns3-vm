@@ -3,7 +3,8 @@
       "ssh_pass" : "gns3",
       "ssh_name" : "gns3",
       "hostname" : "gns3",
-      "memory": "2048"
+      "memory": "2048",
+      "disk_size": "20000" 
    },
    "provisioners" : [
       {
@@ -30,7 +31,7 @@
          "type" : "virtualbox-iso",
          "ssh_wait_timeout" : "120m",
          "boot_wait" : "6s",
-         "disk_size" : "20000",
+         "disk_size" : "{{user `disk_size`}}",
          "iso_checksum_type" : "sha1",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
          "vboxmanage" : [

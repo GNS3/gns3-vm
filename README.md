@@ -34,3 +34,6 @@ Run:
 packer build -only=vmware-iso gns3.json
 packer build -only=vmware-vmx gns3_compress.json
 ```
+
+For exporting to OVA you need to install:
+https://my.vmware.com/web/vmware/details?downloadGroup=OVFTOOL400&productId=353
