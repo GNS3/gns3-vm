@@ -30,7 +30,7 @@ def gns3_version():
     """
     try:
         return subprocess.check_output(["gns3server", "--version"]).strip().decode()
-    except subprocess.CalledProcessError, FileNotFoundError:
+    except (subprocess.CalledProcessError, FileNotFoundError):
         return ""
 
 
