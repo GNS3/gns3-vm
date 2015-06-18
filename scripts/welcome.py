@@ -75,11 +75,14 @@ def update(force=False):
         if d.yesno("The server will reboot at the end of the update process. Continue?") != d.OK:
             return
     if get_release() == "stable":
-        os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update.sh |bash && sudo reboot")
+        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update.sh |bash && sudo reboot")
     elif get_release() == "testing":
-        os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_testing.sh |bash && sudo reboot")
+        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_testing.sh |bash && sudo reboot")
     elif get_release() == "unstable":
-        os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_unstable.sh |bash && sudo reboot")
+        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_unstable.sh |bash && sudo reboot")
+    if ret != 0:
+        print("ERROR DURING UPGRADE PROCESS")
+        time.sleep(15)
 
 
 def vm_information():
