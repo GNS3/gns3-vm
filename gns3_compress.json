@@ -18,7 +18,7 @@
           "vm_name": "GNS3 VM",
           "boot_wait": "30s",
           "boot_command": [
-            "<enter><wait><wait><down><enter><wait>",
+            "<enter><wait><wait><down><wait><down><wait><enter><wait>",
             "sudo pip3 uninstall gns3-server -y<enter>",
             "sudo service ssh stop<enter>",
             "sudo service rsyslog stop<enter>",
@@ -61,7 +61,7 @@
           "vm_name": "GNS3 VM",
           "boot_wait": "30s",
           "boot_command": [
-            "<enter><wait><wait><down><enter><wait>",
+            "<enter><wait><wait><down><wait><down><wait><enter><wait>",
             "sudo pip3 uninstall gns3-server -y<enter>",
             "sudo service ssh stop<enter>",
             "sudo service rsyslog stop<enter>",
@@ -73,11 +73,11 @@
             "mount -o remount,rw /dev/sda1<enter>",
             "service ssh start<enter>"
           ],
-         "vmx_data_post":
+         "vmx_data":
           {
             "ethernet0.present": "TRUE",
             "ethernet0.startConnected": "TRUE",
-            "ethernet0.connectionType": "hostonly",
+            "ethernet0.connectionType": "nat",
             "ethernet0.addressType": "generated",
             "ethernet0.generatedAddressOffset": "0",
             "ethernet0.wakeOnPcktRcv": "FALSE",
@@ -89,6 +89,11 @@
             "ethernet1.generatedAddressOffset": "10",
             "ethernet1.wakeOnPcktRcv": "FALSE",
             "ethernet1.pciSlotNumber": "33"
+         },
+         "vmx_data_post":
+          {
+            "ethernet0.connectionType": "hostonly",
+            "ethernet1.connectionType": "nat"
           }
         }
     ]
