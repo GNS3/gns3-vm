@@ -101,12 +101,12 @@ echo "/usr/local/bin/gns3welcome.py" >> ~/.bash_profile
 
 
 # Setup server
-if [ -f ~/.config/GNS3/server.conf ]
+if [ -f ~/.config/GNS3/gns3_server.conf ]
 then
     echo "GNS 3 configuration already exists"
 else
     mkdir -p ~/.config/GNS3
-    cat > ~/.config/GNS3/server.conf << EOF
+    cat > ~/.config/GNS3/gns3_server.conf << EOF
 [Server]
 host = 0.0.0.0
 port = 8000
