@@ -116,7 +116,7 @@ EOF
 fi
 
 sudo mkdir -p /opt/gns3
-sudo chown gns3 /opt/gns3
+sudo chown gns3:gns3 /opt/gns3
 
 # Setup the message display on console
 cat > /tmp/rc.local << EOFRC
@@ -153,7 +153,7 @@ exit 0
 EOFRC
 sudo mv /tmp/rc.local /etc/rc.local
 sudo chmod 700 /etc/rc.local
-sudo chown root /etc/rc.local
+sudo chown root:root /etc/rc.local
 
 # Setup upstart
 cat > /tmp/gns3.conf << EOF
@@ -161,27 +161,29 @@ description "GNS3 server"
 author      "GNS3 Team"
 
 start on filesystem or runlevel [2345]
-stop on shutdown
+stop on runlevel [016]
+respawn
+console log
+
 
 script
-    echo \$\$ > /var/run/gns3.pid
     if [ ! -f /usr/local/bin/gns3server ]; then
         pip3 install gns3-server
         /etc/rc.local
     fi
-    exec start-stop-daemon --start -c gns3 --exec /usr/local/bin/gns3server
+    exec start-stop-daemon --start --make-pidfile --pidfile /var/run/gns3.pid --chuid gns3 --exec "/usr/local/bin/gns3server"
 end script
 
 pre-start script
-    echo "[\`date\`] GNS3 Starting" >> /var/log/gns3.log
+    echo "" > /var/log/upstart/gns3.log
+    echo "[`date`] GNS3 Starting"
 end script
 
 pre-stop script
-    rm /var/run/gns3.pid
-    echo "[\`date\`] GNS3 Stopping" >> /var/log/gns3.log
+    echo "[`date`] GNS3 Stopping"
 end script
 EOF
 
 sudo mv /tmp/gns3.conf /etc/init/gns3.conf
-sudo chown root /etc/init/gns3.conf
+sudo chown root:root /etc/init/gns3.conf
 sudo service gns3 start

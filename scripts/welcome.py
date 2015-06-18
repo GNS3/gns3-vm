@@ -104,6 +104,11 @@ def vm_information():
     except:
         os.execvp("bash", ['/bin/bash'])
 
+
+def log():
+    os.system("tail -f /var/log/upstart/gns3.log")
+
+
 vm_information()
 
 while True:
@@ -111,6 +116,7 @@ while True:
                        choices=[("Information", "Display VM information"),
                         ("Update", "Update GNS3"),
                         ("Shell", "Open a console"),
+                        ("Log", "Show server log"),
                         ("Version", "Select the GNS3 version"),
                         ("Reboot", "Reboot the VM"),
                         ("Shutdown", "Shutdown the VM")])
@@ -128,3 +134,5 @@ while True:
             update()
         elif tag == "Information":
             vm_information()
+        elif tag == "Log":
+            log()
