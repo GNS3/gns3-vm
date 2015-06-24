@@ -31,7 +31,7 @@ def get_config():
     Read the config
     """
     config = configparser.RawConfigParser()
-    path = os.path.expanduser("~/.config/gns3.net/gns3_server.conf")
+    path = os.path.expanduser("~/.config/GNS3/gns3_server.conf")
     config.read([path], encoding="utf-8")
     return config
 
@@ -131,7 +131,7 @@ def set_security():
     else:
         config.set("Server", "auth", False)
 
-    with open(os.path.expanduser("~/.config/gns3.net/gns3_server.conf"), 'w') as f:
+    with open(os.path.expanduser("~/.config/GNS3/gns3_server.conf"), 'w') as f:
         config.write(f)
 
 
