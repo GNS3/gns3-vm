@@ -18,11 +18,22 @@
 
 import locale
 import os
+import sys
 import subprocess
+import configparser
 from dialog import Dialog, PythonDialogBug
 
 locale.setlocale(locale.LC_ALL, '')
 
+
+def get_config():
+    """
+    Read the config
+    """
+    config = configparser.RawConfigParser()
+    path = os.path.expanduser("~/.config/gns3.net/gns3_server.conf")
+    config.read([path], encoding="utf-8")
+    return config
 
 def gns3_version():
     """
@@ -105,34 +116,59 @@ def vm_information():
         os.execvp("bash", ['/bin/bash'])
 
 
+def set_security():
+    config = get_config()
+    if d.yesno("Enable server authentication?") == d.OK:
+        config.set("Server", "auth", True)
+        (answer, text) = d.inputbox("Login?")
+        if answer != d.OK:
+            return
+        config.set("Server", "user", text)
+        (answer, text) = d.passwordbox("Password?")
+        if answer != d.OK:
+            return
+        config.set("Server", "password", text)
+    else:
+        config.set("Server", "auth", False)
+
+    with open(os.path.expanduser("~/.config/gns3.net/gns3_server.conf"), 'w') as f:
+        config.write(f)
+
+
 def log():
     os.system("tail -f /var/log/upstart/gns3.log")
 
 
 vm_information()
 
-while True:
-    code, tag = d.menu("GNS3 {}".format(gns3_version()),
-                       choices=[("Information", "Display VM information"),
-                        ("Update", "Update GNS3"),
-                        ("Shell", "Open a console"),
-                        ("Log", "Show server log"),
-                        ("Version", "Select the GNS3 version"),
-                        ("Reboot", "Reboot the VM"),
-                        ("Shutdown", "Shutdown the VM")])
-    d.clear()
-    if code == Dialog.OK:
-        if tag == "Shell":
-            os.execvp("bash", ['/bin/bash'])
-        elif tag == "Version":
-            mode()
-        elif tag == "Reboot":
-            os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
-        elif tag == "Shutdown":
-            os.execvp("sudo", ['/usr/bin/sudo', "poweroff"])
-        elif tag == "Update":
-            update()
-        elif tag == "Information":
-            vm_information()
-        elif tag == "Log":
-            log()
+try:
+    while True:
+        code, tag = d.menu("GNS3 {}".format(gns3_version()),
+                           choices=[("Information", "Display VM information"),
+                            ("Update", "Update GNS3"),
+                            ("Shell", "Open a console"),
+                            ("Security", "Configure authentication"),
+                            ("Log", "Show server log"),
+                            ("Version", "Select the GNS3 version"),
+                            ("Reboot", "Reboot the VM"),
+                            ("Shutdown", "Shutdown the VM")])
+        d.clear()
+        if code == Dialog.OK:
+            if tag == "Shell":
+                os.execvp("bash", ['/bin/bash'])
+            elif tag == "Version":
+                mode()
+            elif tag == "Reboot":
+                os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+            elif tag == "Shutdown":
+                os.execvp("sudo", ['/usr/bin/sudo', "poweroff"])
+            elif tag == "Update":
+                update()
+            elif tag == "Information":
+                vm_information()
+            elif tag == "Log":
+                log()
+            elif tag == "Security":
+                set_security()
+except KeyboardInterrupt:
+    sys.exit(0)
