@@ -21,8 +21,7 @@ You need to install packer before.
 
 Run:
 ```
-packer build -only=virtualbox-iso gns3.json
-packer build -only=virtualbox-ovf gns3_compress.json
+./virtualbox.sh
 ```
 
 Output is located here: *output-virtualbox-ovf/gns3.ova*
@@ -31,8 +30,7 @@ Output is located here: *output-virtualbox-ovf/gns3.ova*
 
 Run:
 ```
-packer build -only=vmware-iso gns3.json
-packer build -only=vmware-vmx gns3_compress.json
+./vmware.sh
 ```
 
 For exporting to OVA you need to install:

@@ -101,89 +101,39 @@ echo "/usr/local/bin/gns3welcome.py" >> ~/.bash_profile
 
 
 # Setup server
-if [ -f ~/.config/GNS3/gns3_server.conf ]
-then
-    echo "GNS 3 configuration already exists"
-else
-    mkdir -p ~/.config/GNS3
-    cat > ~/.config/GNS3/gns3_server.conf << EOF
+mkdir -p ~/.config/GNS3
+cat > ~/.config/GNS3/gns3_server.conf << EOF
 [Server]
 host = 0.0.0.0
 port = 8000
 images_path = /opt/gns3/images
 projects_path = /opt/gns3/projects
+report_errors = True
+EOF
+
+if [ $PACKER_BUILDER_TYPE == "vmware-iso" ]
+then
+    cat > ~/.config/GNS3/gns3_server.conf << EOF
+[Qemu]
+enable_kvm = True
+EOF
+else
+    cat > ~/.config/GNS3/gns3_server.conf << EOF
+[Qemu]
+enable_kvm = False
 EOF
 fi
+
 
 sudo mkdir -p /opt/gns3
 sudo chown gns3:gns3 /opt/gns3
 
 # Setup the message display on console
-cat > /tmp/rc.local << EOFRC
-#!/bin/sh -e
-#
-# rc.local
-#
-# This script is executed at the end of each multiuser runlevel.
-# Make sure that the script will "exit 0" on success or any other
-# value on error.
-#
-# In order to enable or disable this script just change the execution
-# bits.
-#
-# By default this script does nothing.
-
-IP=\$(ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | cut -d' ' -f1)
-cat << EOF > /etc/issue
-Welcome to GNS3 \$(/usr/local/bin/gns3server --version) appliance
-
-Use \$IP to configure a remote server in GNS3
-Use your browser with http://\$IP:8000/upload to upload images
-
-To log in using SSH:
-ssh gns3@\$IP
-Password: gns3
-
-Images and projects are located in /opt/gns3
-
-\$(kvm-ok)
-EOF
-
-exit 0
-EOFRC
-sudo mv /tmp/rc.local /etc/rc.local
+sudo mv "/tmp/rc.local" "/etc/rc.local" 
 sudo chmod 700 /etc/rc.local
 sudo chown root:root /etc/rc.local
 
 # Setup upstart
-cat > /tmp/gns3.conf << EOF
-description "GNS3 server"
-author      "GNS3 Team"
-
-start on filesystem or runlevel [2345]
-stop on runlevel [016]
-respawn
-console log
-
-
-script
-    if [ ! -f /usr/local/bin/gns3server ]; then
-        pip3 install gns3-server
-        /etc/rc.local
-    fi
-    exec start-stop-daemon --start --make-pidfile --pidfile /var/run/gns3.pid --chuid gns3 --exec "/usr/local/bin/gns3server"
-end script
-
-pre-start script
-    echo "" > /var/log/upstart/gns3.log
-    echo "[`date`] GNS3 Starting"
-end script
-
-pre-stop script
-    echo "[`date`] GNS3 Stopping"
-end script
-EOF
-
-sudo mv /tmp/gns3.conf /etc/init/gns3.conf
+sudo mv "/tmp/gns3.conf" "/etc/init/gns3.conf" 
 sudo chown root:root /etc/init/gns3.conf
 sudo service gns3 start

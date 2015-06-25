@@ -1,0 +1,30 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+IP=$(ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | cut -d' ' -f1)
+cat << EOF > /etc/issue
+Welcome to GNS3 $(/usr/local/bin/gns3server --version) appliance
+
+Use $IP to configure a remote server in GNS3
+Use your browser with http://$IP:8000/upload to upload images
+
+To log in using SSH:
+ssh gns3@$IP
+Password: gns3
+
+Images and projects are located in /opt/gns3
+
+$(kvm-ok)
+EOF
+
+exit 0

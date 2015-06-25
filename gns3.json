@@ -18,6 +18,16 @@
          "source" : "scripts/welcome.py"
       },
       {
+         "destination" : "/tmp/rc.local",
+         "type" : "file",
+         "source" : "config/rc.local"
+      },
+      {
+         "destination" : "/tmp/gns3.conf",
+         "type" : "file",
+         "source" : "config/gns3.conf"
+      },
+            {
          "type" : "shell",
          "script" : "scripts/provision.sh"
       },
