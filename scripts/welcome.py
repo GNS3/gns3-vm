@@ -116,6 +116,13 @@ def vm_information():
         os.execvp("bash", ['/bin/bash'])
 
 
+def keyboard_configuration():
+    """
+    Allow user to change the keyboard layout
+    """
+    os.execvp("sudo", ["/usr/bin/sudo", "dpkg-reconfigure", "keyboard-configuration"])
+
+
 def set_security():
     config = get_config()
     if d.yesno("Enable server authentication?") == d.OK:
@@ -148,6 +155,7 @@ try:
                             ("Update", "Update GNS3"),
                             ("Shell", "Open a console"),
                             ("Security", "Configure authentication"),
+                            ("Keyboard", "Change keyboard layout"),
                             ("Log", "Show server log"),
                             ("Version", "Select the GNS3 version"),
                             ("Reboot", "Reboot the VM"),
@@ -170,5 +178,7 @@ try:
                 log()
             elif tag == "Security":
                 set_security()
+            elif tag == "Keyboard":
+                keyboard_configuration()
 except KeyboardInterrupt:
     sys.exit(0)
