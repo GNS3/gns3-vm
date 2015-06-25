@@ -133,6 +133,11 @@ sudo mv "/tmp/rc.local" "/etc/rc.local"
 sudo chmod 700 /etc/rc.local
 sudo chown root:root /etc/rc.local
 
+# Setup grub
+sudo mv "/tmp/grub" "/etc/default/grub" 
+sudo chown root:root /etc/default/grub
+sudo update-grub
+
 # Setup upstart
 sudo mv "/tmp/gns3.conf" "/etc/init/gns3.conf" 
 sudo chown root:root /etc/init/gns3.conf

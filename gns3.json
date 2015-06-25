@@ -27,9 +27,18 @@
          "type" : "file",
          "source" : "config/gns3.conf"
       },
-            {
+      {
+         "destination" : "/tmp/grub",
+         "type" : "file",
+         "source" : "config/grub"
+      },
+      {
          "type" : "shell",
          "script" : "scripts/provision.sh"
+      },
+      {
+         "type" : "shell",
+         "script" : "scripts/splashscreen.sh"
       },
       {
          "script" : "scripts/cleaner.sh",
