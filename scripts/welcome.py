@@ -120,7 +120,7 @@ def keyboard_configuration():
     """
     Allow user to change the keyboard layout
     """
-    os.execvp("sudo", ["/usr/bin/sudo", "dpkg-reconfigure", "keyboard-configuration"])
+    os.system("/usr/bin/sudo dpkg-reconfigure keyboard-configuration")
 
 
 def set_security():
