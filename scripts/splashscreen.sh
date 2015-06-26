@@ -3,6 +3,7 @@
 
 set -e
 
+sudo apt-get remove -y plymouth-theme-ubuntu-text
 sudo apt-get install -y plymouth-theme-script
 
 set +e 
@@ -46,7 +47,7 @@ bar_x = 1057;
 bar_width = 1052;
 
 # Distance between the start of end image and the start of bar
-end_bar_y = 138;
+end_bar_y = 137;
 
 # Scaling during boot/shutdown
 boot_scale = 3.84;      # 1 / max_progress
@@ -200,5 +201,7 @@ EOF
 sudo chown -R root:root /lib/plymouth/themes/gns3
 
 sudo update-alternatives --install /lib/plymouth/themes/default.plymouth default.plymouth /lib/plymouth/themes/gns3/gns3.plymouth 100
- 
+
+sudo update-alternatives --config default.plymouth --skip-auto
+
 sudo update-initramfs -u

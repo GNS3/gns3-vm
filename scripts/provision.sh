@@ -113,12 +113,14 @@ EOF
 
 if [ $PACKER_BUILDER_TYPE == "vmware-iso" ]
 then
-    cat > ~/.config/GNS3/gns3_server.conf << EOF
+    cat >> ~/.config/GNS3/gns3_server.conf << EOF
+
 [Qemu]
 enable_kvm = True
 EOF
 else
-    cat > ~/.config/GNS3/gns3_server.conf << EOF
+    cat >> ~/.config/GNS3/gns3_server.conf << EOF
+
 [Qemu]
 enable_kvm = False
 EOF
