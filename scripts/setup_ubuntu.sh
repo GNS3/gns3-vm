@@ -10,7 +10,7 @@ echo "gns3 ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/gns3
 
 # Auto login
 apt-get update
-apt-get install mingetty
+apt-get install -y mingetty
 
 cat > /etc/init/tty1.conf <<EOF
 # tty1 - getty
@@ -28,5 +28,11 @@ stop on runlevel [!23]
 respawn
 exec /sbin/mingetty --autologin gns3 --noclear tty1
 EOF
+
+# Create the /opt disk
+echo -e "o\nn\np\n1\n\n\nw" | fdisk /dev/sdb
+mkfs.ext4 /dev/sdb1
+echo "/dev/sdb1  /opt  ext4  nodiratime  0  2" >> /etc/fstab
+mount -o remount,noexec /opt
 
 echo "Setup ubuntu OK"

@@ -10,7 +10,7 @@ sudo chmod 755 "/usr/local/bin/gns3welcome.py"
 
 pip3 install --ignore-installed --pre gns3-server
 
-echo -n "testing" > /home/gns3/.config/gns3/gns3_release
+echo -n "testing" > /home/gns3/.config/GNS3/gns3_release
 
 echo "Reboot in 5s"
 sleep 5
