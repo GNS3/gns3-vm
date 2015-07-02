@@ -4,7 +4,8 @@
       "ssh_name" : "gns3",
       "hostname" : "gns3",
       "memory": "2048",
-      "disk_size": "20000" 
+      "disk_size": "20000",
+      "data_disk": "100000"
    },
    "provisioners" : [
       {
@@ -75,7 +76,7 @@
                "--variant",
                "Standard",
                "--size",
-               "100000"
+               "{{user `data_disk`}}"
             ],
             [
                "storagectl",
@@ -131,7 +132,8 @@
       {
          "boot_wait" : "15s",
          "type" : "vmware-iso",
-         "disk_size" : 100000,
+         "disk_size": "{{user `disk_size`}}",
+         "disk_additional_size": ["{{user `data_disk`}}"],
          "disk_type_id" : 0,
          "guest_os_type": "ubuntu-64",
          "ssh_wait_timeout" : "120m",

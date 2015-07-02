@@ -60,7 +60,7 @@
           "shutdown_command": "sudo shutdown -P now",
           "vm_name": "GNS3 VM",
           "boot_wait": "30s",
-          "headless": "true",
+          "headless": "false",
           "boot_command": [
             "<enter><wait><wait><down><wait><down><wait><enter><wait>",
             "sudo pip3 uninstall gns3-server -y<enter>",
