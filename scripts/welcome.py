@@ -59,8 +59,8 @@ def mode():
                                 ("Unstable", "Totaly unstable version")])
     d.clear()
     if code == Dialog.OK:
-        os.makedirs(os.path.expanduser("~/.config/gns3"), exist_ok=True)
-        with open(os.path.expanduser("~/.config/gns3/gns3_release"), "w+") as f:
+        os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
+        with open(os.path.expanduser("~/.config/GNS3/gns3_release"), "w+") as f:
             if tag == "Stable":
                 f.write("stable")
             elif tag == "Testing":
