@@ -75,7 +75,7 @@ def mode():
 
 def get_release():
     try:
-        with open(os.path.expanduser("~/.config/gns3/gns3_release")) as f:
+        with open(os.path.expanduser("~/.config/GNS3/gns3_release")) as f:
             return f.read()
     except OSError:
         return "stable"
