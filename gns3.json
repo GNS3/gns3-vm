@@ -38,6 +38,11 @@
          "script" : "scripts/provision.sh"
       },
       {
+         "destination" : "/home/gns3/.config/GNS3/gns3vm_version",
+         "type" : "file",
+         "source" : "version"
+      },
+      {
          "type" : "shell",
          "script" : "scripts/splashscreen.sh"
       },
