@@ -19,6 +19,7 @@
           "boot_wait": "30s",
           "boot_command": [
             "<enter><wait><wait><down><wait><down><wait><enter><wait>",
+            "sudo service gns3 stop<enter>",
             "sudo pip3 uninstall gns3-server -y<enter>",
             "sudo service ssh stop<enter>",
             "sudo service rsyslog stop<enter>",
@@ -63,6 +64,7 @@
           "headless": "false",
           "boot_command": [
             "<enter><wait><wait><down><wait><down><wait><enter><wait>",
+            "sudo service gns3 stop<enter>",
             "sudo pip3 uninstall gns3-server -y<enter>",
             "sudo service ssh stop<enter>",
             "sudo service rsyslog stop<enter>",

@@ -143,4 +143,3 @@ sudo update-grub
 # Setup upstart
 sudo mv "/tmp/gns3.conf" "/etc/init/gns3.conf" 
 sudo chown root:root /etc/init/gns3.conf
-sudo service gns3 start
