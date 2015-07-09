@@ -16,7 +16,7 @@
           "shutdown_command": "sudo shutdown -P now",
           "format": "ova",
           "vm_name": "GNS3 VM",
-          "boot_wait": "30s",
+          "boot_wait": "150s",
           "boot_command": [
             "<enter><wait><wait><down><wait><down><wait><enter><wait>",
             "sudo service gns3 stop<enter>",
@@ -24,12 +24,10 @@
             "sudo service ssh stop<enter>",
             "sudo service rsyslog stop<enter>",
             "sudo service dbus stop<enter>",
-            "sudo service docker stop<enter>",            
-            "sudo telinit 1<enter><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
+            "sudo service docker stop<enter>",
             "mount -o remount,ro /dev/sda1<enter>",
             "zerofree /dev/sda1<enter>",
-            "mount -o remount,rw /dev/sda1<enter>",
-            "service ssh start<enter>"
+            "mount -o remount,rw /dev/sda1<enter>"
           ],
           "vboxmanage_post" : [
             [
@@ -69,7 +67,7 @@
             "sudo service ssh stop<enter>",
             "sudo service rsyslog stop<enter>",
             "sudo service dbus stop<enter>",
-            "sudo service docker stop<enter>",            
+            "sudo service docker stop<enter>",
             "sudo telinit 1<enter><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait><wait>",
             "mount -o remount,ro /dev/sda1<enter>",
             "zerofree /dev/sda1<enter>",

@@ -2,7 +2,7 @@
    "variables" : {
       "ssh_pass" : "gns3",
       "ssh_name" : "gns3",
-      "hostname" : "gns3",
+      "hostname" : "gns3vm",
       "memory": "2048",
       "disk_size": "20000",
       "data_disk": "100000"
@@ -47,6 +47,11 @@
          "script" : "scripts/splashscreen.sh"
       },
       {
+         "destination" : "/tmp/init_zerofree",
+         "type" : "file",
+         "source" : "config/zerofree"
+      },
+      {
          "script" : "scripts/cleaner.sh",
          "type" : "shell"
       }
@@ -59,6 +64,8 @@
          "disk_size" : "{{user `disk_size`}}",
          "iso_checksum_type" : "sha1",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+         "shutdown_timeout": "60m",
+         "format": "ova",         
          "vboxmanage" : [
             [
                "modifyvm",
@@ -151,10 +158,30 @@
             "memsize" : "{{user `memory`}}",
             "cpuid.coresPerSocket" : "1",
             "numvcpus": "1",
-            "vhv.enable": "TRUE"
+            "vhv.enable": "TRUE",
+            "ethernet0.present": "TRUE",
+            "ethernet0.startConnected": "TRUE",
+            "ethernet0.connectionType": "nat",
+            "ethernet0.addressType": "generated",
+            "ethernet0.generatedAddressOffset": "0",
+            "ethernet0.wakeOnPcktRcv": "FALSE",
+            "ethernet0.pciSlotNumber": "32",
+            "ethernet1.present": "FALSE",
+            "ethernet1.startConnected": "TRUE",
+            "ethernet1.connectionType": "nat",
+            "ethernet1.addressType": "generated",
+            "ethernet1.generatedAddressOffset": "10",
+            "ethernet1.wakeOnPcktRcv": "FALSE",
+            "ethernet1.pciSlotNumber": "33"
+         },
+         "vmx_data_post":
+          {
+            "ethernet0.connectionType": "hostonly",
+            "ethernet1.present": "TRUE"
          },
          "iso_checksum_type" : "sha1",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+         "shutdown_timeout": "60m",
          "ssh_password" : "{{user `ssh_pass`}}",
          "boot_command" : [
             "<esc><wait>",

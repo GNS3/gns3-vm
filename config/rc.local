@@ -11,6 +11,8 @@
 #
 # By default this script does nothing.
 
+if [ -f /usr/local/bin/gns3server ]
+then
 IP=$(ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | cut -d' ' -f1)
 cat << EOF > /etc/issue
 Welcome to GNS3 appliance
@@ -30,5 +32,17 @@ Images and projects are located in /opt/gns3
 
 $(kvm-ok)
 EOF
+else
+cat << EOF > /etc/issue
+Welcome to GNS3 appliance
+
+VM version: $(cat /home/gns3/.config/GNS3/gns3vm_version) 
+
+Please wait the end of installation.
+The VM will reboot at the end.
+
+$(kvm-ok)
+EOF
+fi
 
 exit 0

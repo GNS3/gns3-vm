@@ -14,7 +14,7 @@ sudo locale-gen --purge --lang en_US
 # Tools for cleaning the disk
 sudo apt-get install -y zerofree
 
-sudo apt-get -y autoremove 
+sudo apt-get -y autoremove
 sudo apt-get -y clean
 
 sudo rm -fr /var/lib/apt/lists/*
@@ -24,3 +24,15 @@ sudo rm -fr /var/cache/man/*
 sudo rm -Rf /var/log/installer/*
 sudo rm -Rf /usr/share/doc
 sudo rm -Rf /var/lib/docker/devicemapper
+
+sudo pip3 uninstall -y gns3-server
+
+# Setup zerofree for disk compaction
+sudo mv /tmp/init_zerofree /etc/init.d/zerofree
+sudo chown root:root /etc/init.d/zerofree
+sudo chmod 744 /etc/init.d/zerofree
+sudo update-rc.d zerofree defaults 61
+sudo mv /etc/rc0.d/K61zerofree /etc/rc0.d/S61zerofree
+sudo mv /etc/rc6.d/K61zerofree /etc/rc6.d/S61zerofree
+sudo touch /zerofree
+

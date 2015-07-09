@@ -127,9 +127,6 @@ EOF
 fi
 
 
-sudo mkdir -p /opt/gns3
-sudo chown gns3:gns3 /opt/gns3
-
 # Setup the message display on console
 sudo mv "/tmp/rc.local" "/etc/rc.local" 
 sudo chmod 700 /etc/rc.local
