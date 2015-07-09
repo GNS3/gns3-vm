@@ -4,6 +4,9 @@
 
 set -e
 
+sudo mkdir -p /opt/gns3
+sudo chown -R gns3:gns3 /opt/gns3
+
 echo -n "testing" > /home/gns3/.config/GNS3/gns3_release
 chown gns3 /home/gns3/.config/GNS3/gns3_release
 
