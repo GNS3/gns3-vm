@@ -146,6 +146,13 @@ def log():
     os.system("tail -f /var/log/upstart/gns3.log")
 
 
+def edit_config():
+    """
+    Edit GNS3 configuration file
+    """
+    os.system("nano ~/.config/GNS3/gns3_server.conf")
+
+
 vm_information()
 
 try:
@@ -156,6 +163,7 @@ try:
                             ("Shell", "Open a console"),
                             ("Security", "Configure authentication"),
                             ("Keyboard", "Change keyboard layout"),
+                            ("Configure", "Edit server configuration (advanced users ONLY)"),
                             ("Log", "Show server log"),
                             ("Version", "Select the GNS3 version"),
                             ("Reboot", "Reboot the VM"),
@@ -176,6 +184,8 @@ try:
                 vm_information()
             elif tag == "Log":
                 log()
+            elif tag == "Configure":
+                edit_config()
             elif tag == "Security":
                 set_security()
             elif tag == "Keyboard":
