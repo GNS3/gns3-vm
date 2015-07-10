@@ -65,7 +65,7 @@
          "iso_checksum_type" : "sha1",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
          "shutdown_timeout": "60m",
-         "format": "ova",         
+         "format": "ova",
          "vboxmanage" : [
             [
                "modifyvm",
@@ -112,6 +112,26 @@
                "--medium",
                "opt.vmdk"
             ]
+         ],
+         "vboxmanage_post" : [
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--nic1",
+               "hostonly"
+             ],
+             [
+                "modifyvm",
+                "{{.Name}}",
+                "--hostonlyadapter1",
+                "vboxnet0"
+             ],
+             [
+                "modifyvm",
+                "{{.Name}}",
+                "--nic2",
+                "nat"
+             ]
          ],
          "http_directory" : "http",
          "vm_name" : "GNS3 VM",
