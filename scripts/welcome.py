@@ -35,6 +35,7 @@ def get_config():
     config.read([path], encoding="utf-8")
     return config
 
+
 def gns3_version():
     """
     Return the GNS3 server version
@@ -43,6 +44,7 @@ def gns3_version():
         return subprocess.check_output(["gns3server", "--version"]).strip().decode()
     except (subprocess.CalledProcessError, FileNotFoundError):
         return ""
+
 
 
 d = Dialog(dialog="dialog", autowidgetsize=True)
