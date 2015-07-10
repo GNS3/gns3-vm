@@ -92,7 +92,7 @@ def update(force=False):
     elif get_release() == "testing":
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_testing.sh |bash")
     elif get_release() == "unstable":
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_unstable.sh |bash")
+        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_unstable.sh |bash")
     if ret != 0:
         print("ERROR DURING UPGRADE PROCESS")
         time.sleep(15)
