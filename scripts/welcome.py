@@ -21,6 +21,7 @@ import os
 import sys
 import subprocess
 import configparser
+import time
 from dialog import Dialog, PythonDialogBug
 
 locale.setlocale(locale.LC_ALL, '')
