@@ -38,7 +38,7 @@ else
 fi
 
 # Install qemu
-sudo apt-get install -y qemu-system-x86 qemu-kvm
+sudo apt-get install -y qemu-system-x86 qemu-kvm cpulimit
 
 # Install iouyap
 if [ -x /usr/local/bin/iouyap ]
@@ -87,22 +87,35 @@ sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 sudo apt-get install -y python3-pip
 
 # Install netifaces
-sudo apt-get install python3-netifaces
+sudo apt-get install -y python3-netifaces
 
 # Install GNS 3
-sudo pip3 install gns3-server
+if [ -f /usr/local/bin/gns3server ]
+then
+    echo "GNS3 server is already installed"
+else
+    sudo pip3 install gns3-server
+fi
 
-# Dialog
-sudo apt-get install -y dialog
-sudo pip3 install pythondialog
-sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py" 
-sudo chmod 700 "/usr/local/bin/gns3welcome.py"
-echo "/usr/local/bin/gns3welcome.py" >> ~/.bash_profile
-
+# GNS3 Welcome
+if [ -f /usr/local/bin/gns3welcome.py ]
+then
+    echo "GNS3 Welcome already installed"
+else
+    sudo apt-get install -y dialog
+    sudo pip3 install pythondialog
+    sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py" 
+    sudo chmod 700 "/usr/local/bin/gns3welcome.py"
+    echo "/usr/local/bin/gns3welcome.py" >> ~/.bash_profile
+fi
 
 # Setup server
-mkdir -p ~/.config/GNS3
-cat > ~/.config/GNS3/gns3_server.conf << EOF
+if [ -f ~/.config/GNS3/gns3_server.conf ]
+then
+    echo "Server is already configured"
+else
+    mkdir -p ~/.config/GNS3
+    cat > ~/.config/GNS3/gns3_server.conf << EOF
 [Server]
 host = 0.0.0.0
 port = 8000
@@ -110,33 +123,43 @@ images_path = /opt/gns3/images
 projects_path = /opt/gns3/projects
 report_errors = True
 EOF
-
-if [ $PACKER_BUILDER_TYPE == "vmware-iso" ]
-then
-    cat >> ~/.config/GNS3/gns3_server.conf << EOF
+    if [ $PACKER_BUILDER_TYPE == "vmware-iso" ]
+    then
+        cat >> ~/.config/GNS3/gns3_server.conf << EOF
 
 [Qemu]
 enable_kvm = True
 EOF
-else
-    cat >> ~/.config/GNS3/gns3_server.conf << EOF
+    else
+        cat >> ~/.config/GNS3/gns3_server.conf << EOF
 
 [Qemu]
 enable_kvm = False
 EOF
+    fi
 fi
 
 
-# Setup the message display on console
-sudo mv "/tmp/rc.local" "/etc/rc.local" 
-sudo chmod 700 /etc/rc.local
-sudo chown root:root /etc/rc.local
+
+# Setup server
+if [ -f /tmp/rc.local ]
+    # Setup the message display on console
+    sudo mv "/tmp/rc.local" "/etc/rc.local" 
+    sudo chmod 700 /etc/rc.local
+    sudo chown root:root /etc/rc.local
+fi
 
 # Setup grub
-sudo mv "/tmp/grub" "/etc/default/grub" 
-sudo chown root:root /etc/default/grub
-sudo update-grub
+if [ -f /tmp/grub ]
+then
+    sudo mv "/tmp/grub" "/etc/default/grub" 
+    sudo chown root:root /etc/default/grub
+    sudo update-grub
+fi
 
 # Setup upstart
-sudo mv "/tmp/gns3.conf" "/etc/init/gns3.conf" 
-sudo chown root:root /etc/init/gns3.conf
+if [ -f /tmp/gns3.conf ]
+then
+    sudo mv "/tmp/gns3.conf" "/etc/init/gns3.conf" 
+    sudo chown root:root /etc/init/gns3.conf
+fi

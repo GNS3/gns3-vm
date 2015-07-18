@@ -17,6 +17,11 @@ if [ `cat .config/GNS3/gns3vm_version` = '0.8' ]
 then
     echo -n '0.8.1' > .config/GNS3/gns3vm_version
 fi
+if [ `cat .config/GNS3/gns3vm_version` = '0.8.1' ]
+then
+    sudo apt-get install -y cpulimit
+    echo -n '0.8.2' > .config/GNS3/gns3vm_version
+fi
 
 sudo pip3 install --pre --ignore-installed gns3-server 
 
