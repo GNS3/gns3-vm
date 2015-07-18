@@ -19,8 +19,10 @@
 import locale
 import os
 import sys
+import time
 import subprocess
 import configparser
+import urllib.request
 from dialog import Dialog, PythonDialogBug
 
 locale.setlocale(locale.LC_ALL, '')
@@ -118,6 +120,18 @@ def vm_information():
         os.execvp("bash", ['/bin/bash'])
 
 
+def check_internet_connectivity():
+    d.pause("Please wait...\n\n")
+    try:
+        response = urllib.request.urlopen('http://pypi.python.org/', timeout=5)
+    except urllib.request.URLError as err:
+        d.infobox("Can't connect to gns3.com: {}".format(str(err)))
+        time.sleep(15)
+        return
+    d.infobox("Connection to internet: OK")
+    time.sleep(2)
+
+
 def keyboard_configuration():
     """
     Allow user to change the keyboard layout
@@ -167,6 +181,7 @@ try:
                             ("Keyboard", "Change keyboard layout"),
                             ("Configure", "Edit server configuration (advanced users ONLY)"),
                             ("Log", "Show server log"),
+                            ("Test", "Check internet connection"),
                             ("Version", "Select the GNS3 version"),
                             ("Reboot", "Reboot the VM"),
                             ("Shutdown", "Shutdown the VM")])
@@ -192,5 +207,7 @@ try:
                 set_security()
             elif tag == "Keyboard":
                 keyboard_configuration()
+            elif tag == "Test":
+                check_internet_connectivity()
 except KeyboardInterrupt:
     sys.exit(0)
