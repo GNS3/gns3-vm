@@ -10,9 +10,8 @@ auto eth0
 iface eth0 inet dhcp
 
 # Nat interface
-auto eth1
+allow-hotplug eth1
 iface eth1 inet dhcp
 
 # Optional bridge interace
-allow-hotplug eth2
 iface eth2 inet dhcp
