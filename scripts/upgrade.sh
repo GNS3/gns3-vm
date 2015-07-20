@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright (C) 2015 GNS3 Technologies Inc.
 #
@@ -31,7 +31,7 @@ sudo chmod 755 "/usr/local/bin/gns3welcome.py"
 
 cd ~
 
-# The upgrade from 0.8 to 0.8.2 is safe
+# The upgrade from 0.8 to 0.8.3 is safe
 if [ `cat .config/GNS3/gns3vm_version` = '0.8' ]
 then
     echo -n '0.8.1' > .config/GNS3/gns3vm_version
@@ -47,5 +47,5 @@ then
     sudo mv /tmp/interfaces /etc/network/interfaces
     sudo chmod 644 /etc/network/interfaces
     sudo chown root:root /etc/network/interfaces
-    #echo -n '0.8.3' > .config/GNS3/gns3vm_version
+    echo -n '0.8.3' > .config/GNS3/gns3vm_version
 fi
