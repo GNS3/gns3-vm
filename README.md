@@ -12,6 +12,7 @@ Build a GNS3 Virtual Machine
 * Default account: gns3 / gns3
 * A graphical interface allow gns3 management
 * GNS3 data are installed in /opt on a seperate disk
+* An optinal eth2 is configured allowing user to add a bridge interface
 
 ## Building 
 
