@@ -44,8 +44,8 @@ fi
 if [ `cat .config/GNS3/gns3vm_version` = '0.8.2' ]
 then
     curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/interfaces" > /tmp/interfaces
-    mv /tmp/interfaces /etc/network/interfaces
-    chmod 644 /etc/network/interfaces
-    chown root:root /etc/network/interfaces
+    sudo mv /tmp/interfaces /etc/network/interfaces
+    sudo chmod 644 /etc/network/interfaces
+    sudo chown root:root /etc/network/interfaces
     #echo -n '0.8.3' > .config/GNS3/gns3vm_version
 fi
