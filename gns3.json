@@ -39,6 +39,11 @@
          "source" : "config/interfaces"
       },
       {
+         "destination" : "/tmp/sources.list",
+         "type" : "file",
+         "source" : "config/sources.list"
+      },
+      {
          "type" : "shell",
          "script" : "scripts/provision.sh"
       },
@@ -190,19 +195,18 @@
             "ethernet0.addressType": "generated",
             "ethernet0.generatedAddressOffset": "0",
             "ethernet0.wakeOnPcktRcv": "FALSE",
-            "ethernet0.pciSlotNumber": "32",
-            "ethernet1.present": "FALSE",
+            "ethernet0.pciSlotNumber": "32"
+         },
+         "vmx_data_post":
+          {
+            "ethernet0.connectionType": "hostonly",
+            "ethernet1.present": "TRUE",
             "ethernet1.startConnected": "TRUE",
             "ethernet1.connectionType": "nat",
             "ethernet1.addressType": "generated",
             "ethernet1.generatedAddressOffset": "10",
             "ethernet1.wakeOnPcktRcv": "FALSE",
             "ethernet1.pciSlotNumber": "33"
-         },
-         "vmx_data_post":
-          {
-            "ethernet0.connectionType": "hostonly",
-            "ethernet1.present": "TRUE"
          },
          "iso_checksum_type" : "sha1",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",

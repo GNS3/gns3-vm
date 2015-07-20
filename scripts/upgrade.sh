@@ -31,7 +31,7 @@ sudo chmod 755 "/usr/local/bin/gns3welcome.py"
 
 cd ~
 
-# The upgrade from 0.8 to 0.8.3 is safe
+# The upgrade from 0.8 to 0.8.4 is safe
 if [ `cat .config/GNS3/gns3vm_version` = '0.8' ]
 then
     echo -n '0.8.1' > .config/GNS3/gns3vm_version
@@ -48,4 +48,12 @@ then
     sudo chmod 644 /etc/network/interfaces
     sudo chown root:root /etc/network/interfaces
     echo -n '0.8.3' > .config/GNS3/gns3vm_version
+fi
+if [ `cat .config/GNS3/gns3vm_version` = '0.8.3' ]
+then
+    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/sources.list" > /tmp/sources.list
+    sudo mv /tmp/interfaces /etc/apt/sources.list
+    sudo chmod 644 /etc/apt/sources.list
+    sudo chown root:root /etc/apt/sources.list
+    echo -n '0.8.4' > .config/GNS3/gns3vm_version
 fi

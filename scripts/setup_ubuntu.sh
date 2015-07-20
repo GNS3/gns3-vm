@@ -2,6 +2,11 @@
 # This script should be run as root
 
 # Configure network
+mv /tmp/sources.list /etc/apt/sources.list
+chmod 644 /etc/apt/sources.list
+chown root:root /etc/apt/sources.list
+
+# Configure network
 mv /tmp/interfaces /etc/network/interfaces
 chmod 644 /etc/network/interfaces
 chown root:root /etc/network/interfaces
