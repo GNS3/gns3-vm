@@ -143,6 +143,7 @@ fi
 
 # Setup server
 if [ -f /tmp/rc.local ]
+then
     # Setup the message display on console
     sudo mv "/tmp/rc.local" "/etc/rc.local" 
     sudo chmod 700 /etc/rc.local

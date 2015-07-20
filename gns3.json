@@ -9,9 +9,14 @@
    },
    "provisioners" : [
       {
-         "type" : "shell",
-         "script" : "scripts/setup_ubuntu.sh",
-         "execute_command" : "echo  {{user `ssh_name`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'"
+         "destination" : "/tmp/interfaces",
+         "type" : "file",
+         "source" : "config/interfaces"
+      },
+      {
+         "destination" : "/tmp/sources.list",
+         "type" : "file",
+         "source" : "config/sources.list"
       },
       {
          "destination" : "/tmp/gns3welcome.py",
@@ -34,14 +39,14 @@
          "source" : "config/grub"
       },
       {
-         "destination" : "/tmp/interfaces",
+         "destination" : "/tmp/init_zerofree",
          "type" : "file",
-         "source" : "config/interfaces"
+         "source" : "config/zerofree"
       },
       {
-         "destination" : "/tmp/sources.list",
-         "type" : "file",
-         "source" : "config/sources.list"
+         "type" : "shell",
+         "script" : "scripts/setup_ubuntu.sh",
+         "execute_command" : "echo  {{user `ssh_name`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'"
       },
       {
          "type" : "shell",
@@ -55,11 +60,6 @@
       {
          "type" : "shell",
          "script" : "scripts/splashscreen.sh"
-      },
-      {
-         "destination" : "/tmp/init_zerofree",
-         "type" : "file",
-         "source" : "config/zerofree"
       },
       {
          "script" : "scripts/cleaner.sh",
