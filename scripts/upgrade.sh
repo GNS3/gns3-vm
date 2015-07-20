@@ -49,7 +49,7 @@ then
     sudo chown root:root /etc/network/interfaces
     
     curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/sources.list" > /tmp/sources.list
-    sudo mv /tmp/interfaces /etc/apt/sources.list
+    sudo mv /tmp/sources.list /etc/apt/sources.list
     sudo chmod 644 /etc/apt/sources.list
     sudo chown root:root /etc/apt/sources.list
     echo -n '0.8.4' > .config/GNS3/gns3vm_version
