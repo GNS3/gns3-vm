@@ -19,6 +19,8 @@
 # Upgrade VM to a new release if require
 #
 
+set -e
+
 sudo apt-get update
 sudo apt-get upgrade -y
 
@@ -39,6 +41,11 @@ then
     sudo apt-get install -y cpulimit
     echo -n '0.8.2' > .config/GNS3/gns3vm_version
 fi
-
-
-
+if [ `cat .config/GNS3/gns3vm_version` = '0.8.2' ]
+then
+    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/interfaces" > /tmp/interfaces
+    mv /tmp/interfaces /etc/network/interfaces
+    chmod 644 /etc/network/interfaces
+    chown root:root /etc/network/interfaces
+    #echo -n '0.8.3' > .config/GNS3/gns3vm_version
+fi

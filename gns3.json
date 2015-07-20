@@ -34,6 +34,11 @@
          "source" : "config/grub"
       },
       {
+         "destination" : "/tmp/interfaces",
+         "type" : "file",
+         "source" : "config/interfaces"
+      },
+      {
          "type" : "shell",
          "script" : "scripts/provision.sh"
       },
