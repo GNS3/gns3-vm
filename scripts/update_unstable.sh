@@ -24,7 +24,7 @@ set -e
 export BRANCH="unstable"
 
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" | bash
+curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" | bash
 
 if [ ! -d "gns3-server" ]
 then
