@@ -38,6 +38,15 @@ def get_config():
     return config
 
 
+def write_config(config):
+    """
+    Write the config file
+    """
+
+    with open(os.path.expanduser("~/.config/GNS3/gns3_server.conf"), 'w') as f:
+        config.write(f)
+
+
 def gns3_version():
     """
     Return the GNS3 server version
@@ -154,8 +163,7 @@ def set_security():
     else:
         config.set("Server", "auth", False)
 
-    with open(os.path.expanduser("~/.config/GNS3/gns3_server.conf"), 'w') as f:
-        config.write(f)
+    write_config(config)
 
 
 def log():
@@ -169,7 +177,37 @@ def edit_config():
     os.system("nano ~/.config/GNS3/gns3_server.conf")
 
 
+def ask_disable_kvm():
+    """
+    Ask to disable KVM if KVM not available
+    """
+    pass
+
+
+def kvm_control():
+    """
+    Check if KVM is correctly configured
+    """
+
+    kvm_ok = subprocess.call("kvm-ok") == 0
+    config = get_config()
+    if config.getboolean("Qemu", "enable_kvm") is True:
+        if kvm_ok is False:
+            if d.yesno("KVM is not available!\n\nQemu VM will crash!!\n\nThe reason could be unsupported hardware or another virtualization solution is already running.\n\nDisable KVM and get lower performances?") == d.OK:
+                config.set("Qemu", "enable_kvm", False)
+                write_config(config)
+                os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+    else:
+        if kvm_ok is True:
+            if d.yesno("KVM is available on your computer.\n\nEnable KVM and get better performances?") == d.OK:
+                config.set("Qemu", "enable_kvm", True)
+                write_config(config)
+                os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+
+
 vm_information()
+kvm_control()
+
 
 try:
     while True:
