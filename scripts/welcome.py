@@ -175,7 +175,7 @@ try:
     while True:
         code, tag = d.menu("GNS3 {}".format(gns3_version()),
                            choices=[("Information", "Display VM information"),
-                            ("Update", "Update GNS3"),
+                            ("Upgrade", "Upgrade GNS3"),
                             ("Shell", "Open a console"),
                             ("Security", "Configure authentication"),
                             ("Keyboard", "Change keyboard layout"),
@@ -195,7 +195,7 @@ try:
                 os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
             elif tag == "Shutdown":
                 os.execvp("sudo", ['/usr/bin/sudo', "poweroff"])
-            elif tag == "Update":
+            elif tag == "Upgrade":
                 update()
             elif tag == "Information":
                 vm_information()
