@@ -31,7 +31,8 @@ Password: gns3
 
 Images and projects are located in /opt/gns3
 
-Boot time: $UPTIME
+Boot time: $UPTIME seconds
+
 $(kvm-ok)
 EOF
 else
