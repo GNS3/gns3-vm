@@ -54,3 +54,10 @@ then
     sudo chown root:root /etc/apt/sources.list
     echo -n '0.8.4' > .config/GNS3/gns3vm_version
 fi
+if [ `cat .config/GNS3/gns3vm_version` = '0.8.4' ] 
+then
+    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/rc.local" > /tmp/rc.local
+    sudo mv /tmp/rc.local /etc/rc.local
+    sudo chmod 700 /etc/rc.local
+    sudo chown root:root /etc/rc.local
+fi
