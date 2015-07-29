@@ -60,4 +60,5 @@ then
     sudo mv /tmp/rc.local /etc/rc.local
     sudo chmod 700 /etc/rc.local
     sudo chown root:root /etc/rc.local
+    echo -n '0.8.5' > .config/GNS3/gns3vm_version
 fi
