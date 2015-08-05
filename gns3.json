@@ -70,7 +70,7 @@
       {
          "type" : "virtualbox-iso",
          "ssh_wait_timeout" : "120m",
-         "boot_wait" : "6s",
+         "boot_wait" : "10s",
          "disk_size" : "{{user `disk_size`}}",
          "iso_checksum_type" : "sha1",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
@@ -131,6 +131,12 @@
                "hostonly"
              ],
              [
+               "modifyvm",
+               "{{.Name}}",
+               "--nictype1",
+               "82540EM"
+             ],
+             [
                 "modifyvm",
                 "{{.Name}}",
                 "--hostonlyadapter1",
@@ -141,6 +147,12 @@
                 "{{.Name}}",
                 "--nic2",
                 "nat"
+             ],
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--nictype2",
+               "82540EM"
              ]
          ],
          "http_directory" : "http",
@@ -169,6 +181,7 @@
             "<enter><wait>"
          ],
          "guest_additions_mode" : "disable",
+         "guest_os_type": "Ubuntu_64",
          "iso_url" : "http://releases.ubuntu.com/14.04/ubuntu-14.04.2-server-amd64.iso"
       },
       {
