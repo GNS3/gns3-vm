@@ -5,7 +5,10 @@
       "hostname" : "gns3vm",
       "memory": "2048",
       "disk_size": "20000",
-      "data_disk": "100000"
+      "data_disk": "100000",
+      "iso_checksum_type": "sha1",
+      "iso_checksum": "0501c446929f713eb162ae2088d8dc8b6426224a", 
+      "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.3-server-amd64.iso"
    },
    "provisioners" : [
       {
@@ -72,7 +75,7 @@
          "ssh_wait_timeout" : "120m",
          "boot_wait" : "10s",
          "disk_size" : "{{user `disk_size`}}",
-         "iso_checksum_type" : "sha1",
+         "iso_checksum_type" : "{{user `iso_checksum_type`}}",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
          "shutdown_timeout": "60m",
          "format": "ova",
@@ -158,7 +161,7 @@
          "http_directory" : "http",
          "vm_name" : "GNS3 VM",
          "ssh_username" : "{{user `ssh_name`}}",
-         "iso_checksum" : "3bfa6eac84d527380d0cc52db9092cde127f161e",
+         "iso_checksum" : "{{user `iso_checksum`}}",
          "guest_os_type" : "Ubuntu_64",
          "ssh_password" : "{{user `ssh_pass`}}",
          "boot_command" : [
@@ -182,7 +185,7 @@
          ],
          "guest_additions_mode" : "disable",
          "guest_os_type": "Ubuntu_64",
-         "iso_url" : "http://releases.ubuntu.com/14.04/ubuntu-14.04.2-server-amd64.iso"
+         "iso_url" : "{{user `iso_url`}}"
       },
       {
          "boot_wait" : "15s",
@@ -195,7 +198,7 @@
          "vm_name" : "GNS3 VM",
          "vmdk_name": "GNS3 VM",
          "http_directory" : "http",
-         "iso_checksum" : "3bfa6eac84d527380d0cc52db9092cde127f161e",
+         "iso_checksum" : "{{user `iso_checksum`}}",
          "ssh_username" : "{{user `ssh_name`}}",
          "vmx_data" : {
             "memsize" : "{{user `memory`}}",
@@ -221,7 +224,7 @@
             "ethernet1.wakeOnPcktRcv": "FALSE",
             "ethernet1.pciSlotNumber": "33"
          },
-         "iso_checksum_type" : "sha1",
+         "iso_checksum_type" : "{{user `iso_checksum_type`}}",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
          "shutdown_timeout": "60m",
          "ssh_password" : "{{user `ssh_pass`}}",
@@ -244,7 +247,7 @@
             " -- ",
             "<enter><wait>"
          ],
-         "iso_url" : "http://releases.ubuntu.com/14.04/ubuntu-14.04.2-server-amd64.iso"
+         "iso_url" : "{{user `iso_url`}}"
       }
    ]
 }
