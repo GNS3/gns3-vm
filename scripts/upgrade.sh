@@ -31,23 +31,14 @@ sudo chmod 755 "/usr/local/bin/gns3welcome.py"
 
 cd ~
 
-# The upgrade from 0.8 to 0.8.4 is safe
-if [ `cat .config/GNS3/gns3vm_version` = '0.8' ]
-then
-    echo -n '0.8.1' > .config/GNS3/gns3vm_version
-fi
-if [ `cat .config/GNS3/gns3vm_version` = '0.8.1' ]
+# The upgrade from 0.8 to 0.8.6 is safe
+if [ `cat .config/GNS3/gns3vm_version` = '0.8' ] || [ `cat .config/GNS3/gns3vm_version` = '0.8.1' ]
 then
     sudo apt-get install -y cpulimit
     echo -n '0.8.2' > .config/GNS3/gns3vm_version
 fi
 if [ `cat .config/GNS3/gns3vm_version` = '0.8.2' ] || [ `cat .config/GNS3/gns3vm_version` = '0.8.3' ]
-then
-    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/interfaces" > /tmp/interfaces
-    sudo mv /tmp/interfaces /etc/network/interfaces
-    sudo chmod 644 /etc/network/interfaces
-    sudo chown root:root /etc/network/interfaces
-    
+then    
     curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/sources.list" > /tmp/sources.list
     sudo mv /tmp/sources.list /etc/apt/sources.list
     sudo chmod 644 /etc/apt/sources.list
@@ -61,4 +52,17 @@ then
     sudo chmod 700 /etc/rc.local
     sudo chown root:root /etc/rc.local
     echo -n '0.8.5' > .config/GNS3/gns3vm_version
+fi
+if [ `cat .config/GNS3/gns3vm_version` = '0.8.5' ] 
+then
+    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/interfaces" > /tmp/interfaces
+    sudo mv /tmp/interfaces /etc/network/interfaces
+    sudo chmod 644 /etc/network/interfaces
+    sudo chown root:root /etc/network/interfaces
+
+    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/grub" > /tmp/grub
+    sudo mv /tmp/grub /etc/default/interfaces
+    sudo chmod 644 /etc/default/grub
+    sudo chown root:root /etc/default/grub
+    sudo update-grub
 fi
