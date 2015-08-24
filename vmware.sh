@@ -18,6 +18,7 @@ mkdir output-vmware-ova
 #Packer bug on post_vmx in 0.8.x we apply a second time the settings to the OVA
 ovftool \
         --extraConfig:vhv.enable=true                       \
+        --extraConfig:hypervisor.cpuid.v0=false             \
         --extraConfig:ethernet0.connectionType=hostonly     \
         --extraConfig:ethernet1.present=true                \
         --extraConfig:ethernet1.startConnected=true         \
