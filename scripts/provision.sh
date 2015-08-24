@@ -38,7 +38,7 @@ else
 fi
 
 # Install qemu
-sudo apt-get install -y qemu-system-x86 qemu-kvm cpulimit
+sudo apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 
 # Install iouyap
 if [ -x /usr/local/bin/iouyap ]

@@ -65,4 +65,6 @@ then
     sudo chmod 644 /etc/default/grub
     sudo chown root:root /etc/default/grub
     sudo update-grub
+
+    sudo apt-get install -y qemu-system-arm    
 fi
