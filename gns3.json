@@ -76,6 +76,7 @@
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
          "shutdown_timeout": "60m",
          "format": "ova",
+         "headless": true,
          "vboxmanage" : [
             [
                "modifyvm",
@@ -209,6 +210,7 @@
             "ethernet1.pciSlotNumber": "33"
          },
          "iso_checksum_type" : "sha1",
+         "headless": true,         
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
          "shutdown_timeout": "60m",
          "ssh_password" : "{{user `ssh_pass`}}",
