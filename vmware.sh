@@ -3,7 +3,7 @@
 set -e
 
 
-if [ "$GNS3VM_VERSION" == "" ]
+if [ "$GNS3_VERSION" == "" ]
 then
     echo "You need to export the GNS3_VERSION variable if you want to build the VM. Example export GNS3_VERSION=1.4.0"
     exit 1
