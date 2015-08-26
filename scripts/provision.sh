@@ -89,14 +89,6 @@ sudo apt-get install -y python3-pip
 # Install netifaces
 sudo apt-get install -y python3-netifaces
 
-# Install GNS 3
-if [ -f /usr/local/bin/gns3server ]
-then
-    echo "GNS3 server is already installed"
-else
-    sudo pip3 install gns3-server
-fi
-
 # GNS3 Welcome
 if [ -f /usr/local/bin/gns3welcome.py ]
 then

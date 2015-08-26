@@ -5,7 +5,8 @@
       "hostname" : "gns3vm",
       "memory": "2048",
       "disk_size": "20000",
-      "data_disk": "100000"
+      "data_disk": "100000",
+      "gns3_version": "{{env `GNS3_VERSION`}}", 
    },
    "provisioners" : [
       {
@@ -60,6 +61,10 @@
       {
          "type" : "shell",
          "script" : "scripts/splashscreen.sh"
+      },
+      {
+         "type" : "shell",
+         "inline" : "sudo pip3 install gns3-server=={{user `gns3_version`}}"
       },
       {
          "script" : "scripts/cleaner.sh",

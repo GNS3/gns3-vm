@@ -25,8 +25,6 @@ sudo rm -Rf /var/log/installer/*
 sudo rm -Rf /usr/share/doc
 sudo rm -Rf /var/lib/docker/devicemapper
 
-sudo pip3 uninstall -y gns3-server
-
 # Setup zerofree for disk compaction
 sudo mv /tmp/init_zerofree /etc/init.d/zerofree
 sudo chown root:root /etc/init.d/zerofree
