@@ -11,6 +11,7 @@ fi
 
 export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 
+export GNS3_VERSION=`echo $GNS3_VERSION | sed "s/^v//"` 
 export GNS3VM_VERSION=`cat version`
 
 echo "Build VM $GNS3VM_VERSION"
