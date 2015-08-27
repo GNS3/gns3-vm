@@ -152,7 +152,7 @@
          "http_directory" : "http",
          "vm_name" : "GNS3 VM",
          "ssh_username" : "{{user `ssh_name`}}",
-         "iso_checksum" : "3bfa6eac84d527380d0cc52db9092cde127f161e",
+         "iso_checksum" : "0501c446929f713eb162ae2088d8dc8b6426224a",
          "guest_os_type" : "Ubuntu_64",
          "ssh_password" : "{{user `ssh_pass`}}",
          "boot_command" : [
@@ -175,7 +175,7 @@
             "<enter><wait>"
          ],
          "guest_additions_mode" : "disable",
-         "iso_url" : "http://releases.ubuntu.com/14.04/ubuntu-14.04.2-server-amd64.iso"
+         "iso_url" : "http://releases.ubuntu.com/14.04/ubuntu-14.04.3-server-amd64.iso"
       },
       {
          "boot_wait" : "15s",
