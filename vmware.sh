@@ -11,10 +11,10 @@ fi
 
 export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 
-export GNS3_VERSION=`echo $GNS3_VERSION | sed "s/^v//"` 
+export GNS3_VERSION=`echo $GNS3_VERSION | sed "s/^v//"`
 export GNS3VM_VERSION=`cat version`
 
-echo "Build VM $GNS3VM_VERSION"
+echo "Build VM $GNS3VM_VERSION for GNS3 $GNS3_VERSION"
 
 rm -Rf output-vmware-iso
 packer build -only=vmware-iso gns3.json
