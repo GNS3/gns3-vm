@@ -63,12 +63,12 @@
          "script" : "scripts/splashscreen.sh"
       },
       {
-         "type" : "shell",
-         "inline" : "sudo pip3 install gns3-server=={{user `gns3_version`}}"
-      },
-      {
          "script" : "scripts/cleaner.sh",
          "type" : "shell"
+      },
+      {
+         "type" : "shell",
+         "inline" : "sudo pip3 install gns3-server=={{user `gns3_version`}}"
       }
    ],
    "builders" : [
