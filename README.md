@@ -25,7 +25,13 @@ Run:
 ./virtualbox.sh
 ```
 
-Output is located here: *output-virtualbox-ovf/gns3.ova*
+
+This step will build the base VM as an OVA without install gns3 on it.
+
+If you want to install GNS3 you need to unzip the OVA and run:
+```
+./release_virtualbox.sh GNS3\ VM.ova 1.4.0
+```
 
 ### VmWare
 
@@ -36,3 +42,11 @@ Run:
 
 For exporting to OVA you need to install:
 https://my.vmware.com/web/vmware/details?downloadGroup=OVFTOOL400&productId=353
+
+
+This step will build the base VM as an OVA without install gns3 on it.
+
+If you want to install GNS3 you need to unzip the OVA and run:
+```
+./release_vmware.sh GNS3\ VM.ova 1.4.0
+```
