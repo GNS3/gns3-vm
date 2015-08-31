@@ -17,7 +17,8 @@ packer build -only=vmware-iso gns3.json
 rm -Rf output-vmware-ova
 mkdir output-vmware-ova
 
-#Packer bug on post_vmx in 0.8.x we apply a second time the settings to the OVA
+# Packer bug on post_vmx in 0.8.x we apply a second time the settings to the OVA
+# Also we force export to remove the CD ROM
 ovftool \
         --extraConfig:vhv.enable=true                       \
         --extraConfig:ethernet0.connectionType=hostonly     \
@@ -29,6 +30,7 @@ ovftool \
         --extraConfig:ethernet1.wakeOnPcktRcv=false         \
         --extraConfig:ethernet1.pciSlotNumber=33            \
         --allowAllExtraConfig                               \
+        --noImageFiles                                      \
         --overwrite output-vmware-iso/GNS3\ VM.vmx output-vmware-ova/GNS3\ VM.ova
 
 cd output-vmware-ova
