@@ -82,3 +82,4 @@ sudo mv /etc/rc0.d/K61zerofree /etc/rc0.d/S61zerofree
 sudo mv /etc/rc6.d/K61zerofree /etc/rc6.d/S61zerofree
 sudo touch /zerofree
 
+sudo rm -rf /tmp/*

@@ -8,8 +8,7 @@
       "data_disk": "100000",
       "iso_checksum_type": "sha1",
       "iso_checksum": "0501c446929f713eb162ae2088d8dc8b6426224a", 
-      "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.3-server-amd64.iso"
-      "gns3_version": "{{env `GNS3_VERSION`}}"
+      "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.3-server-amd64.iso",
    },
    "provisioners" : [
       {
@@ -68,10 +67,6 @@
       {
          "script" : "scripts/cleaner.sh",
          "type" : "shell"
-      },
-      {
-         "type" : "shell",
-         "inline" : "sudo pip3 install gns3-server=={{user `gns3_version`}}"
       }
    ],
    "builders" : [

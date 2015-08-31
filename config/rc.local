@@ -41,8 +41,8 @@ Welcome to GNS3 appliance
 
 VM version: $(cat /home/gns3/.config/GNS3/gns3vm_version) 
 
-Please wait the end of installation.
-The VM will reboot at the end.
+
+GNS3 is not installed please install it with sudo pip3 install gns3-server
 
 $(kvm-ok)
 EOF
