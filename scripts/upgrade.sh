@@ -66,5 +66,7 @@ then
     sudo chown root:root /etc/default/grub
     sudo update-grub
 
-    sudo apt-get install -y qemu-system-arm    
+    sudo apt-get install -y qemu-system-arm
+
+    echo -n '0.9.0' > .config/GNS3/gns3vm_version
 fi

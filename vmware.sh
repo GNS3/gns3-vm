@@ -35,3 +35,6 @@ ovftool \
 
 cd output-vmware-ova
 zip -9 "../GNS3 VM VMware ${GNS3VM_VERSION}.zip" "GNS3 VM.ova"
+
+rm -Rf output-*
+
