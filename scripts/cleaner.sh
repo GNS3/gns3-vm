@@ -1,4 +1,52 @@
-sudo apt-get purge -y vim-common fonts-ubuntu-font-family-console linux-headers-generic linux-headers-virtual vim-runtime screen tmux memtest86+ usbutils linux-firmware wpasupplicant wireless-tools wireless-regdb xauth ppp logrotate w3m python2.7-minimal man-db sgml-base mtr-tiny rsyslog lshw geoip-database groff-base fuse update-manager-core ntpdate apport bc aptitude libtext-iconv-perl libpython2.7-minimal libapparmor-perl liblocale-gettext-perl libtext-charwidth-perl unattended-upgrades ntfs-3g manpages xkb-data krb5-locales gcc-4.9 git cmake-data cpp-4.9 language-pack-en gcc gcc-4.8 rsyslog language-pack-gnome-en-base
+sudo apt-get purge -y --force-yes vim-common
+sudo apt-get purge -y --force-yes fonts-ubuntu-font-family-console
+sudo apt-get purge -y --force-yes linux-headers-generic
+sudo apt-get purge -y --force-yes linux-headers-virtual
+sudo apt-get purge -y --force-yes vim-runtime
+sudo apt-get purge -y --force-yes screen
+sudo apt-get purge -y --force-yes tmux
+sudo apt-get purge -y --force-yes memtest86+
+sudo apt-get purge -y --force-yes usbutils
+sudo apt-get purge -y --force-yes linux-firmware
+sudo apt-get purge -y --force-yes wpasupplicant
+sudo apt-get purge -y --force-yes wireless-tools
+sudo apt-get purge -y --force-yes wireless-regdb
+sudo apt-get purge -y --force-yes xauth
+sudo apt-get purge -y --force-yes ppp
+sudo apt-get purge -y --force-yes logrotate
+sudo apt-get purge -y --force-yes w3m
+sudo apt-get purge -y --force-yes python2.7-minimal
+sudo apt-get purge -y --force-yes man-db
+sudo apt-get purge -y --force-yes sgml-base
+sudo apt-get purge -y --force-yes mtr-tiny
+sudo apt-get purge -y --force-yes rsyslog
+sudo apt-get purge -y --force-yes lshw
+sudo apt-get purge -y --force-yes geoip-database
+sudo apt-get purge -y --force-yes groff-base
+sudo apt-get purge -y --force-yes fuse
+sudo apt-get purge -y --force-yes update-manager-core
+sudo apt-get purge -y --force-yes ntpdate
+sudo apt-get purge -y --force-yes apport
+sudo apt-get purge -y --force-yes bc
+sudo apt-get purge -y --force-yes aptitude
+sudo apt-get purge -y --force-yes libtext-iconv-perl
+sudo apt-get purge -y --force-yes libpython2.7-minimal
+sudo apt-get purge -y --force-yes libapparmor-perl
+sudo apt-get purge -y --force-yes libtext-charwidth-perl
+sudo apt-get purge -y --force-yes unattended-upgrades
+sudo apt-get purge -y --force-yes ntfs-3g
+sudo apt-get purge -y --force-yes manpages
+sudo apt-get purge -y --force-yes xkb-data
+sudo apt-get purge -y --force-yes krb5-locales
+sudo apt-get purge -y --force-yes gcc-4.9
+sudo apt-get purge -y --force-yes git
+sudo apt-get purge -y --force-yes cmake-data
+sudo apt-get purge -y --force-yes cpp-4.9
+sudo apt-get purge -y --force-yes language-pack-en
+sudo apt-get purge -y --force-yes gcc
+sudo apt-get purge -y --force-yes gcc-4.8
+sudo apt-get purge -y --force-yes rsyslog
+sudo apt-get purge -y --force-yes language-pack-gnome-en-base
 
 # Purge old kernels
 dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | xargs sudo apt-get -y purge
@@ -24,8 +72,6 @@ sudo rm -fr /var/cache/man/*
 sudo rm -Rf /var/log/installer/*
 sudo rm -Rf /usr/share/doc
 sudo rm -Rf /var/lib/docker/devicemapper
-
-sudo pip3 uninstall -y gns3-server
 
 # Setup zerofree for disk compaction
 sudo mv /tmp/init_zerofree /etc/init.d/zerofree

@@ -3,11 +3,18 @@
 set -e
 
 
+if [ "$GNS3_VERSION" == "" ]
+then
+    echo "You need to export the GNS3_VERSION variable if you want to build the VM. Example export GNS3_VERSION=1.4.0"
+    exit 1
+fi
+
 export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 
+export GNS3_VERSION=`echo $GNS3_VERSION | sed "s/^v//"`
 export GNS3VM_VERSION=`cat version`
 
-echo "Build VM $GNS3VM_VERSION"
+echo "Build VM $GNS3VM_VERSION for GNS3 $GNS3_VERSION"
 
 rm -Rf output-vmware-iso
 packer build -only=vmware-iso gns3.json

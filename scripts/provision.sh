@@ -1,3 +1,5 @@
+export DEBIAN_FRONTEND="noninteractive"
+
 set -e
 
 # Update system
@@ -12,7 +14,7 @@ sudo apt-get install -y open-vm-tools-lts-trusty
 
 # Install dynamips
 if [ -x /usr/local/bin/dynamips ]
-then 
+then
   echo "Dynamips is already installed skip compilation"
 else
   sudo apt-get install -y cmake libelf-dev uuid-dev libpcap0.8-dev
@@ -30,7 +32,7 @@ fi
 #Install VPCS
 if [ -x /usr/local/bin/vpcs ]
 then
-  echo "VPCS is already installed skip download"  
+  echo "VPCS is already installed skip download"
 else
   curl --location --silent 'https://github.com/GNS3/vpcs/releases/download/v0.6.1/vpcs' > vpcs
   sudo mv vpcs /usr/local/bin/vpcs
@@ -43,7 +45,7 @@ sudo apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 # Install iouyap
 if [ -x /usr/local/bin/iouyap ]
 then
-  echo "iouyap is already installed skip download" 
+  echo "iouyap is already installed skip download"
 else
   sudo apt-get install -y git bison flex
   cd /tmp
@@ -89,14 +91,6 @@ sudo apt-get install -y python3-pip
 # Install netifaces
 sudo apt-get install -y python3-netifaces
 
-# Install GNS 3
-if [ -f /usr/local/bin/gns3server ]
-then
-    echo "GNS3 server is already installed"
-else
-    sudo pip3 install gns3-server
-fi
-
 # GNS3 Welcome
 if [ -f /usr/local/bin/gns3welcome.py ]
 then
@@ -104,7 +98,7 @@ then
 else
     sudo apt-get install -y dialog
     sudo pip3 install pythondialog
-    sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py" 
+    sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
     sudo chmod 700 "/usr/local/bin/gns3welcome.py"
     echo "/usr/local/bin/gns3welcome.py" >> ~/.bash_profile
 fi
@@ -145,7 +139,7 @@ fi
 if [ -f /tmp/rc.local ]
 then
     # Setup the message display on console
-    sudo mv "/tmp/rc.local" "/etc/rc.local" 
+    sudo mv "/tmp/rc.local" "/etc/rc.local"
     sudo chmod 700 /etc/rc.local
     sudo chown root:root /etc/rc.local
 fi
@@ -153,7 +147,7 @@ fi
 # Setup grub
 if [ -f /tmp/grub ]
 then
-    sudo mv "/tmp/grub" "/etc/default/grub" 
+    sudo mv "/tmp/grub" "/etc/default/grub"
     sudo chown root:root /etc/default/grub
     sudo update-grub
 fi
@@ -161,6 +155,6 @@ fi
 # Setup upstart
 if [ -f /tmp/gns3.conf ]
 then
-    sudo mv "/tmp/gns3.conf" "/etc/init/gns3.conf" 
+    sudo mv "/tmp/gns3.conf" "/etc/init/gns3.conf"
     sudo chown root:root /etc/init/gns3.conf
 fi
