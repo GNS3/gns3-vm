@@ -62,5 +62,10 @@ with tempfile.TemporaryDirectory() as tmp_dir:
         virtual_hardware.remove(node)
 
     tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'))
-    subprocess.call(["ovftool", "--allowAllExtraConfig", "--overwrite", os.path.join(tmp_dir, 'GNS3 VM.ovf'), sys.argv[2]])
+    subprocess.call(["ovftool",
+                     "--extraConfig:vhv.allow=true",
+                     "--allowAllExtraConfig",
+                     "--overwrite",
+                     os.path.join(tmp_dir, 'GNS3 VM.ovf'),
+                     sys.argv[2]])
 
