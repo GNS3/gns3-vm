@@ -72,4 +72,6 @@ then
     sudo chmod 644 /etc/default/grub
     sudo chown root:root /etc/default/grub
     sudo update-grub
+
+    echo -n '0.9.1' > .config/GNS3/gns3vm_version    
 fi
