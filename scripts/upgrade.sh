@@ -60,13 +60,16 @@ then
     sudo chmod 644 /etc/network/interfaces
     sudo chown root:root /etc/network/interfaces
 
+    sudo apt-get install -y qemu-system-arm
+
+    echo -n '0.9.0' > .config/GNS3/gns3vm_version
+fi
+if [ `cat .config/GNS3/gns3vm_version` = '0.9.0' ] 
+then
+
     curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/grub" > /tmp/grub
     sudo mv /tmp/grub /etc/default/interfaces
     sudo chmod 644 /etc/default/grub
     sudo chown root:root /etc/default/grub
     sudo update-grub
-
-    sudo apt-get install -y qemu-system-arm
-
-    echo -n '0.9.0' > .config/GNS3/gns3vm_version
 fi
