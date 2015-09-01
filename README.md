@@ -50,3 +50,17 @@ If you want to install GNS3 you need to unzip the OVA and run:
 ```
 ./release_vmware.sh GNS3\ VM.ova 1.4.0
 ```
+
+## Tools
+
+### ova.py
+
+Show content of an ova file
+
+### workstation_to_esxi.py
+
+Convert the ova from vmware workstation to esxi
+
+### last_vm_version.py
+
+Get last vm version on Github

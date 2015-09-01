@@ -2,7 +2,7 @@
    "variables" : {
       "ssh_pass" : "gns3",
       "ssh_name" : "gns3",
-      "gns3_version": "{{env `GNS3_VERSION`}}"
+      "gns3_version": "{{env `GNS3_VERSION`}}",
       "gns3_src": "{{env `GNS3_SRC`}}"
    },
    "provisioners" : [
@@ -41,19 +41,17 @@
           "ssh_username": "{{user `ssh_name`}}",
           "ssh_password": "{{user `ssh_pass`}}",
           "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
-          "vmx_data" :
-          {
-              "ethernet0.connectionType": "nat"
-          },
-         "vboxmanage" : [
+          "format": "ova",
+          "guest_additions_mode" : "disable",
+          "vboxmanage" : [
              [
                "modifyvm",
                "{{.Name}}",
                "--nic1",
                "nat"
              ]
-         ],
-         "vboxmanage_post" : [
+          ],
+          "vboxmanage_post" : [
              [
                "modifyvm",
                "{{.Name}}",
@@ -72,7 +70,7 @@
                 "--hostonlyadapter1",
                 "vboxnet0"
              ]
-         ],
+         ]
       }
    ]
 }
