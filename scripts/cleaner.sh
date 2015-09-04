@@ -13,13 +13,11 @@ sudo apt-get purge -y --force-yes wireless-tools
 sudo apt-get purge -y --force-yes wireless-regdb
 sudo apt-get purge -y --force-yes xauth
 sudo apt-get purge -y --force-yes ppp
-sudo apt-get purge -y --force-yes logrotate
 sudo apt-get purge -y --force-yes w3m
 sudo apt-get purge -y --force-yes python2.7-minimal
 sudo apt-get purge -y --force-yes man-db
 sudo apt-get purge -y --force-yes sgml-base
 sudo apt-get purge -y --force-yes mtr-tiny
-sudo apt-get purge -y --force-yes rsyslog
 sudo apt-get purge -y --force-yes lshw
 sudo apt-get purge -y --force-yes geoip-database
 sudo apt-get purge -y --force-yes groff-base
@@ -36,7 +34,6 @@ sudo apt-get purge -y --force-yes libtext-charwidth-perl
 sudo apt-get purge -y --force-yes unattended-upgrades
 sudo apt-get purge -y --force-yes ntfs-3g
 sudo apt-get purge -y --force-yes manpages
-sudo apt-get purge -y --force-yes xkb-data
 sudo apt-get purge -y --force-yes krb5-locales
 sudo apt-get purge -y --force-yes gcc-4.9
 sudo apt-get purge -y --force-yes git
@@ -45,7 +42,6 @@ sudo apt-get purge -y --force-yes cpp-4.9
 sudo apt-get purge -y --force-yes language-pack-en
 sudo apt-get purge -y --force-yes gcc
 sudo apt-get purge -y --force-yes gcc-4.8
-sudo apt-get purge -y --force-yes rsyslog
 sudo apt-get purge -y --force-yes language-pack-gnome-en-base
 
 # Purge old kernels
