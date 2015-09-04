@@ -45,15 +45,7 @@ then
     sudo chown root:root /etc/apt/sources.list
     echo -n '0.8.4' > .config/GNS3/gns3vm_version
 fi
-if [ `cat .config/GNS3/gns3vm_version` = '0.8.4' ] 
-then
-    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/rc.local" > /tmp/rc.local
-    sudo mv /tmp/rc.local /etc/rc.local
-    sudo chmod 700 /etc/rc.local
-    sudo chown root:root /etc/rc.local
-    echo -n '0.8.5' > .config/GNS3/gns3vm_version
-fi
-if [ `cat .config/GNS3/gns3vm_version` = '0.8.5' ] 
+if [ `cat .config/GNS3/gns3vm_version` = '0.8.4' ] || [ `cat .config/GNS3/gns3vm_version` = '0.8.5' ] 
 then
     curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/interfaces" > /tmp/interfaces
     sudo mv /tmp/interfaces /etc/network/interfaces
@@ -64,14 +56,36 @@ then
 
     echo -n '0.9.0' > .config/GNS3/gns3vm_version
 fi
-if [ `cat .config/GNS3/gns3vm_version` = '0.9.0' ] 
+if [ `cat .config/GNS3/gns3vm_version` = '0.9.0' ] || [ `cat .config/GNS3/gns3vm_version` = '0.9.1' ] 
 then
-
     curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/grub" > /tmp/grub
-    sudo mv /tmp/grub /etc/default/interfaces
+    sudo mv /tmp/grub /etc/default/grub
     sudo chmod 644 /etc/default/grub
     sudo chown root:root /etc/default/grub
     sudo update-grub
 
-    echo -n '0.9.1' > .config/GNS3/gns3vm_version    
+    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/rc.local" > /tmp/rc.local
+    sudo mv /tmp/rc.local /etc/rc.local
+    sudo chmod 700 /etc/rc.local
+    sudo chown root:root /etc/rc.local
+
+    cat > /etc/init/tty2.conf <<EOF
+# tty2 - getty
+#
+# This service maintains a getty on tty1 from the point the system is
+# started until it is shut down again.
+
+start on runlevel [23] and (
+            not-container or
+            container CONTAINER=lxc or
+        container CONTAINER=lxc-libvirt)
+
+stop on runlevel [!23]
+
+respawn
+exec /sbin/mingetty --autologin gns3 --noclear tty2
+EOF
+    sudo apt-get install -y rsyslog
+    sudo apt-get install -y xkb
+    echo -n '0.9.2' > .config/GNS3/gns3vm_version
 fi

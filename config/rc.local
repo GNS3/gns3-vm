@@ -48,4 +48,7 @@ $(kvm-ok)
 EOF
 fi
 
+# Change default tty
+chvt 2 
+
 exit 0
