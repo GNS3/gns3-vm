@@ -45,7 +45,7 @@ then
     sudo chown root:root /etc/apt/sources.list
     echo -n '0.8.4' > .config/GNS3/gns3vm_version
 fi
-if [ `cat .config/GNS3/gns3vm_version` = '0.8.4' ] || [ `cat .config/GNS3/gns3vm_version` = '0.8.5' ] 
+if [ `cat .config/GNS3/gns3vm_version` = '0.8.4' ] || [ `cat .config/GNS3/gns3vm_version` = '0.8.5' ] 
 then
     curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/interfaces" > /tmp/interfaces
     sudo mv /tmp/interfaces /etc/network/interfaces
@@ -56,7 +56,7 @@ then
 
     echo -n '0.9.0' > .config/GNS3/gns3vm_version
 fi
-if [ `cat .config/GNS3/gns3vm_version` = '0.9.0' ] || [ `cat .config/GNS3/gns3vm_version` = '0.9.1' ] 
+if [ `cat .config/GNS3/gns3vm_version` = '0.9.0' ] || [ `cat .config/GNS3/gns3vm_version` = '0.9.1' ]
 then
     curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/grub" > /tmp/grub
     sudo mv /tmp/grub /etc/default/grub
