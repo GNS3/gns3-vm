@@ -89,3 +89,9 @@ EOF
     sudo apt-get install -y xkb
     echo -n '0.9.2' > .config/GNS3/gns3vm_version
 fi
+if [ `cat .config/GNS3/gns3vm_version` = '0.9.2' ] 
+then
+    curl --location --silent 'https://github.com/GNS3/vpcs/releases/download/v0.8beta1/vpcs' > vpcs
+    sudo mv vpcs /usr/local/bin/vpcs
+    sudo chmod 755 /usr/local/bin/vpcs
+fi
