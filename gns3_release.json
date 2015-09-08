@@ -31,7 +31,7 @@
           "vmx_data_post":
           {
               "ethernet0.connectionType": "hostonly"
-          }
+          },
          "skip_compaction": true
       },
       {
