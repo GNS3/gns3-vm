@@ -32,6 +32,7 @@
           {
               "ethernet0.connectionType": "hostonly"
           }
+         "skip_compaction": true
       },
       {
           "type": "virtualbox-ovf",

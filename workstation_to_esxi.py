@@ -41,7 +41,7 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     # Drop nat network
     network_section = root.find("{http://schemas.dmtf.org/ovf/envelope/1}NetworkSection")
     for node in network_section.findall("{http://schemas.dmtf.org/ovf/envelope/1}Network"):
-        if node.get("{http://schemas.dmtf.org/ovf/envelope/1}name") == "nat":
+        if node.get("{http://schemas.dmtf.org/ovf/envelope/1}name").lower() == "nat":
             network_section.remove(node)
 
     virtual_hardware = root.find("{http://schemas.dmtf.org/ovf/envelope/1}VirtualSystem/{http://schemas.dmtf.org/ovf/envelope/1}VirtualHardwareSection")
@@ -54,7 +54,7 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     # Drop the second ethernet adapter
     for item in root.iter('{http://schemas.dmtf.org/ovf/envelope/1}Item'):
         connection = item.find('{http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData}Connection')
-        if connection is not None and connection.text == "nat":
+        if connection is not None and connection.text.lower() == "nat":
             print("Remove nat adapter")
             virtual_hardware.remove(item)
 
@@ -63,8 +63,6 @@ with tempfile.TemporaryDirectory() as tmp_dir:
 
     tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'))
     subprocess.call(["ovftool",
-                     "--extraConfig:vhv.allow=true",
-                     "--allowAllExtraConfig",
                      "--overwrite",
                      os.path.join(tmp_dir, 'GNS3 VM.ovf'),
                      sys.argv[2]])
