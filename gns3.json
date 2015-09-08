@@ -250,6 +250,7 @@
             " -- ",
             "<enter><wait>"
          ],
+         "skip_compaction": true,
          "iso_url" : "{{user `iso_url`}}"
       }
    ]
