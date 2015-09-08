@@ -48,7 +48,17 @@ packer build -only=vmware-vmx gns3_release.json
 cd output-vmware-vmx
 
 echo "Export to OVA"
-ovftool --allowAllExtraConfig "GNS3 VM.vmx" "GNS3 VM.ova"
+ovftool --extraConfig:vhv.enable=true                       \
+        --extraConfig:ethernet0.connectionType=hostonly     \
+        --extraConfig:ethernet1.present=true                \
+        --extraConfig:ethernet1.startConnected=true         \
+        --extraConfig:ethernet1.connectionType=nat          \
+        --extraConfig:ethernet1.addressType=generated       \
+        --extraConfig:ethernet1.generatedAddressOffset=10   \
+        --extraConfig:ethernet1.wakeOnPcktRcv=false         \
+        --extraConfig:ethernet1.pciSlotNumber=33            \
+        --allowAllExtraConfig                               \
+        "GNS3 VM.vmx" "GNS3 VM.ova"
 
 zip -9 "../GNS3 VM VMware Workstation ${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
