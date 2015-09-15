@@ -133,7 +133,12 @@ EOF
     fi
 fi
 
+# Create GNS3 folders
+sudo mkdir -p /opt/gns3
+sudo chown -R gns3:gns3 /opt/gns3
 
+# Setup release flavor
+echo -n "stable" > ~/.config/GNS3/gns3_release
 
 # Setup server
 if [ -f /tmp/rc.local ]
@@ -144,11 +149,20 @@ then
     sudo chown root:root /etc/rc.local
 fi
 
+# Setup dhclient
+if [ -f /tmp/dhclient.conf ]
+then
+    sudo mv "/tmp/dhclient.conf" "/etc/dhcp/dhclient.conf"
+    sudo chown root:root /etc/dhcp/dhclient.conf
+    sudo chmod 644 /etc/dhcp/dhclient.conf
+fi
+
 # Setup grub
 if [ -f /tmp/grub ]
 then
     sudo mv "/tmp/grub" "/etc/default/grub"
     sudo chown root:root /etc/default/grub
+    sudo chmod 700 /etc/default/grub
     sudo update-grub
 fi
 
