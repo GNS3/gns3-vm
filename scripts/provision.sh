@@ -133,7 +133,12 @@ EOF
     fi
 fi
 
+# Create GNS3 folders
+sudo mkdir -p /opt/gns3
+sudo chown -R gns3:gns3 /opt/gns3
 
+# Setup release flavor
+echo -n "stable" > ~/.config/GNS3/gns3_release
 
 # Setup server
 if [ -f /tmp/rc.local ]

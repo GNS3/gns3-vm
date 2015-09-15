@@ -3,6 +3,7 @@
       "ssh_pass" : "gns3",
       "ssh_name" : "gns3",
       "gns3_version": "{{env `GNS3_VERSION`}}",
+      "gns3_update_flavor": "{{env `GNS3_UPDATE_FLAVOR`}}",
       "gns3_src": "{{env `GNS3_SRC`}}"
    },
    "provisioners" : [
@@ -10,6 +11,10 @@
           "inline": "sudo rm -rf /tmp/*",
           "type": "shell"
       },
+      {
+        "inline": "echo -n \"{{env `gns3_update_flavor`}}\" > /home/gns3/.config/GNS3/gns3_release",
+        "type": "shell"
+      }
       {
          "inline" : "sudo pip3 install gns3-server=={{user `gns3_version`}}",
          "type" : "shell"
