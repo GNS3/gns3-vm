@@ -12,9 +12,9 @@
           "type": "shell"
       },
       {
-        "inline": "echo -n \"{{env `gns3_update_flavor`}}\" > /home/gns3/.config/GNS3/gns3_release",
+        "inline": "echo -n \"{{user `gns3_update_flavor`}}\" > /home/gns3/.config/GNS3/gns3_release",
         "type": "shell"
-      }
+      },
       {
          "inline" : "sudo pip3 install gns3-server=={{user `gns3_version`}}",
          "type" : "shell"

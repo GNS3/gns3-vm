@@ -71,7 +71,7 @@ zip -9 "../GNS3 VM VMware Workstation ${GNS3_VERSION}.zip" "GNS3 VM.ova"
 mv "GNS3 VM.ova" "GNS3 VM Workstation.ova"
 
 echo "Upgrade OVA for ESXI"
-python3.4 ../workstation_to_esxi.py "GNS3 VM Workstation.ova" "GNS3 VM.ova"
+python3 ../workstation_to_esxi.py "GNS3 VM Workstation.ova" "GNS3 VM.ova"
 
 zip -9 "../GNS3 VM VMware ESXI ${GNS3_VERSION}.zip" "GNS3 VM.ova"
 

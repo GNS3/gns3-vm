@@ -1,15 +1,23 @@
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
 
+# Host only interface
+auto eth0
+
+# Comment this line to disable DHCP
+iface eth0 inet dhcp
+# Uncomment this lines if you want to manually configure network
+#iface eth0 inet static
+#        address 10.10.10.10
+#        netmask 255.255.0.0
+#        gateway 10.10.0.1
+#        dns-nameservers 8.8.8.8
+
 # The loopback network interface
 auto lo
 iface lo inet loopback
 
-# Host only interface
-auto eth0
-iface eth0 inet dhcp
-
-# Nat interface
+# NAT interface
 allow-hotplug eth1
 iface eth1 inet dhcp
 

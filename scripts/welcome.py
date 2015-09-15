@@ -177,6 +177,16 @@ def edit_config():
     os.system("nano ~/.config/GNS3/gns3_server.conf")
 
 
+def edit_network():
+    """
+    Edit network configuration file
+    """
+    if d.yesno("The server will reboot at the end of the process. Continue?") != d.OK:
+        return
+    os.system("sudo nano /etc/network/interfaces")
+    os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+
+
 def ask_disable_kvm():
     """
     Ask to disable KVM if KVM not available
@@ -218,6 +228,7 @@ try:
                             ("Security", "Configure authentication"),
                             ("Keyboard", "Change keyboard layout"),
                             ("Configure", "Edit server configuration (advanced users ONLY)"),
+                            ("Networking", "Configure networking settings"),
                             ("Log", "Show server log"),
                             ("Test", "Check internet connection"),
                             ("Version", "Select the GNS3 version"),
@@ -241,6 +252,8 @@ try:
                 log()
             elif tag == "Configure":
                 edit_config()
+            elif tag == "Networking":
+                edit_network()
             elif tag == "Security":
                 set_security()
             elif tag == "Keyboard":

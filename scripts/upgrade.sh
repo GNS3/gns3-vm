@@ -47,11 +47,6 @@ then
 fi
 if [ `cat .config/GNS3/gns3vm_version` = '0.8.4' ] || [ `cat .config/GNS3/gns3vm_version` = '0.8.5' ] 
 then
-    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/interfaces" > /tmp/interfaces
-    sudo mv /tmp/interfaces /etc/network/interfaces
-    sudo chmod 644 /etc/network/interfaces
-    sudo chown root:root /etc/network/interfaces
-
     sudo apt-get install -y qemu-system-arm
 
     echo -n '0.9.0' > .config/GNS3/gns3vm_version
@@ -88,4 +83,24 @@ EOF
     sudo apt-get install -y rsyslog
     sudo apt-get install -y xkb
     echo -n '0.9.2' > .config/GNS3/gns3vm_version
+fi
+
+if [ `cat .config/GNS3/gns3vm_version` = '0.9.2' ]
+then
+    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/rc.local" > /tmp/rc.local
+    sudo mv /tmp/rc.local /etc/rc.local
+    sudo chmod 700 /etc/rc.local
+    sudo chown root:root /etc/rc.local
+
+    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/dhclient.conf" > /tmp/dhclient.conf
+    sudo mv "/tmp/dhclient.conf" "/etc/dhcp/dhclient.conf"
+    sudo chown root:root /etc/dhcp/dhclient.conf
+    sudo chmod 644 /etc/dhcp/dhclient.conf
+
+    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/interfaces" > /tmp/interfaces
+    sudo mv /tmp/interfaces /etc/network/interfaces
+    sudo chmod 644 /etc/network/interfaces
+    sudo chown root:root /etc/network/interfaces
+
+    echo -n '0.9.3' > .config/GNS3/gns3vm_version    
 fi

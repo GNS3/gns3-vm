@@ -43,6 +43,11 @@
          "source" : "config/grub"
       },
       {
+         "destination" : "/tmp/dhclient.conf",
+         "type" : "file",
+         "source" : "config/dhclient.conf"
+      },
+      {
          "destination" : "/tmp/init_zerofree",
          "type" : "file",
          "source" : "config/zerofree"
