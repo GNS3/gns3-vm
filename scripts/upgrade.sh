@@ -102,9 +102,13 @@ then
     sudo chmod 644 /etc/network/interfaces
     sudo chown root:root /etc/network/interfaces
 
+    echo -n '0.9.3' > .config/GNS3/gns3vm_version    
+fi
+if [ `cat .config/GNS3/gns3vm_version` = '0.9.3' ]
+then
     curl --location --silent 'https://github.com/GNS3/vpcs/releases/download/v0.8beta1/vpcs' > vpcs
     sudo mv vpcs /usr/local/bin/vpcs
     sudo chmod 755 /usr/local/bin/vpcs
 
-    echo -n '0.9.3' > .config/GNS3/gns3vm_version    
+    echo -n '0.9.4' > .config/GNS3/gns3vm_version
 fi
