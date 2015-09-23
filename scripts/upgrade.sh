@@ -114,6 +114,6 @@ then
 fi
 if [ `cat .config/GNS3/gns3vm_version` = '0.9.4' ]
 then
-    pip3 install gns3-server==1.4.0b3
+    sudo pip3 install --upgrade gns3-server==1.4.0b3
     echo -n '0.9.5' > .config/GNS3/gns3vm_version
 fi
