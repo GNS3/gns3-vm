@@ -66,13 +66,16 @@ ovftool --extraConfig:vhv.enable=true                       \
         --allowAllExtraConfig                               \
         "GNS3 VM.vmx" "GNS3 VM.ova"
 
-zip -9 "../GNS3 VM VMware Workstation ${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 echo "Fix OVA network"
-python3 ../fix_vmware_ova_network.py "GNS3 VM.ova" "GNS3 VM Workstation.ova"
+mv "GNS3 VM.ova" "GNS3 VM.tmp.ova"
+python3 ../fix_vmware_ova_network.py "GNS3 VM.tmp.ova" "GNS3 VM.ova"
+zip -9 "../GNS3 VM VMware Workstation ${GNS3_VERSION}.zip" "GNS3 VM.ova"
+
 
 echo "Upgrade OVA for ESXI"
-python3 ../workstation_to_esxi.py "GNS3 VM Workstation.ova" "GNS3 VM.ova"
+mv "GNS3 VM.ova" "GNS3 VM.tmp.ova"
+python3 ../workstation_to_esxi.py "GNS3 VM.tmp.ova" "GNS3 VM.ova"
 
 zip -9 "../GNS3 VM VMware ESXI ${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
