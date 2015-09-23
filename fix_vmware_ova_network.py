@@ -17,8 +17,7 @@
 
 
 """
-This script will convert the workstation build to an ESXI compatible build.
-Mainly it's dropping all networking specific stuff
+Due to a bug in build tool sometime a network is missing.
 """
 
 import os
@@ -38,7 +37,6 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     tree = ET.parse(os.path.join(tmp_dir, 'GNS3 VM.ovf'))
     root = tree.getroot()
 
-    # Drop nat network
     network_section = root.find("{http://schemas.dmtf.org/ovf/envelope/1}NetworkSection")
 
     nat_found = False
@@ -47,36 +45,38 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     for node in network_section.findall("{http://schemas.dmtf.org/ovf/envelope/1}Network"):
         network_name = node.get("{http://schemas.dmtf.org/ovf/envelope/1}name").lower()
         if network_name == "nat":
-            network_section.remove(node)
             nat_found = True
         elif network_name == "hostonly":
             hostonly_found = True
 
-    # Sometimes export bug we raise an error instead of broken the file
-    if not hostonly_found or not nat_found:
-        print("ERROR: a network is missing in the original OVA")
-        sys.exit(1)
+    if hostonly_found is False:
+        network = ET.SubElement(network_section, '{http://schemas.dmtf.org/ovf/envelope/1}Network')
+        network.set("{http://schemas.dmtf.org/ovf/envelope/1}name", "hostonly")
+        description = ET.SubElement(network, "{http://schemas.dmtf.org/ovf/envelope/1}Description")
+        description.text = "The hostonly network"
+        print("Fix missing hostonly")
 
-    virtual_hardware = root.find("{http://schemas.dmtf.org/ovf/envelope/1}VirtualSystem/{http://schemas.dmtf.org/ovf/envelope/1}VirtualHardwareSection")
-    nodes_to_remove = set()
-    # Drop all extra config
-    for child in root.iter('{http://www.vmware.com/schema/ovf}ExtraConfig'):
-        print("Remove {}".format(child.attrib["{http://www.vmware.com/schema/ovf}key"]))
-        nodes_to_remove.add(child)
+    if nat_found is False:
+        network = ET.SubElement(network_section, '{http://schemas.dmtf.org/ovf/envelope/1}Network')
+        network.set("{http://schemas.dmtf.org/ovf/envelope/1}name", "nat")
+        description = ET.SubElement(network, "{http://schemas.dmtf.org/ovf/envelope/1}Description")
+        description.text = "The nat network"
+        print("Fix missing nat")
 
-    # Drop the second ethernet adapter
+    connection_id = 0
     for item in root.iter('{http://schemas.dmtf.org/ovf/envelope/1}Item'):
         connection = item.find('{http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData}Connection')
-        if connection is not None and connection.text.lower() == "nat":
-            print("Remove nat adapter")
-            virtual_hardware.remove(item)
-
-    for node in nodes_to_remove:
-        virtual_hardware.remove(node)
+        if connection is not None:
+            if connection_id == 0:
+                connection.text = "hostonly"
+            elif connection_id == 1:
+                connection.text = "nat"
+            connection_id += 1
 
     tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'))
     subprocess.call(["ovftool",
                      "--overwrite",
+                     "--allowAllExtraConfig",
                      os.path.join(tmp_dir, 'GNS3 VM.ovf'),
                      sys.argv[2]])
 

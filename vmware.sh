@@ -34,6 +34,10 @@ ovftool \
         --overwrite output-vmware-iso/GNS3\ VM.vmx output-vmware-ova/GNS3\ VM.ova
 
 cd output-vmware-ova
+
+echo "Fix OVA network"
+python3 ../fix_vmware_ova_network.py "GNS3 VM.ova" "GNS3 VM FIX.ova"
+mv "GNS3 VM FIX.ova" "GNS3 VM.ova"
 zip -9 "../GNS3 VM VMware ${GNS3VM_VERSION}.zip" "GNS3 VM.ova"
 
 rm -Rf output-*
