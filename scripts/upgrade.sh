@@ -117,3 +117,14 @@ then
     sudo pip3 install --upgrade gns3-server==1.4.0b3
     echo -n '0.9.6' > .config/GNS3/gns3vm_version
 fi
+
+if [ `cat .config/GNS3/gns3vm_version` = '0.9.6' ]
+then    
+    sudo apt-get install -y software-properties-common
+    sudo add-apt-repository -y ppa:gns3/qemu 
+    sudo apt-get update
+    sudo apt-get -y dist-upgrade
+
+    echo -n '0.9.7' > .config/GNS3/gns3vm_version
+fi
+    
