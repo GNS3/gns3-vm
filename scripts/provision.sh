@@ -2,8 +2,15 @@ export DEBIAN_FRONTEND="noninteractive"
 
 set -e
 
+
 # Update system
 sudo apt-get update
+
+# Add our ppa
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository -y ppa:gns3/qemu 
+sudo apt-get update
+
 sudo apt-get upgrade -y
 sudo apt-get dist-upgrade -y
 
