@@ -35,13 +35,10 @@ sudo apt-get purge -y --force-yes unattended-upgrades
 sudo apt-get purge -y --force-yes ntfs-3g
 sudo apt-get purge -y --force-yes manpages
 sudo apt-get purge -y --force-yes krb5-locales
-sudo apt-get purge -y --force-yes gcc-4.9
 sudo apt-get purge -y --force-yes git
 sudo apt-get purge -y --force-yes cmake-data
 sudo apt-get purge -y --force-yes cpp-4.9
 sudo apt-get purge -y --force-yes language-pack-en
-sudo apt-get purge -y --force-yes gcc
-sudo apt-get purge -y --force-yes gcc-4.8
 sudo apt-get purge -y --force-yes language-pack-gnome-en-base
 
 # Purge old kernels
