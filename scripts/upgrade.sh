@@ -133,3 +133,10 @@ then
     sudo apt-get install -y gcc
     echo -n '0.9.8' > .config/GNS3/gns3vm_version
 fi
+
+if [ `cat .config/GNS3/gns3vm_version` = '0.9.8' ]
+then
+    sudo apt-get install -y python3-dev
+    echo -n '0.9.9' > .config/GNS3/gns3vm_version
+fi
+
