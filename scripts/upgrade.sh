@@ -132,7 +132,7 @@ fi
 
 if [ `cat .config/GNS3/gns3vm_version` = '0.9.8' ]
 then
-    sudo apt-get install -y python3-dev python3.4-dev
+    sudo apt-get install -y python3-dev python3.4-dev python3-setuptools
     echo -n '0.9.9' > .config/GNS3/gns3vm_version
 fi
 
