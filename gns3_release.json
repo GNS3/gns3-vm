@@ -16,6 +16,10 @@
         "type": "shell"
       },
       {
+         "inline" : "sudo pip3 install aiohttp==0.17.4",
+         "type" : "shell"
+      },
+      {
          "inline" : "sudo pip3 install gns3-server=={{user `gns3_version`}}",
          "type" : "shell"
       }
