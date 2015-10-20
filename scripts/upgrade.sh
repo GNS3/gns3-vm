@@ -82,7 +82,6 @@ exec /sbin/mingetty --autologin gns3 --noclear tty2
 EOF
     sudo mv /tmp/tty2.conf /etc/init/tty2.conf 
     sudo apt-get install -y rsyslog
-    sudo apt-get install -y xkb
     echo -n '0.9.2' > .config/GNS3/gns3vm_version
 fi
 
