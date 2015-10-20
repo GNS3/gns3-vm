@@ -64,7 +64,7 @@ then
     sudo chmod 700 /etc/rc.local
     sudo chown root:root /etc/rc.local
 
-    cat > /etc/init/tty2.conf <<EOF
+    cat > /tmp/tty2.conf <<EOF
 # tty2 - getty
 #
 # This service maintains a getty on tty1 from the point the system is
@@ -80,6 +80,7 @@ stop on runlevel [!23]
 respawn
 exec /sbin/mingetty --autologin gns3 --noclear tty2
 EOF
+    sudo mv /tmp/tty2.conf /etc/init/tty2.conf 
     sudo apt-get install -y rsyslog
     sudo apt-get install -y xkb
     echo -n '0.9.2' > .config/GNS3/gns3vm_version
