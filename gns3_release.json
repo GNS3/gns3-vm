@@ -16,7 +16,7 @@
         "type": "shell"
       },
       {
-         "inline" : "sudo apt-get update && sudo apt-get install -y --force-yes python3.4-dev",
+         "inline" : "sudo apt-get update && sudo apt-get install -y --force-yes python3-setuptools",
          "type" : "shell"
       },
       {
