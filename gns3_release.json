@@ -16,6 +16,10 @@
         "type": "shell"
       },
       {
+         "inline" : "sudo apt-get update && sudo apt-get install -y --force-yes python3.4-dev",
+         "type" : "shell"
+      },
+      {
          "inline" : "sudo pip3 install aiohttp==0.17.4",
          "type" : "shell"
       },
