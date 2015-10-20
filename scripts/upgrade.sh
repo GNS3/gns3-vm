@@ -39,10 +39,6 @@ then
 fi
 if [ `cat .config/GNS3/gns3vm_version` = '0.8.2' ] || [ `cat .config/GNS3/gns3vm_version` = '0.8.3' ]
 then
-    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/sources.list" > /tmp/sources.list
-    sudo mv /tmp/sources.list /etc/apt/sources.list
-    sudo chmod 644 /etc/apt/sources.list
-    sudo chown root:root /etc/apt/sources.list
     echo -n '0.8.4' > .config/GNS3/gns3vm_version
 fi
 if [ `cat .config/GNS3/gns3vm_version` = '0.8.4' ] || [ `cat .config/GNS3/gns3vm_version` = '0.8.5' ]
@@ -138,5 +134,17 @@ if [ `cat .config/GNS3/gns3vm_version` = '0.9.8' ]
 then
     sudo apt-get install -y python3-dev python3.4-dev
     echo -n '0.9.9' > .config/GNS3/gns3vm_version
+fi
+
+if [ `cat .config/GNS3/gns3vm_version` = '0.9.9' ]
+then
+    curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/config/sources.list" > /tmp/sources.list
+    sudo mv /tmp/sources.list /etc/apt/sources.list
+    sudo chmod 644 /etc/apt/sources.list
+    sudo chown root:root /etc/apt/sources.list
+
+    sudo apt-get update
+
+    echo -n '0.9.10' > .config/GNS3/gns3vm_version
 fi
 

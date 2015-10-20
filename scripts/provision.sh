@@ -93,7 +93,7 @@ sudo usermod -aG docker gns3
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 
 # Setup Python 3
-sudo apt-get install -y python3-pip
+sudo apt-get install -y python3-pip python3-dev python3.4-dev
 
 # Install netifaces
 sudo apt-get install -y python3-netifaces
