@@ -96,7 +96,7 @@ def get_release():
 
 def update(force=False):
     if not force:
-        if d.yesno("The server will reboot at the end of the update process. Continue?") != d.OK:
+        if d.yesno("PLEASE THE SNAPHSHOT THE VM BEFORE RUNNING THE UPDATE IN CASE OF FAILURE. The server will reboot at the end of the update process. Continue?") != d.OK:
             return
     if get_release() == "stable":
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update.sh |bash")
@@ -105,7 +105,7 @@ def update(force=False):
     elif get_release() == "unstable":
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_unstable.sh |bash")
     if ret != 0:
-        print("ERROR DURING UPGRADE PROCESS")
+        print("ERROR DURING UPGRADE PROCESS PLEASE TAKE A SCREENSHOT IF YOU NEED SUPPORT")
         time.sleep(15)
 
 
