@@ -40,6 +40,8 @@ sudo apt-get purge -y --force-yes cmake-data
 sudo apt-get purge -y --force-yes cpp-4.9
 sudo apt-get purge -y --force-yes language-pack-en
 sudo apt-get purge -y --force-yes language-pack-gnome-en-base
+sudo apt-get purge -y --force-yes python3-dev
+sudo apt-get purge -y --force-yes python3.4-dev
 
 # Purge old kernels
 dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | xargs sudo apt-get -y purge
@@ -67,12 +69,6 @@ sudo rm -Rf /usr/share/doc
 sudo rm -Rf /var/lib/docker/devicemapper
 
 # Setup zerofree for disk compaction
-sudo mv /tmp/init_zerofree /etc/init.d/zerofree
-sudo chown root:root /etc/init.d/zerofree
-sudo chmod 744 /etc/init.d/zerofree
-sudo update-rc.d zerofree defaults 61
-sudo mv /etc/rc0.d/K61zerofree /etc/rc0.d/S61zerofree
-sudo mv /etc/rc6.d/K61zerofree /etc/rc6.d/S61zerofree
 sudo touch /zerofree
 
 sudo rm -rf /tmp/*

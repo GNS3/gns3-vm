@@ -7,50 +7,20 @@
       "disk_size": "20000",
       "data_disk": "100000",
       "iso_checksum_type": "sha1",
-      "iso_checksum": "0501c446929f713eb162ae2088d8dc8b6426224a", 
+      "iso_checksum": "0501c446929f713eb162ae2088d8dc8b6426224a",
       "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.3-server-amd64.iso",
       "gns3_version": "{{env `GNS3_VERSION`}}"
    },
    "provisioners" : [
       {
-         "destination" : "/tmp/interfaces",
+         "destination" : "/tmp/config",
          "type" : "file",
-         "source" : "config/interfaces"
-      },
-      {
-         "destination" : "/tmp/sources.list",
-         "type" : "file",
-         "source" : "config/sources.list"
+         "source" : "config"
       },
       {
          "destination" : "/tmp/gns3welcome.py",
          "type" : "file",
          "source" : "scripts/welcome.py"
-      },
-      {
-         "destination" : "/tmp/rc.local",
-         "type" : "file",
-         "source" : "config/rc.local"
-      },
-      {
-         "destination" : "/tmp/gns3.conf",
-         "type" : "file",
-         "source" : "config/gns3.conf"
-      },
-      {
-         "destination" : "/tmp/grub",
-         "type" : "file",
-         "source" : "config/grub"
-      },
-      {
-         "destination" : "/tmp/dhclient.conf",
-         "type" : "file",
-         "source" : "config/dhclient.conf"
-      },
-      {
-         "destination" : "/tmp/init_zerofree",
-         "type" : "file",
-         "source" : "config/zerofree"
       },
       {
          "type" : "shell",
@@ -232,7 +202,7 @@
             "ethernet1.pciSlotNumber": "33"
          },
          "iso_checksum_type" : "{{user `iso_checksum_type`}}",
-         "headless": true,         
+         "headless": true,
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
          "shutdown_timeout": "60m",
          "ssh_password" : "{{user `ssh_pass`}}",
