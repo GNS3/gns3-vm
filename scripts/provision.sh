@@ -13,6 +13,9 @@ sudo apt-get install -y curl
 cd /tmp/config
 sudo bash install.sh
 
+# VDE network
+sudo usermod -a -G vde2-net gns3
+
 #Install VPCS
 if [ -x /usr/local/bin/vpcs ]
 then
