@@ -96,7 +96,7 @@ def get_release():
 
 def update(force=False):
     if not force:
-        if d.yesno("PLEASE THE SNAPHSHOT THE VM BEFORE RUNNING THE UPDATE IN CASE OF FAILURE. The server will reboot at the end of the update process. Continue?") != d.OK:
+        if d.yesno("PLEASE THE SNAPSHOT THE VM BEFORE RUNNING THE UPGRADE IN CASE OF FAILURE. The server will reboot at the end of the upgrade process. Continue?") != d.OK:
             return
     if get_release() == "stable":
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update.sh |bash")
