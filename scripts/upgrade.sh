@@ -102,6 +102,7 @@ then
 fi
 if [ `cat .config/GNS3/gns3vm_version` = '0.9.3' ]
 then
+    rm -Rf vpcs
     curl --location --silent 'https://github.com/GNS3/vpcs/releases/download/v0.8beta1/vpcs' > vpcs
     sudo mv vpcs /usr/local/bin/vpcs
     sudo chmod 755 /usr/local/bin/vpcs
