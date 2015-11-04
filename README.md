@@ -12,7 +12,8 @@ Build a GNS3 Virtual Machine
 * Default account: gns3 / gns3
 * A graphical interface allow gns3 management
 * GNS3 data are installed in /opt on a seperate disk
-* An optinal eth2 is configured allowing user to add a bridge interface
+* An optional eth2 is configured allowing user to add a bridge interface
+* A vde interface qemu0 for accessing to natted network from qemu
 
 ## Building 
 

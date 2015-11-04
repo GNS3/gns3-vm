@@ -68,8 +68,7 @@ if [ `cat .config/GNS3/gns3vm_version` = '0.9.4' ] \
    || [ `cat .config/GNS3/gns3vm_version` = '0.9.10' ]
 then
     sudo apt-get -y dist-upgrade
-    
-    sudo apt-get install -y dynamips iouyap ubridge
+    sudo usermod -a -G vde2-net gns3
     
     echo -n '0.10.0' > .config/GNS3/gns3vm_version
 fi

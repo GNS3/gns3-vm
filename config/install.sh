@@ -25,11 +25,14 @@ set -e
 export DEBIAN_FRONTEND="noninteractive"
 
 # Add our ppa
+sudo apt-get update
 sudo apt-get install -y software-properties-common
 sudo add-apt-repository -y ppa:gns3/qemu
 sudo add-apt-repository -y ppa:gns3/ppa
 sudo apt-get update
 
+# VDE network
+apt-get install -y vde2 uml-utilities
 
 # VMware open-vm-tools
 apt-get install -y open-vm-tools-lts-trusty
@@ -48,6 +51,8 @@ apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 
 # Install gns3 dependencies
 apt-get install -y dynamips iouyap ubridge
+
+apt-get install -y dnsmasq
 
 # Install iou dependencies
 apt-get install -y lib32z1
@@ -107,4 +112,19 @@ fi
 
 mv tty1.conf /etc/init/tty1.conf
 mv tty2.conf /etc/init/tty2.conf
+
+# Dnsmasq
+mv dnsmasq.conf /etc/dnsmasq.conf
+chmod 644 /etc/dnsmasq.conf
+chown root:root /etc/dnsmasq.conf
+
+# Sysctl
+mv sysctl.conf /etc/sysctl.conf
+chmod 644 /etc/sysctl.conf
+chown root:root /etc/sysctl.conf
+
+# Iptables
+mv iptables /etc/network/if-pre-up.d/iptables
+chmod 755 /etc/network/if-pre-up.d/iptables
+chown root:root /etc/network/if-pre-up.d/iptables
 

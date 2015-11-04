@@ -24,3 +24,11 @@ iface eth1 inet dhcp
 # Optional bridge interace
 allow-hotplug eth2
 iface eth2 inet dhcp
+
+
+# A vde network
+auto qemu0
+    iface qemu0 inet static
+    address 172.16.0.1
+    netmask 255.255.255.0
+    vde2-switch -t qemu0
