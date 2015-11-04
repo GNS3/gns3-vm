@@ -25,6 +25,7 @@ set -e
 export DEBIAN_FRONTEND="noninteractive"
 
 # Add our ppa
+sudo apt-get update
 sudo apt-get install -y software-properties-common
 sudo add-apt-repository -y ppa:gns3/qemu
 sudo add-apt-repository -y ppa:gns3/ppa
