@@ -72,3 +72,11 @@ then
     
     echo -n '0.10.0' > .config/GNS3/gns3vm_version
 fi
+
+if [ `cat .config/GNS3/gns3vm_version` = '0.10.0' ] 
+then
+    curl --location --silent 'https://github.com/GNS3/vpcs/releases/download/v0.6.1/vpcs' > vpcs
+    sudo mv vpcs /usr/local/bin/vpcs
+    sudo chmod 755 /usr/local/bin/vpcs
+    echo -n '0.10.1' > .config/GNS3/gns3vm_version
+fi
