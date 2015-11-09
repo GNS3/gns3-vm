@@ -52,8 +52,6 @@ apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 # Install gns3 dependencies
 apt-get install -y dynamips iouyap ubridge
 
-apt-get install -y dnsmasq
-
 # Install iou dependencies
 apt-get install -y lib32z1
 apt-get install -y libssl1.0.0
@@ -117,6 +115,7 @@ mv tty2.conf /etc/init/tty2.conf
 mv dnsmasq.conf /etc/dnsmasq.conf
 chmod 644 /etc/dnsmasq.conf
 chown root:root /etc/dnsmasq.conf
+apt-get install -y dnsmasq
 
 # Sysctl
 mv sysctl.conf /etc/sysctl.conf
