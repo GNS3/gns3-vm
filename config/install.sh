@@ -25,11 +25,11 @@ set -e
 export DEBIAN_FRONTEND="noninteractive"
 
 # Add our ppa
-sudo apt-get update
-sudo apt-get install -y software-properties-common
-sudo add-apt-repository -y ppa:gns3/qemu
-sudo add-apt-repository -y ppa:gns3/ppa
-sudo apt-get update
+apt-get update
+apt-get install -y software-properties-common
+add-apt-repository -y ppa:gns3/qemu
+add-apt-repository -y ppa:gns3/ppa
+apt-get update
 
 # VDE network
 apt-get install -y vde2 uml-utilities
@@ -115,7 +115,8 @@ mv tty2.conf /etc/init/tty2.conf
 mv dnsmasq.conf /etc/dnsmasq.conf
 chmod 644 /etc/dnsmasq.conf
 chown root:root /etc/dnsmasq.conf
-apt-get install -y dnsmasq
+# We need to disallow apt-get to override the config file
+apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dnsmasq
 
 # Sysctl
 mv sysctl.conf /etc/sysctl.conf
