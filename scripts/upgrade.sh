@@ -19,6 +19,8 @@
 # Upgrade VM to a new release if require
 #
 
+export DEBIAN_FRONTEND="noninteractive"
+
 set -e
 
 cd /tmp
@@ -29,7 +31,8 @@ tar -xzf gns3vm.tar.gz
 cd gns3-vm-${BRANCH}/config
 sudo bash install.sh
 
-sudo apt-get upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold"
+sudo dpkg --configure -a
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade -y 
 
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/welcome.py" > /tmp/gns3welcome.py
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
