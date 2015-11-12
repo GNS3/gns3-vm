@@ -83,3 +83,4 @@ then
     sudo chmod 755 /usr/local/bin/vpcs
     echo -n '0.10.1' > .config/GNS3/gns3vm_version
 fi
+
