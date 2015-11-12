@@ -38,6 +38,8 @@ git checkout unstable
 git pull -u
 sudo python3 setup.py install
 
+sudo /etc/rc.local
+
 echo "Reboot in 5s"
 sleep 5
 

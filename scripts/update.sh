@@ -27,5 +27,7 @@ curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh"
 
 sudo pip3 install --ignore-installed gns3-server
 
+sudo /etc/rc.local
+
 echo "Reboot in 5s"
 sleep 5
