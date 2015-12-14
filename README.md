@@ -31,7 +31,7 @@ This step will build the base VM as an OVA without install gns3 on it.
 
 If you want to install GNS3 you need to unzip the OVA and run:
 ```
-./release_virtualbox.sh GNS3\ VM.ova 1.4.0
+./release_virtualbox.sh 1.4.0 GNS3\ VM.ova
 ```
 
 ### VMware
@@ -49,7 +49,7 @@ This step will build the base VM as an OVA without install gns3 on it.
 
 If you want to install GNS3 you need to unzip the OVA and run:
 ```
-./release_vmware.sh GNS3\ VM.ova 1.4.0
+./release_vmware.sh 1.4.0 GNS3\ VM.ova
 ```
 
 #### Upload to ESXi
