@@ -67,21 +67,15 @@ def mode():
         return
     d.msgbox("You have been warned...")
     code, tag = d.menu("Select the GNS3 version",
-                       choices=[("Stable", "Last stable GNS3 version RECOMMENDED"),
-                                ("Testing", "Next stable release"),
-                                ("Unstable", "Totaly unstable version")])
+                       choices=[("1.3", "Last stable GNS3 version"),
+                                ("1.4", "Next stable release RECOMMENDED"),
+                                ("1.4dev", "Live development version of 1.4.x"),
+                                ("1.5", "Totaly unstable version")])
     d.clear()
     if code == Dialog.OK:
         os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
         with open(os.path.expanduser("~/.config/GNS3/gns3_release"), "w+") as f:
-            if tag == "Stable":
-                f.write("stable")
-            elif tag == "Testing":
-                f.write("testing")
-            elif tag == "Unstable":
-                f.write("unstable")
-            else:
-                assert False
+            f.write(tag)
 
         update(force=True)
 
@@ -89,21 +83,27 @@ def mode():
 def get_release():
     try:
         with open(os.path.expanduser("~/.config/GNS3/gns3_release")) as f:
-            return f.read()
+            content = f.read()
+
+            # Support old VM versions
+            if content == "stable":
+                content = "1.3"
+            elif content == "testing":
+                content = "1.4"
+            elif content == "unstable":
+                content = "1.4dev"
+
+            return content
     except OSError:
-        return "stable"
+        return "1.4"
 
 
 def update(force=False):
     if not force:
-        if d.yesno("PLEASE THE SNAPSHOT THE VM BEFORE RUNNING THE UPGRADE IN CASE OF FAILURE. The server will reboot at the end of the upgrade process. Continue?") != d.OK:
+        if d.yesno("PLEASE SNAPSHOT THE VM BEFORE RUNNING THE UPGRADE IN CASE OF FAILURE. The server will reboot at the end of the upgrade process. Continue?") != d.OK:
             return
-    if get_release() == "stable":
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update.sh |bash")
-    elif get_release() == "testing":
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_testing.sh |bash")
-    elif get_release() == "unstable":
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_unstable.sh |bash")
+    release = get_release()
+    ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh |bash".format(release))
     if ret != 0:
         print("ERROR DURING UPGRADE PROCESS PLEASE TAKE A SCREENSHOT IF YOU NEED SUPPORT")
         time.sleep(15)
