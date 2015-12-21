@@ -17,13 +17,7 @@ then
     exit 1
 fi
 
-
-if [[ "$GNS3_VERSION" =~ ^[0-9\.]*$ ]]
-then
-    export GNS3_UPDATE_FLAVOR="stable"
-else
-    export GNS3_UPDATE_FLAVOR="testing"
-fi
+export GNS3_UPDATE_FLAVOR=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Update flavor: $GNS3_UPDATE_FLAVOR"
