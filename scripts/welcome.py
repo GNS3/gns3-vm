@@ -103,7 +103,10 @@ def update(force=False):
         if d.yesno("PLEASE SNAPSHOT THE VM BEFORE RUNNING THE UPGRADE IN CASE OF FAILURE. The server will reboot at the end of the upgrade process. Continue?") != d.OK:
             return
     release = get_release()
-    ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh |bash".format(release))
+    if release == "1.4dev" or release == "1.5":
+        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_{}.sh |bash".format(release))
+    else:
+        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh |bash".format(release))
     if ret != 0:
         print("ERROR DURING UPGRADE PROCESS PLEASE TAKE A SCREENSHOT IF YOU NEED SUPPORT")
         time.sleep(15)
