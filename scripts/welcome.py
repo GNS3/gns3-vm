@@ -67,9 +67,9 @@ def mode():
         return
     d.msgbox("You have been warned...")
     code, tag = d.menu("Select the GNS3 version",
-                       choices=[("1.3", "Last stable GNS3 version"),
-                                ("1.4", "Next stable release RECOMMENDED"),
+                       choices=[("1.4", "Current stable release RECOMMENDED"),
                                 ("1.4dev", "Live development version of 1.4.x"),
+                                ("1.3", "Previous stable GNS3 version"),
                                 ("1.5", "Totaly unstable version")])
     d.clear()
     if code == Dialog.OK:
@@ -87,7 +87,7 @@ def get_release():
 
             # Support old VM versions
             if content == "stable":
-                content = "1.3"
+                content = "1.4"
             elif content == "testing":
                 content = "1.4"
             elif content == "unstable":
