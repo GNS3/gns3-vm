@@ -35,7 +35,7 @@ fi
 
 cd gns3-server
 git fetch origin
-git checkout 1.4 
+git checkout master 
 git pull -u
 sudo python3 setup.py install
 
