@@ -57,4 +57,7 @@ fi
 # Change default tty
 chvt 2 
 
+# Enabling Kernel Samepage Merging
+echo 1 > /sys/kernel/mm/ksm/run
+
 exit 0
