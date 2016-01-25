@@ -84,8 +84,9 @@ then
     echo -n '0.10.1' > .config/GNS3/gns3vm_version
 fi
 
-if [ `cat .config/GNS3/gns3vm_version` = '0.10.1' ] 
+if [ `cat .config/GNS3/gns3vm_version` = '0.10.1' ] \
+    || [ `cat .config/GNS3/gns3vm_version` = '0.10.2' ]
 then
-    echo -n '0.10.2' > .config/GNS3/gns3vm_version
+    echo -n '0.10.3' > .config/GNS3/gns3vm_version
 fi
 
