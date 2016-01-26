@@ -24,6 +24,11 @@ set -e
 
 export DEBIAN_FRONTEND="noninteractive"
 
+# Sources.list
+mv sources.list /etc/apt/sources.list
+chmod 644 /etc/apt/sources.list
+chown root:root /etc/apt/sources.list
+
 # Add our ppa
 apt-get update
 apt-get install -y software-properties-common
@@ -91,11 +96,6 @@ chmod 644 /etc/init/gns3.conf
 mv interfaces /etc/network/interfaces
 chmod 644 /etc/network/interfaces
 chown root:root /etc/network/interfaces
-
-# Sources.list
-mv sources.list /etc/apt/sources.list
-chmod 644 /etc/apt/sources.list
-chown root:root /etc/apt/sources.list
 
 # Zerofree
 mv zerofree /etc/init.d/zerofree
