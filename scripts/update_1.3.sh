@@ -23,7 +23,7 @@ set -e
 
 export BRANCH="master"
 
-sudo add-apt-repository -y --remove ppa:gns3/unstable
+#sudo add-apt-repository -y --remove ppa:gns3/unstable
 
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" | bash
 
