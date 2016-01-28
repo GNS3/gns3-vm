@@ -39,7 +39,8 @@
           "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
           "vmx_data" :
           {
-              "ethernet0.connectionType": "nat"
+            "ethernet0.connectionType": "nat",
+            "ethernet1.virtualDev": "e1000"
           },
           "vmx_data_post":
           {

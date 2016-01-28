@@ -50,6 +50,8 @@ cd output-vmware-vmx
 
 echo "Export to OVA"
 ovftool --extraConfig:vhv.enable=true                       \
+        --extraConfig:ethernet0.virtualDev=e1000            \
+        --extraConfig:ethernet0.pciSlotNumber=32            \
         --extraConfig:ethernet0.connectionType=hostonly     \
         --extraConfig:ethernet1.present=true                \
         --extraConfig:ethernet1.startConnected=true         \
@@ -58,6 +60,7 @@ ovftool --extraConfig:vhv.enable=true                       \
         --extraConfig:ethernet1.generatedAddressOffset=10   \
         --extraConfig:ethernet1.wakeOnPcktRcv=false         \
         --extraConfig:ethernet1.pciSlotNumber=33            \
+        --extraConfig:ethernet1.virtualDev=e1000            \
         --allowAllExtraConfig                               \
         "GNS3 VM.vmx" "GNS3 VM.ova"
 
@@ -77,5 +80,5 @@ zip -9 "../GNS3 VM VMware ESXI ${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 cd ..
 rm -Rf output-*
-rm  "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
+#rm  "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
 
