@@ -1,3 +1,9 @@
+# FOR DEVELOPMENT ONLY
+
+Go to http://www.gns3.com if you are looking for 
+the GNS3 VM. Otherwise GNS3 will not be included in the
+VM.
+
 # GNS3 VM
 
 Build a GNS3 Virtual Machine 
