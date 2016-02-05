@@ -1,0 +1,2 @@
+/usr/local/bin/gns3welcome.py
+echo "If the GNS3 menu is no longer working run sudo gns3restore"

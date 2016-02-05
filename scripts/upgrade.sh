@@ -28,6 +28,7 @@ rm -Rf gns3-vm-*
 echo "Download https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz"
 curl --location "https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz" > gns3vm.tar.gz
 tar -xzf gns3vm.tar.gz
+rm gns3vm.tar.gz
 cd gns3-vm-${BRANCH}/config
 sudo bash install.sh
 
@@ -85,8 +86,9 @@ then
 fi
 
 if [ `cat .config/GNS3/gns3vm_version` = '0.10.1' ] \
-    || [ `cat .config/GNS3/gns3vm_version` = '0.10.2' ]
+    || [ `cat .config/GNS3/gns3vm_version` = '0.10.2' ] \
+    || [ `cat .config/GNS3/gns3vm_version` = '0.10.3' ]
 then
-    echo -n '0.10.3' > .config/GNS3/gns3vm_version
+    echo -n '0.10.4' > .config/GNS3/gns3vm_version
 fi
 

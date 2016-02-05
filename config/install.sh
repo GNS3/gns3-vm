@@ -128,3 +128,12 @@ mv iptables /etc/network/if-pre-up.d/iptables
 chmod 755 /etc/network/if-pre-up.d/iptables
 chown root:root /etc/network/if-pre-up.d/iptables
 
+# GNS3 Restore
+mv gns3-restore.sh /usr/local/bin/gns3restore
+chmod 700 /usr/local/bin/gns3restore
+chown root:root /usr/local/bin/gns3restore
+
+# Bash profile
+mv bash_profile /home/gns3/.bash_profile
+chmod 700 /home/gns3/.bash_profile
+chown gns3:gns3 /home/gns3/.bash_profile
