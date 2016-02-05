@@ -235,6 +235,7 @@ try:
                             ("Log", "Show server log"),
                             ("Test", "Check internet connection"),
                             ("Version", "Select the GNS3 version"),
+                            ("Restore", "Restore the VM (if you have trouble for upgrade)"),
                             ("Reboot", "Reboot the VM"),
                             ("Shutdown", "Shutdown the VM")])
         d.clear()
@@ -243,6 +244,8 @@ try:
                 os.execvp("bash", ['/bin/bash'])
             elif tag == "Version":
                 mode()
+            elif tag == "Restore":
+                os.execvp("sudo", ['/usr/bin/sudo', "/usr/local/bin/gns3restore"])
             elif tag == "Reboot":
                 os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
             elif tag == "Shutdown":
