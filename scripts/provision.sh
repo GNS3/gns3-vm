@@ -40,6 +40,10 @@ sudo usermod -aG docker gns3
 # Install & compile psutil because it's require c dependencies
 sudo pip3 install psutil
 
+# For the menu
+sudo apt-get install -y dialog
+sudo pip3 install pythondialog
+
 # Setup server
 if [ -f ~/.config/GNS3/gns3_server.conf ]
 then
@@ -78,3 +82,6 @@ sudo chown -R gns3:gns3 /opt/gns3
 echo -n "stable" > ~/.config/GNS3/gns3_release
 
 
+# Menu
+sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
+sudo chmod 755 "/usr/local/bin/gns3welcome.py"
