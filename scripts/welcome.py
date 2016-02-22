@@ -27,6 +27,17 @@ from dialog import Dialog, PythonDialogBug
 
 locale.setlocale(locale.LC_ALL, '')
 
+def get_ip():
+    """
+    Return the IP of the eth0
+    """
+    my_ip = subprocess.Popen(['ifconfig eth0 | grep "inet\ addr" | cut -d: -f2 | cut -d" " -f1'], stdout=subprocess.PIPE, shell=True)
+    (IP,errors) = my_ip.communicate()
+    my_ip.stdout.close()
+    if len(IP) == 0:
+        return None
+    return IP.decode().strip()
+
 
 def get_config():
     """
@@ -54,12 +65,22 @@ def gns3_version():
     try:
         return subprocess.check_output(["gns3server", "--version"]).strip().decode()
     except (subprocess.CalledProcessError, FileNotFoundError):
-        return ""
+        return None
 
+
+def gns3vm_version():
+    """
+    Return the GNS3 VM version
+    """
+    with open('/home/gns3/.config/GNS3/gns3vm_version') as f:
+        return f.read().strip()
 
 
 d = Dialog(dialog="dialog", autowidgetsize=True)
-d.set_background_title("GNS3 {}".format(gns3_version()))
+if gns3_version() is None:
+    d.set_background_title("GNS3")
+else:
+    d.set_background_title("GNS3 {}".format(gns3_version()))
 
 
 def mode():
@@ -117,13 +138,25 @@ def vm_information():
     Show IP, SSH settings....
     """
 
-    try:
-        with open('/etc/issue') as f:
-            content = f.read()
-    except FileNotFoundError:
-        content = """Welcome to GNS3 appliance"""
+    content = "Welcome to GNS3 appliance\n\n"
 
-    content += "\nRelease channel: " + get_release()
+    version = gns3_version()
+    if version is None:
+        content += "GNS3 is not installed please install it with sudo pip3 install gns3-server. Or download a preinstalled VM.\n\n"
+    else:
+        content = "GNS3 version: {gns3_version}\nVM version: {gns3vm_version}\nKVM support available: {kvm}\n\n".format(
+            gns3vm_version=gns3vm_version(),
+            gns3_version=version,
+            kvm=kvm_support())
+
+    ip = get_ip()
+
+    if ip:
+        content += "To log in using SSH:\nssh gns3@{ip}\nPassword: gns3\n\nImages and projects are located in /opt/gns3""".format(ip=ip)
+    else:
+        content += "eth0 is not configured. Please manually configure it via the Networking menu."
+
+    content += "\n\nRelease channel: " + get_release()
 
     try:
         d.msgbox(content)
@@ -190,11 +223,11 @@ def edit_network():
     os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
 
 
-def ask_disable_kvm():
+def kvm_support():
     """
-    Ask to disable KVM if KVM not available
+    Returns true if KVM is available
     """
-    pass
+    return subprocess.call("kvm-ok") == 0
 
 
 def kvm_control():
@@ -202,7 +235,7 @@ def kvm_control():
     Check if KVM is correctly configured
     """
 
-    kvm_ok = subprocess.call("kvm-ok") == 0
+    kvm_ok = kvm_support()
     config = get_config()
     if config.getboolean("Qemu", "enable_kvm") is True:
         if kvm_ok is False:

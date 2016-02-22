@@ -25,11 +25,9 @@ export BRANCH="master"
 
 #sudo add-apt-repository -y --remove ppa:gns3/unstable
 
-sudo pip3 install --pre --ignore-installed gns3-server 
-
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" | bash
 
-sudo /etc/rc.local
+sudo pip3 install --pre --ignore-installed gns3-server 
 
 echo "Reboot in 5s"
 sleep 5

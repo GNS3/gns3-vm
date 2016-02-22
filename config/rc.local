@@ -11,49 +11,6 @@
 #
 # By default this script does nothing.
 
-IP=$(ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | cut -d' ' -f1)
-
-if [ -f /usr/local/bin/gns3server ] && [ -n "$IP" ]
-then
-UPTIME=$(cat /proc/uptime | cut -d" " -f1)
-cat << EOF > /etc/issue
-Welcome to GNS3 appliance
-
-GNS3 version: $(/usr/local/bin/gns3server --version) 
-VM version: $(cat /home/gns3/.config/GNS3/gns3vm_version) 
-
-
-Use $IP to configure a remote server in GNS3
-Use your browser with http://$IP:8000/upload to upload images
-
-To log in using SSH:
-ssh gns3@$IP
-Password: gns3
-
-Images and projects are located in /opt/gns3
-
-Boot time: $UPTIME seconds
-
-$(kvm-ok)
-EOF
-elif [ -z "$IP" ]
-then
-cat << EOF > /etc/issue
-eth0 is not configured. Please manually configure it via the Networking menu.
-EOF
-else
-cat << EOF > /etc/issue
-Welcome to GNS3 appliance
-
-VM version: $(cat /home/gns3/.config/GNS3/gns3vm_version) 
-
-
-GNS3 is not installed please install it with sudo pip3 install gns3-server
-
-$(kvm-ok)
-EOF
-fi
-
 # Change default tty
 chvt 2 
 
