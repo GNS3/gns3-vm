@@ -53,23 +53,14 @@ if [ `cat .config/GNS3/gns3vm_version` = '0.8' ] \
     || [ `cat .config/GNS3/gns3vm_version` = '0.9.0' ] \
     || [ `cat .config/GNS3/gns3vm_version` = '0.9.1' ] \
     || [ `cat .config/GNS3/gns3vm_version` = '0.9.2' ] \
-    || [ `cat .config/GNS3/gns3vm_version` = '0.9.3' ]
-then
-    rm -Rf vpcs
-    curl --location --silent 'https://github.com/GNS3/vpcs/releases/download/v0.8beta1/vpcs' > vpcs
-    sudo mv vpcs /usr/local/bin/vpcs
-    sudo chmod 755 /usr/local/bin/vpcs
-
-    echo -n '0.9.4' > .config/GNS3/gns3vm_version
-fi
-
-if [ `cat .config/GNS3/gns3vm_version` = '0.9.4' ] \
+    || [ `cat .config/GNS3/gns3vm_version` = '0.9.3' ] \
+    || [ `cat .config/GNS3/gns3vm_version` = '0.9.4' ] \
     || [ `cat .config/GNS3/gns3vm_version` = '0.9.5' ] \
     || [ `cat .config/GNS3/gns3vm_version` = '0.9.6' ] \
     || [ `cat .config/GNS3/gns3vm_version` = '0.9.7' ] \
-   || [ `cat .config/GNS3/gns3vm_version` = '0.9.8' ] \
-   || [ `cat .config/GNS3/gns3vm_version` = '0.9.9' ] \
-   || [ `cat .config/GNS3/gns3vm_version` = '0.9.10' ]
+    || [ `cat .config/GNS3/gns3vm_version` = '0.9.8' ] \
+    || [ `cat .config/GNS3/gns3vm_version` = '0.9.9' ] \
+    || [ `cat .config/GNS3/gns3vm_version` = '0.9.10' ]
 then
     sudo apt-get -y dist-upgrade
     sudo usermod -a -G vde2-net gns3
@@ -77,19 +68,14 @@ then
     echo -n '0.10.0' > .config/GNS3/gns3vm_version
 fi
 
-if [ `cat .config/GNS3/gns3vm_version` = '0.10.0' ] 
-then
-    curl --location --silent 'https://github.com/GNS3/vpcs/releases/download/v0.6.1/vpcs' > vpcs
-    sudo mv vpcs /usr/local/bin/vpcs
-    sudo chmod 755 /usr/local/bin/vpcs
-    echo -n '0.10.1' > .config/GNS3/gns3vm_version
-fi
-
-if [ `cat .config/GNS3/gns3vm_version` = '0.10.1' ] \
+if [ `cat .config/GNS3/gns3vm_version` = '0.10.0' ] \
+    || [ `cat .config/GNS3/gns3vm_version` = '0.10.1' ] \
     || [ `cat .config/GNS3/gns3vm_version` = '0.10.2' ] \
     || [ `cat .config/GNS3/gns3vm_version` = '0.10.3' ] \
-    || [ `cat .config/GNS3/gns3vm_version` = '0.10.4' ]
+    || [ `cat .config/GNS3/gns3vm_version` = '0.10.4' ] \
+    || [ `cat .config/GNS3/gns3vm_version` = '0.10.5' ]
 then
+    sudo rm -f /usr/local/bin/vpcs
     echo -n '0.10.5' > .config/GNS3/gns3vm_version
 fi
 

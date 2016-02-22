@@ -51,6 +51,9 @@ apt-get install -y python3-dev python3.4-dev python3-setuptools
 # Install netifaces
 apt-get install -y python3-netifaces
 
+# Install vpcs
+apt-get install -y vpcs
+
 # Install qemu
 apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 
