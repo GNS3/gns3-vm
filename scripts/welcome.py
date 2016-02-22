@@ -152,7 +152,7 @@ def vm_information():
     ip = get_ip()
 
     if ip:
-        content += "To log in using SSH:\nssh gns3@{ip}\nPassword: gns3\n\nImages and projects are located in /opt/gns3""".format(ip=ip)
+        content += "IP: {ip}\n\nTo log in using SSH:\nssh gns3@{ip}\nPassword: gns3\n\nImages and projects are located in /opt/gns3""".format(ip=ip)
     else:
         content += "eth0 is not configured. Please manually configure it via the Networking menu."
 
