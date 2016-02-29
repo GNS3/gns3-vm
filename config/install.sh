@@ -96,6 +96,7 @@ chown root:root /etc/init/gns3.conf
 chmod 644 /etc/init/gns3.conf
 
 # Configure network
+cp /etc/network/interfaces /etc/network/interfaces.old
 mv interfaces /etc/network/interfaces
 chmod 644 /etc/network/interfaces
 chown root:root /etc/network/interfaces
