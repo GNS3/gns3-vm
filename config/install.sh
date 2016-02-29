@@ -60,6 +60,9 @@ apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 # Install gns3 dependencies
 apt-get install -y dynamips iouyap ubridge
 
+# Install VNC support for Docker
+apt-get install -y x11vnc xvfb
+
 # Install iou dependencies
 apt-get install -y lib32z1
 apt-get install -y libssl1.0.0
