@@ -43,7 +43,6 @@ else
     cat > ~/.config/GNS3/gns3_server.conf << EOF
 [Server]
 host = 0.0.0.0
-port = 8000
 images_path = /opt/gns3/images
 projects_path = /opt/gns3/projects
 report_errors = True

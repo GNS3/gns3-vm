@@ -76,6 +76,7 @@ if [ `cat .config/GNS3/gns3vm_version` = '0.10.0' ] \
     || [ `cat .config/GNS3/gns3vm_version` = '0.10.5' ]
 then
     sudo rm -f /usr/local/bin/vpcs
+    sed '/port = 8000$/d' -i ~/.config/GNS3/gns3_server.conf
     echo -n '0.10.5' > .config/GNS3/gns3vm_version
 fi
 
