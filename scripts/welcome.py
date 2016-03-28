@@ -91,7 +91,8 @@ def mode():
                        choices=[("1.4", "Current stable release RECOMMENDED"),
                                 ("1.4dev", "Live development version of 1.4.x"),
                                 ("1.3", "Previous stable GNS3 version"),
-                                ("1.5", "Totaly unstable version")])
+                                ("1.5", "Next major release"),
+                                ("2.0", "Totaly unstable version")])
     d.clear()
     if code == Dialog.OK:
         os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
