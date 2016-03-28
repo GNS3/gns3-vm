@@ -99,8 +99,17 @@ chown root:root /etc/init/gns3.conf
 chmod 644 /etc/init/gns3.conf
 
 # Configure network
-cp /etc/network/interfaces /etc/network/interfaces.old
-mv interfaces /etc/network/interfaces
+if [ -f /etc/network/interfaces ]
+then
+    # We need to detect if user has modify the config for eth0 (ESXi without vsphere)
+    grep -q 'MANUAL=1' /etc/network/interfaces
+    if [ $? != 0 ] 
+    then
+        mv interfaces /etc/network/interfaces
+    fi
+else
+    mv interfaces /etc/network/interfaces
+fi
 chmod 644 /etc/network/interfaces
 chown root:root /etc/network/interfaces
 
