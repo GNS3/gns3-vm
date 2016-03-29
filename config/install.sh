@@ -30,7 +30,7 @@ chmod 644 /etc/apt/sources.list
 chown root:root /etc/apt/sources.list
 
 # Add our ppa
-if [ ! -f /usr/bin/add-apt-repository ]
+if [ ! -f /usr/bin/add-apt-repository ]
 then
     apt-get update
     apt-get install -y software-properties-common
@@ -105,9 +105,10 @@ chmod 644 /etc/init/gns3.conf
 if [ -f /etc/network/interfaces ]
 then
     # We need to detect if user has modify the config for eth0 (ESXi without vsphere)
-    grep -q 'MANUAL=1' /etc/network/interfaces
-    if [ $? != 0 ] 
+    if grep -q 'MANUAL=1' /etc/network/interfaces
     then
+        echo "User asked for not replacing /etc/network/interfaces"
+    else
         mv interfaces /etc/network/interfaces
     fi
 else
@@ -134,6 +135,7 @@ mv tty2.conf /etc/init/tty2.conf
 mv dnsmasq.conf /etc/dnsmasq.conf
 chmod 644 /etc/dnsmasq.conf
 chown root:root /etc/dnsmasq.conf
+
 # We need to disallow apt-get to override the config file
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dnsmasq
 
