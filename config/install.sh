@@ -30,8 +30,11 @@ chmod 644 /etc/apt/sources.list
 chown root:root /etc/apt/sources.list
 
 # Add our ppa
-apt-get update
-apt-get install -y software-properties-common
+if [ ! -f /usr/bin/add-apt-repository ]
+then
+    apt-get update
+    apt-get install -y software-properties-common
+fi
 add-apt-repository -y ppa:gns3/qemu
 add-apt-repository -y ppa:gns3/ppa
 apt-get update
