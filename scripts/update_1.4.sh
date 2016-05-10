@@ -27,7 +27,7 @@ export BRANCH="master"
 
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" | bash
 
-sudo pip3 install --pre --ignore-installed gns3-server 
+sudo pip3 install --ignore-installed gns3-server 
 
 sudo /etc/rc.local
 
