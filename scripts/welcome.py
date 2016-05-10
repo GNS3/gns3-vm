@@ -92,6 +92,7 @@ def mode():
                                 ("1.4dev", "Live development version of 1.4.x"),
                                 ("1.3", "Previous stable GNS3 version"),
                                 ("1.5", "Next major release"),
+                                ("1.5dev", "Next major release development version"),
                                 ("2.0", "Totaly unstable version")])
     d.clear()
     if code == Dialog.OK:
@@ -125,7 +126,7 @@ def update(force=False):
         if d.yesno("PLEASE SNAPSHOT THE VM BEFORE RUNNING THE UPGRADE IN CASE OF FAILURE. The server will reboot at the end of the upgrade process. Continue?") != d.OK:
             return
     release = get_release()
-    if release == "1.4dev" or release == "1.5":
+    if release == "1.4dev" or release == "1.5" or release == "2.0" or release == "1.5dev":
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_{}.sh |bash".format(release))
     else:
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh |bash".format(release))
