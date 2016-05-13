@@ -39,6 +39,7 @@ curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/welcome.py"
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 755 "/usr/local/bin/gns3welcome.py"
 
+set +e
 
 # The upgrade from 0.8 to 0.8.6 is safe
 if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.8' ] \
