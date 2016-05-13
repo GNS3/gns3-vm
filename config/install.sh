@@ -67,16 +67,7 @@ apt-get install -y dynamips iouyap ubridge
 apt-get install -y x11vnc xvfb
 
 # Install iou dependencies
-apt-get install -y lib32z1
-apt-get install -y libssl1.0.0
-apt-get install -y 'libssl1.0.0:i386'
-
-if [ -f /lib/i386-linux-gnu/libcrypto.so.4 ]
-then
-    echo "Libcrypto is already installed"
-else
-    ln -s /lib/i386-linux-gnu/libcrypto.so.1.0.0 /lib/i386-linux-gnu/libcrypto.so.4
-fi
+apt-get install -y gns3-iou 
 
 # Setup Python 3
 apt-get install -y python3-pip
