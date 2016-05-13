@@ -25,10 +25,11 @@ export BRANCH="unstable"
 
 #sudo add-apt-repository -y ppa:gns3/unstable
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" | bash
+curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" | bash -x
 
 if [ ! -d "gns3-server" ]
 then
+    sudo apt-get update
     sudo apt-get install -y git
     git clone https://github.com/GNS3/gns3-server.git gns3-server
 fi
@@ -38,8 +39,6 @@ git fetch origin
 git checkout master 
 git pull -u
 sudo python3 setup.py install
-
-sudo /etc/rc.local
 
 echo "Reboot in 5s"
 sleep 5

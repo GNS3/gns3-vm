@@ -30,8 +30,11 @@ chmod 644 /etc/apt/sources.list
 chown root:root /etc/apt/sources.list
 
 # Add our ppa
-apt-get update
-apt-get install -y software-properties-common
+if [ ! -f /usr/bin/add-apt-repository ]
+then
+    apt-get update
+    apt-get install -y software-properties-common
+fi
 add-apt-repository -y ppa:gns3/qemu
 add-apt-repository -y ppa:gns3/ppa
 apt-get update
@@ -51,11 +54,17 @@ apt-get install -y python3-dev python3.4-dev python3-setuptools
 # Install netifaces
 apt-get install -y python3-netifaces
 
+# Install vpcs
+apt-get install -y vpcs
+
 # Install qemu
 apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 
 # Install gns3 dependencies
 apt-get install -y dynamips iouyap ubridge
+
+# Install VNC support for Docker
+apt-get install -y x11vnc xvfb
 
 # Install iou dependencies
 apt-get install -y lib32z1
@@ -93,7 +102,18 @@ chown root:root /etc/init/gns3.conf
 chmod 644 /etc/init/gns3.conf
 
 # Configure network
-mv interfaces /etc/network/interfaces
+if [ -f /etc/network/interfaces ]
+then
+    # We need to detect if user has modify the config for eth0 (ESXi without vsphere)
+    if grep -q 'MANUAL=1' /etc/network/interfaces
+    then
+        echo "User asked for not replacing /etc/network/interfaces"
+    else
+        mv interfaces /etc/network/interfaces
+    fi
+else
+    mv interfaces /etc/network/interfaces
+fi
 chmod 644 /etc/network/interfaces
 chown root:root /etc/network/interfaces
 
@@ -115,6 +135,7 @@ mv tty2.conf /etc/init/tty2.conf
 mv dnsmasq.conf /etc/dnsmasq.conf
 chmod 644 /etc/dnsmasq.conf
 chown root:root /etc/dnsmasq.conf
+
 # We need to disallow apt-get to override the config file
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dnsmasq
 

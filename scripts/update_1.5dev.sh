@@ -16,18 +16,33 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Update script called from the GNS 3 VM in stable mode
+# Update script called from the GNS 3 VM in unstable mode
 #
 
 set -e
 
-export BRANCH="master"
+export BRANCH="unstable"
 
-#sudo add-apt-repository -y --remove ppa:gns3/unstable
+#sudo add-apt-repository -y ppa:gns3/unstable
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" | bash
+curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" | bash -x
 
-sudo pip3 install --ignore-installed "gns3-server>=1.3,<1.4"
+
+if [ ! -d "gns3-server" ]
+then
+    sudo apt-get update
+    sudo apt-get install -y git
+    git clone https://github.com/GNS3/gns3-server.git gns3-server
+fi
+
+cd gns3-server
+git fetch origin
+git checkout 1.5 
+git pull -u
+sudo python3 setup.py install
 
 echo "Reboot in 5s"
 sleep 5
+
+sudo reboot
+

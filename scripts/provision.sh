@@ -16,16 +16,6 @@ sudo bash install.sh
 # VDE network
 sudo usermod -a -G vde2-net gns3
 
-#Install VPCS
-if [ -x /usr/local/bin/vpcs ]
-then
-  echo "VPCS is already installed skip download"
-else
-  curl --location --silent 'https://github.com/GNS3/vpcs/releases/download/v0.8beta1/vpcs' > vpcs
-  sudo mv vpcs /usr/local/bin/vpcs
-  sudo chmod 755 /usr/local/bin/vpcs
-fi
-
 # Block iou call. The server is down
 echo "127.0.0.254 xml.cisco.com" | sudo tee --append /etc/hosts
 
@@ -53,7 +43,6 @@ else
     cat > ~/.config/GNS3/gns3_server.conf << EOF
 [Server]
 host = 0.0.0.0
-port = 8000
 images_path = /opt/gns3/images
 projects_path = /opt/gns3/projects
 report_errors = True
