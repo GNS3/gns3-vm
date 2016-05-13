@@ -25,7 +25,7 @@ export BRANCH="unstable"
 
 #sudo add-apt-repository -y ppa:gns3/unstable
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" | bash -x
+curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
 
 
 if [ ! -d "gns3-server" ]
