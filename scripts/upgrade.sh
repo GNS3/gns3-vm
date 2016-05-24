@@ -82,6 +82,6 @@ if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.6' ]
 then
     # It seem an upgrade of docker can leave dirty stuff
     sudo rm -rf /var/lib/docker/aufs
-    echo -n '0.10.6' > /home/gns3/.config/GNS3/gns3vm_version    
+    echo -n '0.10.7' > /home/gns3/.config/GNS3/gns3vm_version    
 fi
 
