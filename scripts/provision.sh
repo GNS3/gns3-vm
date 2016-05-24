@@ -26,6 +26,8 @@ sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 curl -sSL https://get.docker.com > /tmp/docker.sh
 sudo bash /tmp/docker.sh
 sudo usermod -aG docker gns3
+sudo service docker stop
+sudo rm -rf /var/lib/docker/aufs
 
 # Install & compile psutil because it's require c dependencies
 sudo pip3 install psutil
