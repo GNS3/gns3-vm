@@ -12,7 +12,7 @@ export GNS3VM_VERSION=`cat version`
 echo "Build VM $GNS3VM_VERSION"
 
 rm -Rf output-vmware-iso
-packer build -only=vmware-iso $* gns3.json
+packer build -only=vmware-iso gns3.json
 
 rm -Rf output-vmware-ova
 mkdir output-vmware-ova
