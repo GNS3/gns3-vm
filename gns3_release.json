@@ -16,11 +16,7 @@
         "type": "shell"
       },
       {
-         "inline" : "sudo apt-get update && sudo apt-get install -y --force-yes python3-setuptools python3.4-dev",
-         "type" : "shell"
-      },
-      {
-         "inline" : "sudo pip3 install aiohttp==0.17.4",
+         "inline" : "sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install -y --force-yes python3-setuptools python3.4-dev",
          "type" : "shell"
       },
       {
@@ -36,6 +32,7 @@
           "source_path": "{{user `gns3_src`}}",
           "ssh_username": "{{user `ssh_name`}}",
           "ssh_password": "{{user `ssh_pass`}}",
+          "shutdown_timeout": "60m",
           "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
           "vmx_data" :
           {
