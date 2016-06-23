@@ -60,11 +60,11 @@ If you want to install GNS3 you need to unzip the OVA and run:
 
 #### Upload to ESXi
 
-``` 
+```
 ovftool --allowAllExtraConfig -dm=thin  -ds=datastore1 "GNS3 VM.ova" "vi://root:PASSWORD@HOST"
 ```
 
-## Tools
+## Tools
 
 ### ova.py
 
@@ -77,3 +77,9 @@ Convert the ova from vmware workstation to esxi
 ### last_vm_version.py
 
 Get last vm version on Github
+
+
+## Vagrant
+
+A Vagrantfile is available in this repo. It's not for end user, only for
+developers who want an easy way to debug the GNS3 menu.

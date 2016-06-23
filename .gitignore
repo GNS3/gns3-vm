@@ -3,3 +3,4 @@ packer_cache
 opt.vmdk
 *.ova
 GNS3 VM*.zip
+.vagrant

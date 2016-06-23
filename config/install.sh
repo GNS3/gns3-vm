@@ -25,7 +25,7 @@ set -e
 export DEBIAN_FRONTEND="noninteractive"
 
 # Sources.list
-mv sources.list /etc/apt/sources.list
+cp sources.list /etc/apt/sources.list
 chmod 644 /etc/apt/sources.list
 chown root:root /etc/apt/sources.list
 
@@ -37,6 +37,7 @@ then
 fi
 add-apt-repository -y ppa:gns3/qemu
 add-apt-repository -y ppa:gns3/ppa
+dpkg --add-architecture i386
 apt-get update
 
 # VDE network
@@ -72,23 +73,23 @@ apt-get install -y gns3-iou
 # Setup Python 3
 apt-get install -y python3-pip
 
-mv "rc.local" "/etc/rc.local"
+cp "rc.local" "/etc/rc.local"
 chmod 700 /etc/rc.local
 chown root:root /etc/rc.local
 
 # Setup dhclient
-mv "dhclient.conf" "/etc/dhcp/dhclient.conf"
+cp "dhclient.conf" "/etc/dhcp/dhclient.conf"
 chown root:root /etc/dhcp/dhclient.conf
 chmod 644 /etc/dhcp/dhclient.conf
 
 # Setup grub
-mv "grub" "/etc/default/grub"
+cp "grub" "/etc/default/grub"
 chown root:root /etc/default/grub
 chmod 700 /etc/default/grub
 update-grub
 
 # Setup upstart
-mv "gns3.conf" "/etc/init/gns3.conf"
+cp "gns3.conf" "/etc/init/gns3.conf"
 chown root:root /etc/init/gns3.conf
 chmod 644 /etc/init/gns3.conf
 
@@ -100,16 +101,16 @@ then
     then
         echo "User asked for not replacing /etc/network/interfaces"
     else
-        mv interfaces /etc/network/interfaces
+        cp interfaces /etc/network/interfaces
     fi
 else
-    mv interfaces /etc/network/interfaces
+    cp interfaces /etc/network/interfaces
 fi
 chmod 644 /etc/network/interfaces
 chown root:root /etc/network/interfaces
 
 # Zerofree
-mv zerofree /etc/init.d/zerofree
+cp zerofree /etc/init.d/zerofree
 chown root:root /etc/init.d/zerofree
 chmod 744 /etc/init.d/zerofree
 update-rc.d zerofree defaults 61
@@ -119,11 +120,11 @@ then
     mv /etc/rc6.d/K61zerofree /etc/rc6.d/S61zerofree
 fi
 
-mv tty1.conf /etc/init/tty1.conf
-mv tty2.conf /etc/init/tty2.conf
+cp tty1.conf /etc/init/tty1.conf
+cp tty2.conf /etc/init/tty2.conf
 
 # Dnsmasq
-mv dnsmasq.conf /etc/dnsmasq.conf
+cp dnsmasq.conf /etc/dnsmasq.conf
 chmod 644 /etc/dnsmasq.conf
 chown root:root /etc/dnsmasq.conf
 
@@ -131,21 +132,21 @@ chown root:root /etc/dnsmasq.conf
 apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dnsmasq
 
 # Sysctl
-mv sysctl.conf /etc/sysctl.conf
+cp sysctl.conf /etc/sysctl.conf
 chmod 644 /etc/sysctl.conf
 chown root:root /etc/sysctl.conf
 
 # Iptables
-mv iptables /etc/network/if-pre-up.d/iptables
+cp iptables /etc/network/if-pre-up.d/iptables
 chmod 755 /etc/network/if-pre-up.d/iptables
 chown root:root /etc/network/if-pre-up.d/iptables
 
 # GNS3 Restore
-mv gns3-restore.sh /usr/local/bin/gns3restore
+cp gns3-restore.sh /usr/local/bin/gns3restore
 chmod 755 /usr/local/bin/gns3restore
 chown root:root /usr/local/bin/gns3restore
 
 # Bash profile
-mv bash_profile /home/gns3/.bash_profile
+cp bash_profile /home/gns3/.bash_profile
 chmod 700 /home/gns3/.bash_profile
 chown gns3:gns3 /home/gns3/.bash_profile
