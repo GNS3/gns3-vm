@@ -13,6 +13,13 @@ sudo apt-get install -y curl
 cd /tmp/config
 sudo bash install.sh
 
+# Install & compile psutil because it's require c dependencies
+sudo pip3 install psutil
+
+# For the menu
+sudo apt-get install -y dialog
+sudo pip3 install pythondialog
+
 # VDE network
 sudo usermod -a -G vde2-net gns3
 
@@ -28,13 +35,6 @@ sudo bash /tmp/docker.sh
 sudo usermod -aG docker gns3
 sudo service docker stop
 sudo rm -rf /var/lib/docker/aufs
-
-# Install & compile psutil because it's require c dependencies
-sudo pip3 install psutil
-
-# For the menu
-sudo apt-get install -y dialog
-sudo pip3 install pythondialog
 
 # Setup server
 if [ -f ~/.config/GNS3/gns3_server.conf ]

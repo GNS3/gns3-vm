@@ -225,6 +225,35 @@ def edit_network():
     os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
 
 
+def edit_proxy():
+    """
+    Configure proxy settings
+    """
+    res, http_proxy = d.inputbox(text="HTTP proxy string, for example http://<user>:<password>@<proxy>:<port>. Leave empty for no proxy.")
+    if res != d.OK:
+        return
+    res, https_proxy = d.inputbox(text="HTTPS proxy string, for example http://<user>:<password>@<proxy>:<port>. Leave empty for no proxy.")
+    if res != d.OK:
+        return
+
+    with open('/tmp/00proxy', 'w+') as f:
+        f.write('Acquire::http::Proxy "' + http_proxy + '"')
+    os.system("sudo mv /tmp/00proxy /etc/apt/apt.conf.d/00proxy")
+    os.system("sudo chown root /etc/apt/apt.conf.d/00proxy")
+    os.system("sudo chmod 744 /etc/apt/apt.conf.d/00proxy")
+
+    with open('/tmp/proxy.conf', 'w+') as f:
+        f.write('export http_proxy="' + http_proxy + '"\n')
+        f.write('export https_proxy="' + https_proxy + '"\n')
+    os.system("sudo mv /tmp/proxy.conf /etc/profile.d/proxy.conf")
+    os.system("sudo chown root /etc/profile.d/proxy.conf")
+    os.system("sudo chmod 744 /etc/profile.d/proxy.conf")
+    os.system("sudo cp /etc/profile.d/proxy.conf /etc/default/docker")
+
+    d.msgbox("The GNS3 VM will reboot")
+    os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+
+
 def kvm_support():
     """
     Returns true if KVM is available
@@ -239,18 +268,21 @@ def kvm_control():
 
     kvm_ok = kvm_support()
     config = get_config()
-    if config.getboolean("Qemu", "enable_kvm") is True:
-        if kvm_ok is False:
-            if d.yesno("KVM is not available!\n\nQemu VM will crash!!\n\nThe reason could be unsupported hardware or another virtualization solution is already running.\n\nDisable KVM and get lower performances?") == d.OK:
-                config.set("Qemu", "enable_kvm", False)
-                write_config(config)
-                os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
-    else:
-        if kvm_ok is True:
-            if d.yesno("KVM is available on your computer.\n\nEnable KVM and get better performances?") == d.OK:
-                config.set("Qemu", "enable_kvm", True)
-                write_config(config)
-                os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+    try:
+        if config.getboolean("Qemu", "enable_kvm") is True:
+            if kvm_ok is False:
+                if d.yesno("KVM is not available!\n\nQemu VM will crash!!\n\nThe reason could be unsupported hardware or another virtualization solution is already running.\n\nDisable KVM and get lower performances?") == d.OK:
+                    config.set("Qemu", "enable_kvm", False)
+                    write_config(config)
+                    os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+        else:
+            if kvm_ok is True:
+                if d.yesno("KVM is available on your computer.\n\nEnable KVM and get better performances?") == d.OK:
+                    config.set("Qemu", "enable_kvm", True)
+                    write_config(config)
+                    os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+    except configparser.NoSectionError:
+        return
 
 
 vm_information()
@@ -266,6 +298,7 @@ try:
                             ("Security", "Configure authentication"),
                             ("Keyboard", "Change keyboard layout"),
                             ("Configure", "Edit server configuration (advanced users ONLY)"),
+                            ("Proxy", "Configure proxy settings"),
                             ("Networking", "Configure networking settings"),
                             ("Log", "Show server log"),
                             ("Test", "Check internet connection"),
@@ -301,5 +334,7 @@ try:
                 keyboard_configuration()
             elif tag == "Test":
                 check_internet_connectivity()
+            elif tag == "Proxy":
+                edit_proxy()
 except KeyboardInterrupt:
     sys.exit(0)
