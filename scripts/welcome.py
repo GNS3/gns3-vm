@@ -88,10 +88,8 @@ def mode():
         return
     d.msgbox("You have been warned...")
     code, tag = d.menu("Select the GNS3 version",
-                       choices=[("1.4", "Current stable release RECOMMENDED"),
-                                ("1.4dev", "Live development version of 1.4.x"),
-                                ("1.3", "Previous stable GNS3 version"),
-                                ("1.5", "Next major release"),
+                       choices=[("1.4", "Old stable release"),
+                                ("1.5", "Current stable release RECOMMENDED"),
                                 ("1.5dev", "Next major release development version"),
                                 ("2.0", "Totaly unstable version")])
     d.clear()
@@ -110,15 +108,15 @@ def get_release():
 
             # Support old VM versions
             if content == "stable":
-                content = "1.4"
+                content = "1.5"
             elif content == "testing":
-                content = "1.4"
+                content = "1.5"
             elif content == "unstable":
-                content = "1.4dev"
+                content = "1.5dev"
 
             return content
     except OSError:
-        return "1.4"
+        return "1.5"
 
 
 def update(force=False):
@@ -126,7 +124,7 @@ def update(force=False):
         if d.yesno("PLEASE SNAPSHOT THE VM BEFORE RUNNING THE UPGRADE IN CASE OF FAILURE. The server will reboot at the end of the upgrade process. Continue?") != d.OK:
             return
     release = get_release()
-    if release == "1.4dev" or release == "1.5" or release == "2.0" or release == "1.5dev":
+    if release == "1.4dev" or release == "2.0" or release == "1.5dev":
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     else:
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
