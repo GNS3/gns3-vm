@@ -237,18 +237,18 @@ def edit_proxy():
         return
 
     with open('/tmp/00proxy', 'w+') as f:
-        f.write('Acquire::http::Proxy "' + http_proxy + '"')
+        f.write('Acquire::http::Proxy "' + http_proxy + '";')
     os.system("sudo mv /tmp/00proxy /etc/apt/apt.conf.d/00proxy")
     os.system("sudo chown root /etc/apt/apt.conf.d/00proxy")
     os.system("sudo chmod 744 /etc/apt/apt.conf.d/00proxy")
 
-    with open('/tmp/proxy.conf', 'w+') as f:
+    with open('/tmp/proxy.sh', 'w+') as f:
         f.write('export http_proxy="' + http_proxy + '"\n')
         f.write('export https_proxy="' + https_proxy + '"\n')
-    os.system("sudo mv /tmp/proxy.conf /etc/profile.d/proxy.conf")
-    os.system("sudo chown root /etc/profile.d/proxy.conf")
-    os.system("sudo chmod 744 /etc/profile.d/proxy.conf")
-    os.system("sudo cp /etc/profile.d/proxy.conf /etc/default/docker")
+    os.system("sudo mv /tmp/proxy.conf /etc/profile.d/proxy.sh")
+    os.system("sudo chown root /etc/profile.d/proxy.sh")
+    os.system("sudo chmod 744 /etc/profile.d/proxy.sh")
+    os.system("sudo cp /etc/profile.d/proxy.sh /etc/default/docker")
 
     d.msgbox("The GNS3 VM will reboot")
     os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
