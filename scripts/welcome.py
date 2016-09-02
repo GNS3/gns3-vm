@@ -25,7 +25,11 @@ import configparser
 import urllib.request
 from dialog import Dialog, PythonDialogBug
 
-locale.setlocale(locale.LC_ALL, '')
+try:
+    locale.setlocale(locale.LC_ALL, '')
+except locale.Error:
+    # Not supported via SSH
+    pass
 
 def get_ip():
     """
