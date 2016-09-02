@@ -93,6 +93,12 @@ cp "gns3.conf" "/etc/init/gns3.conf"
 chown root:root /etc/init/gns3.conf
 chmod 644 /etc/init/gns3.conf
 
+# Workaround a bug in VMware suspend
+# https://github.com/GNS3/gns3-vm/issues/82
+cp "network-vmware-fix" "/etc/init.d/network"
+chown root:root /etc/init.d/network
+chmod 755 /etc/init.d/network
+
 # Configure network
 if [ -f /etc/network/interfaces ]
 then

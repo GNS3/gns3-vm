@@ -1,0 +1,18 @@
+#!/bin/sh
+# Hack for /etc/vmware-tools/scripts/vmware/network which
+# otherwise runs deprecated "service networking stop|start"
+# and prevent VM suspend
+# https://gist.github.com/drakkhen/5473067
+
+case "$1" in
+stop)
+    ifdown -a
+    ;;
+start)
+    ifup -a
+    ;;
+restart)
+    ifdown -a
+    ifup -a
+    ;;
+esac
