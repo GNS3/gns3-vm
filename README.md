@@ -79,7 +79,7 @@ Convert the ova from vmware workstation to esxi
 Get last vm version on Github
 
 
-## Vagrant
+### push_config_to_vm.sh
 
-A Vagrantfile is available in this repo. It's not for end user, only for
-developers who want an easy way to debug the GNS3 menu.
+Sync local configuration via SSH to a VM. Use for testing modifications.
+
