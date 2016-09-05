@@ -24,7 +24,7 @@ set -e
 
 export DEBIAN_FRONTEND="noninteractive"
 
-# Sources.list
+# Sources.list
 cp sources.list /etc/apt/sources.list
 chmod 644 /etc/apt/sources.list
 chown root:root /etc/apt/sources.list
@@ -40,7 +40,7 @@ add-apt-repository -y ppa:gns3/ppa
 dpkg --add-architecture i386
 apt-get update
 
-# VDE network
+# VDE network
 apt-get install -y vde2 uml-utilities
 
 # VMware open-vm-tools
@@ -55,16 +55,19 @@ apt-get install -y python3-dev python3.4-dev python3-setuptools
 # Install netifaces
 apt-get install -y python3-netifaces
 
+# For nat interface
+apt-get install -y libvirt-bin
+
 # Install vpcs
 apt-get install -y vpcs
 
 # Install qemu
 apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 
-# Install gns3 dependencies
+# Install gns3 dependencies
 apt-get install -y dynamips iouyap ubridge
 
-# Install VNC support for Docker
+# Install VNC support for Docker
 apt-get install -y x11vnc xvfb
 
 # Install iou dependencies
