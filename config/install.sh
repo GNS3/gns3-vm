@@ -35,8 +35,18 @@ then
     apt-get update
     apt-get install -y software-properties-common
 fi
+
 add-apt-repository -y ppa:gns3/qemu
-add-apt-repository -y ppa:gns3/ppa
+
+if [ "$UNSTABLE_APT" == "1" ]
+then
+    add-apt-repository -y ppa:gns3/ppa
+    add-apt-repository -y -r ppa:gns3/unstable
+else
+    add-apt-repository -y -r ppa:gns3/ppa
+    add-apt-repository -y ppa:gns3/unstable
+fi
+
 dpkg --add-architecture i386
 apt-get update
 
@@ -105,7 +115,7 @@ chmod 755 /etc/init.d/network
 # Configure network
 if [ -f /etc/network/interfaces ]
 then
-    # We need to detect if user has modify the config for eth0 (ESXi without vsphere)
+    # We need to detect if user has modify the config for eth0 (ESXi without vsphere)
     if grep -q 'MANUAL=1' /etc/network/interfaces
     then
         echo "User asked for not replacing /etc/network/interfaces"

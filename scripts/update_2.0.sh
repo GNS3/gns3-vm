@@ -22,8 +22,7 @@
 set -e
 
 export BRANCH="unstable"
-
-#sudo add-apt-repository -y ppa:gns3/unstable
+export UNSTABLE_APT="1"
 
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
 
