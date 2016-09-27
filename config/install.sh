@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Install the config files on the system.
-# This script need to run as root and you need to cd in
+# This script need to run as root and you need to cd in
 # the directory before running it
 #
 

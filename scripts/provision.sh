@@ -8,7 +8,7 @@ sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get dist-upgrade -y
 
-sudo apt-get install -y curl
+sudo apt-get install -y curl software-properties-common
 
 cd /tmp/config
 sudo bash install.sh

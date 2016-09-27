@@ -16,12 +16,11 @@
         "type": "shell"
       },
       {
-         "inline" : "sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && sudo apt-get install -y --force-yes python3-setuptools python3.4-dev",
-         "type" : "shell"
-      },
-      {
-         "inline" : "sudo pip3 install gns3-server=={{user `gns3_version`}}",
-         "type" : "shell"
+         "type" : "shell",
+         "script" : "scripts/provision_gns3.sh",
+          "environment_vars": [
+            "GNS3_VERSION={{user `gns3_version`}}"
+          ]
       }
    ],
    "builders" : [
@@ -43,7 +42,7 @@
           {
               "ethernet0.connectionType": "hostonly"
           },
-         "skip_compaction": true
+         "skip_compaction": false
       },
       {
           "type": "virtualbox-ovf",
