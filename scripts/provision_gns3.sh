@@ -34,13 +34,13 @@ then
   cd gns3-server
   git checkout -b "$GNS3_VERSION" 
   sudo python3 setup.py install
-elif [ "$GNS3_VERSION" == "unstable" ]
+elif [ "$GNS3_VERSION" == "2.0" ]
 then
   sudo apt-get install -y --force-yes git
   cd /tmp
   git clone https://github.com/GNS3/gns3-server.git gns3-server
   cd gns3-server
-  git checkout -b "$GNS3_VERSION"
+  git checkout -b 2.0
   sudo python3 setup.py install
 else
   sudo pip3 install gns3-server==${GNS3_VERSION}
