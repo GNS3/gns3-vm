@@ -2,8 +2,9 @@
 # and how to activate them. For more information, see interfaces(5).
 
 # Warning this file will be erased by each
-# GNS3 VM update if you want to customize it
-# change the following var to 1.
+# GNS3 VM update; if you want to customize it
+# change the following var to 1 but DO NOT
+# remove the leading #.
 #
 # MANUAL=0
 
