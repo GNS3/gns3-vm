@@ -52,6 +52,7 @@
           "ssh_username": "{{user `ssh_name`}}",
           "ssh_password": "{{user `ssh_pass`}}",
           "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+          "shutdown_timeout": "60m",
           "format": "ova",
           "guest_additions_mode" : "disable",
           "vboxmanage" : [
