@@ -207,7 +207,13 @@ def set_security():
 
 
 def log():
-    os.system("tail -f /var/log/upstart/gns3.log")
+    with open("/var/log/upstart/gns3.log") as f:
+        try:
+            while True:
+                line = f.readline()
+                sys.stdout.write(line)
+        except KeyboardInterrupt:
+            return
 
 
 def edit_config():
