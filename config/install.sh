@@ -169,3 +169,8 @@ chown root:root /usr/local/bin/gns3restore
 cp bash_profile /home/gns3/.bash_profile
 chmod 700 /home/gns3/.bash_profile
 chown gns3:gns3 /home/gns3/.bash_profile
+
+# ifup script
+cp gns3-ifup /etc/network/if-up.d/gns3-ifup
+chmod 755 /etc/network/if-up.d/gns3-ifup
+chown root:root /etc/network/if-up.d/gns3-ifup
