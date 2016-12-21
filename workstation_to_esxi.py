@@ -27,9 +27,23 @@ import tempfile
 import subprocess
 from xml.etree import ElementTree as ET
 
+
 if len(sys.argv) != 3:
     print("Usage: source.ova dst.ova")
     sys.exit(1)
+
+
+namespaces = [
+    ('cim',  "http://schemas.dmtf.org/wbem/wscim/1/common"),
+    ('ovf',  "http://schemas.dmtf.org/ovf/envelope/1"),
+    ('rasd', "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"),
+    ('vmw',  "http://www.vmware.com/schema/ovf"),
+    ('vssd', "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"),
+    ('xsi',  "http://www.w3.org/2001/XMLSchema-instance")
+]
+
+for prefix, uri in namespaces:
+    ET.register_namespace(prefix, uri)
 
 
 with tempfile.TemporaryDirectory() as tmp_dir:
@@ -74,7 +88,15 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     for node in nodes_to_remove:
         virtual_hardware.remove(node)
 
-    tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'))
+    #Add product informations require by VMware ESXi 6.5
+    virtual_system = root.find("{http://schemas.dmtf.org/ovf/envelope/1}VirtualSystem")
+    product_section = ET.SubElement(virtual_system, '{http://schemas.dmtf.org/ovf/envelope/1}ProductSection')
+    info = ET.SubElement(product_section, '{http://schemas.dmtf.org/ovf/envelope/1}Info')
+    info.text = "This section describes the OVF package itself."
+    product = ET.SubElement(product_section, '{http://schemas.dmtf.org/ovf/envelope/1}Product')
+    product.text = "GNS3"
+
+    tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'), default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
     subprocess.call(["ovftool",
                      "--overwrite",
                      os.path.join(tmp_dir, 'GNS3 VM.ovf'),

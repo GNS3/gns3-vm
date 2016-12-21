@@ -31,6 +31,18 @@ if len(sys.argv) != 3:
     sys.exit(1)
 
 
+namespaces = [
+    ('cim',  "http://schemas.dmtf.org/wbem/wscim/1/common"),
+    ('ovf',  "http://schemas.dmtf.org/ovf/envelope/1"),
+    ('rasd', "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData"),
+    ('vmw',  "http://www.vmware.com/schema/ovf"),
+    ('vssd', "http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData"),
+    ('xsi',  "http://www.w3.org/2001/XMLSchema-instance")
+]
+
+for prefix, uri in namespaces:
+    ET.register_namespace(prefix, uri)
+
 with tempfile.TemporaryDirectory() as tmp_dir:
     print("Temporary directory: {}".format(tmp_dir))
     subprocess.call(["tar", "-xvzf", sys.argv[1], "-C", tmp_dir])
@@ -73,7 +85,7 @@ with tempfile.TemporaryDirectory() as tmp_dir:
                 connection.text = "nat"
             connection_id += 1
 
-    tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'))
+    tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'), default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
     subprocess.call(["ovftool",
                      "--overwrite",
                      "--allowAllExtraConfig",
