@@ -174,3 +174,8 @@ chown gns3:gns3 /home/gns3/.bash_profile
 cp gns3-ifup /etc/network/if-up.d/gns3-ifup
 chmod 755 /etc/network/if-up.d/gns3-ifup
 chown root:root /etc/network/if-up.d/gns3-ifup
+
+# System tuning for IOU
+cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
+chmod 755 /etc/sysctl.d/50-qlen_gns3.conf
+chown root:root /etc/network/if-up.d/gns3-ifup
