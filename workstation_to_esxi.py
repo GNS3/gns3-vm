@@ -49,6 +49,11 @@ for prefix, uri in namespaces:
 with tempfile.TemporaryDirectory() as tmp_dir:
     print("Temporary directory: {}".format(tmp_dir))
     subprocess.call(["tar", "-xvzf", sys.argv[1], "-C", tmp_dir])
+
+    print("=> Content of GNS3 VM.ovf")
+    with open(os.path.join(tmp_dir, 'GNS3 VM.ovf')) as f:
+        print(f.read())
+
     tree = ET.parse(os.path.join(tmp_dir, 'GNS3 VM.ovf'))
     root = tree.getroot()
 
