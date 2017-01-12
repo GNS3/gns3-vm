@@ -70,14 +70,6 @@ mv "GNS3 VM.ova" "GNS3 VM.tmp.ova"
 python3 ../fix_vmware_ova_network.py "GNS3 VM.tmp.ova" "GNS3 VM.ova"
 zip -9 "../GNS3 VM VMware Workstation ${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
-
-echo "Upgrade OVA for ESXI"
-mv "GNS3 VM.ova" "GNS3 VM.tmp.ova"
-python3 ../workstation_to_esxi.py "GNS3 VM.tmp.ova" "GNS3 VM.ova"
-
-zip -9 "../GNS3 VM VMware ESXI ${GNS3_VERSION}.zip" "GNS3 VM.ova"
-
-
 cd ..
 rm -Rf output-*
 #rm  "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"

@@ -91,10 +91,10 @@ with tempfile.TemporaryDirectory() as tmp_dir:
                 connection.text = "nat"
             connection_id += 1
 
-    tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'), default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
+    tree.write(ovf_path, default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
     subprocess.call(["ovftool",
                      "--overwrite",
                      "--allowAllExtraConfig",
-                     os.path.join(tmp_dir, 'GNS3 VM.ovf'),
+                     ovf_path,
                      sys.argv[2]])
 
