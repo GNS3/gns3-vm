@@ -102,7 +102,8 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     product = ET.SubElement(product_section, '{http://schemas.dmtf.org/ovf/envelope/1}Product')
     product.text = "GNS3"
 
-    tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'), default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
+    #tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'), default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
+    tree.write(ovf_path)
     subprocess.call(["ovftool",
                      "--overwrite",
                      os.path.join(tmp_dir, 'GNS3 VM.ovf'),
