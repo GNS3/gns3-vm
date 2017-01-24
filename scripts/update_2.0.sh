@@ -38,6 +38,7 @@ cd gns3-server
 git fetch origin
 git checkout 2.0 
 git pull -u
+sudo pip3 install -r requirements.txt
 sudo python3 setup.py install
 
 echo "Reboot in 5s"
