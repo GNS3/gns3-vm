@@ -46,7 +46,13 @@ for prefix, uri in namespaces:
 with tempfile.TemporaryDirectory() as tmp_dir:
     print("Temporary directory: {}".format(tmp_dir))
     subprocess.call(["tar", "-xvzf", sys.argv[1], "-C", tmp_dir])
-    tree = ET.parse(os.path.join(tmp_dir, 'GNS3 VM.ovf'))
+    ovf_path = os.path.join(tmp_dir, 'GNS3 VM.ovf')
+
+    print("=> Content of GNS3 VM.ovf")
+    with open(ovf_path) as f:
+        print(f.read())
+
+    tree = ET.parse(ovf_path)
     root = tree.getroot()
 
     network_section = root.find("{http://schemas.dmtf.org/ovf/envelope/1}NetworkSection")
@@ -85,10 +91,11 @@ with tempfile.TemporaryDirectory() as tmp_dir:
                 connection.text = "nat"
             connection_id += 1
 
-    tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'), default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
+    #tree.write(ovf_path, default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
+    tree.write(ovf_path)
     subprocess.call(["ovftool",
                      "--overwrite",
                      "--allowAllExtraConfig",
-                     os.path.join(tmp_dir, 'GNS3 VM.ovf'),
+                     ovf_path,
                      sys.argv[2]])
 
