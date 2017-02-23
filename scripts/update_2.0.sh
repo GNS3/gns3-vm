@@ -41,7 +41,7 @@ TAG=`git tag -l 'v2.0*' --sort=taggerdate|tail -n 1`
 
 git checkout $TAG 
 git pull -u
-sudo pip3 install -r requirements.txt
+sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 
 echo "Reboot in 5s"
