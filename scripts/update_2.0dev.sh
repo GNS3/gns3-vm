@@ -36,10 +36,7 @@ fi
 
 cd gns3-server
 git fetch origin
-
-TAG=`git tag -l 'v2.0*' --sort=taggerdate|tail -n 1`
-
-git checkout $TAG 
+git checkout 2.0 
 git pull -u
 sudo pip3 install -r requirements.txt
 sudo python3 setup.py install
