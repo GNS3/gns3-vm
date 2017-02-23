@@ -37,7 +37,7 @@ fi
 cd gns3-server
 git fetch origin --tags
 
-TAG=`git tag -l 'v2.0*' --sort=taggerdate|tail -n 1`
+TAG=`git tag -l 'v2.0*' |tail -n 1`
 
 git checkout $TAG 
 git pull -u
