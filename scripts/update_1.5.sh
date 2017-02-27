@@ -21,7 +21,7 @@
 
 set -e
 
-export BRANCH="unstable"
+export BRANCH="master"
 
 #sudo add-apt-repository -y ppa:gns3/unstable
 
