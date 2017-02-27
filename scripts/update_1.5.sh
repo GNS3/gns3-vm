@@ -27,6 +27,7 @@ export BRANCH="unstable"
 
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
 sudo pip3 install --ignore-installed "gns3-server>=1.5,<1.6"
+sudo pip3 install --ignore-installed "aiohttp==1.2.0"
 
 
 echo "Reboot in 5s"
