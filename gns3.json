@@ -6,16 +6,16 @@
       "memory": "2048",
       "disk_size": "20000",
       "data_disk": "100000",
-      "iso_checksum_type": "sha1",
-      "iso_checksum": "5e567024c385cc8f90c83d6763c6e4f1cd5deb6f",
-      "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.5-server-amd64.iso",
+      "iso_checksum_type": "sha256",
+      "iso_checksum": "737ae7041212c628de5751d15c3016058b0e833fdc32e7420209b76ca3d0a535",
+      "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.2-server-amd64.iso",
       "gns3_version": "{{env `GNS3_VERSION`}}"
    },
    "provisioners" : [
       {
          "destination" : "/tmp/config",
          "type" : "file",
-         "source" : "config"
+         "source" : "config/16.04"
       },
       {
          "destination" : "/tmp/gns3welcome.py",
@@ -35,14 +35,6 @@
          "destination" : "/home/gns3/.config/GNS3/gns3vm_version",
          "type" : "file",
          "source" : "version"
-      },
-      {
-         "type" : "shell",
-         "script" : "scripts/splashscreen.sh"
-      },
-      {
-         "script" : "scripts/cleaner.sh",
-         "type" : "shell"
       }
    ],
    "builders" : [
@@ -203,14 +195,15 @@
             "ethernet1.virtualDev": "e1000"
          },
          "iso_checksum_type" : "{{user `iso_checksum_type`}}",
-         "headless": true,
+         "headless": false,
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
          "shutdown_timeout": "60m",
          "ssh_password" : "{{user `ssh_pass`}}",
          "boot_command" : [
-            "<esc><wait>",
-            "<esc><wait>",
-            "<enter><wait>",
+            "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
             "/install/vmlinuz",
             " auto",
             " fb=false",
@@ -218,9 +211,12 @@
             " netcfg/get_domain=vm",
             " netcfg/get_hostname={{user `hostname`}}",
             " netcfg/choose_interface=eth0",
-            " debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-            " keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-            " keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+            " debian-installer=en_US auto locale=en_US kbd-chooser/method=us",
+            " debconf/frontend=noninteractive",
+            " keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA",
+            " keyboard-configuration/variant=USA console-setup/ask_detect=false",
+            " grub-installer/bootdev=/dev/sda<wait>",
+            " net.ifnames=0 biosdevname=0",
             " noapic",
             " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
             " -- ",

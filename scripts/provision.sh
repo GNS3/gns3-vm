@@ -20,9 +20,6 @@ sudo pip3 install psutil
 sudo apt-get install -y dialog
 sudo pip3 install pythondialog
 
-# VDE network
-sudo usermod -a -G vde2-net gns3
-
 # Block iou call. The server is down
 echo "127.0.0.254 xml.cisco.com" | sudo tee --append /etc/hosts
 

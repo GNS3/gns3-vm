@@ -4,32 +4,33 @@
 set -e
 
 sudo apt-get remove -y plymouth-theme-ubuntu-text
-sudo apt-get install -y plymouth-theme-script
+sudo apt-get install -y plymouth-label 
 
 set +e 
-sudo mkdir -p /lib/plymouth/themes/gns3
+sudo mkdir -p /usr/share/plymouth/themes/gns3
 set -e 
 
-sudo chown -R gns3:gns3 /lib/plymouth/themes/gns3
+sudo chown -R gns3:gns3 /usr/share/plymouth/themes/gns3
 
-cat > /lib/plymouth/themes/gns3/gns3.plymouth <<EOF
+cat > /usr/share/plymouth/themes/gns3/gns3.plymouth <<EOF
 [Plymouth Theme]
 Name=GNS3
 Description=GNS3 Loading Screen
 ModuleName=script
+
 [script]
-ImageDir=/lib/plymouth/themes/gns3
-ScriptFile=/lib/plymouth/themes/gns3/gns3.script
+ImageDir=/usr/share/plymouth/themes/gns3
+ScriptFile=/usr/share/plymouth/themes/gns3/gns3.script
 EOF
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/logo_wo_bar.png" > /lib/plymouth/themes/gns3/logo_wo_bar.png
+curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/logo_wo_bar.png" > /usr/share/plymouth/themes/gns3/logo_wo_bar.png
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/bar.png" > /lib/plymouth/themes/gns3/bar.png
+curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/bar.png" > /usr/share/plymouth/themes/gns3/bar.png
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/end.png" > /lib/plymouth/themes/gns3/end.png
+curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/end.png" > /usr/share/plymouth/themes/gns3/end.png
 
 
-cat > /lib/plymouth/themes/gns3/gns3.script <<EOF
+cat > /usr/share/plymouth/themes/gns3/gns3.script <<EOF
 # Original script
 # GPL V3 Licence
 # https://github.com/dainok/unetlab/blob/master/plymouth/unetlab.script
@@ -50,7 +51,7 @@ bar_width = 1052;
 end_bar_y = 137;
 
 # Scaling during boot/shutdown
-boot_scale = 3.84;      # 1 / max_progress
+boot_scale = 3.80;      # 1 / max_progress
 shutdown_scale = 1.10;   # 1 / min_progress
 
 # Get scale factor
@@ -143,7 +144,6 @@ fun progress_callback (duration, progress) {
     }
 }
 
-    # Currently we do nothing here
 Plymouth.SetBootProgressFunction(progress_callback);
 
 #----------------------------------------- Quit --------------------------------
@@ -158,32 +158,28 @@ fun quit_callback () {
         bar.width = bar_width * scale;
     }
 
-    if (checkpoint != progress) {
-        # Position the scaled bar
-        bar.scaled = bar.image.Scale(bar.width, bar.height);
-        bar.sprite = Sprite();
-        bar.sprite.SetImage(bar.scaled);
-        bar.sprite.SetX(bar.x);
-        bar.sprite.SetY(bar.y);
-        bar.sprite.SetZ(bar.z);
-        bar.sprite.SetOpacity(1);
+    # Position the scaled bar
+      bar.scaled = bar.image.Scale(bar.width, bar.height);
+      bar.sprite = Sprite();
+      bar.sprite.SetImage(bar.scaled);
+      bar.sprite.SetX(bar.x);
+      bar.sprite.SetY(bar.y);
+      bar.sprite.SetZ(bar.z);
+      bar.sprite.SetOpacity(1);
 
-        # Position the scaled end bar
-        end.x = logo.x + logo.width * bar_x / logo.image.GetWidth() + bar.width - 1;   # Start at the end of the bar
-        end.width = end.image.GetWidth() * scale;
-        end.scaled = end.image.Scale(end.width, end.height);
-        end.sprite = Sprite();
-        end.sprite.SetImage(end.scaled);
-        end.sprite.SetX(end.x);
-        end.sprite.SetY(end.y);
-        end.sprite.SetZ(end.z);
-        end.sprite.SetOpacity(1);
-
-        checkpoint = progress;
-    }
+      # Position the scaled end bar
+      end.x = logo.x + logo.width * bar_x / logo.image.GetWidth() + bar.width - 1;   # Start at the end of the bar
+      end.width = end.image.GetWidth() * scale;
+      end.scaled = end.image.Scale(end.width, end.height);
+      end.sprite = Sprite();
+      end.sprite.SetImage(end.scaled);
+      end.sprite.SetX(end.x);
+      end.sprite.SetY(end.y);
+      end.sprite.SetZ(end.z);
+      end.sprite.SetOpacity(1);
 }
 
-Plymouth.SetQuitFunction(quit_callback);
+#Plymouth.SetQuitFunction(quit_callback);
 
 #----------------------------------------- Message --------------------------------
 
@@ -198,9 +194,9 @@ fun message_callback (text) {
 Plymouth.SetMessageFunction(message_callback);
 EOF
 
-sudo chown -R root:root /lib/plymouth/themes/gns3
+sudo chown -R root:root /usr/share/plymouth/themes/gns3
 
-sudo update-alternatives --install /lib/plymouth/themes/default.plymouth default.plymouth /lib/plymouth/themes/gns3/gns3.plymouth 100
+sudo update-alternatives --install /usr/share/plymouth/themes/default.plymouth default.plymouth /usr/share/plymouth/themes/gns3/gns3.plymouth 200
 
 sudo update-alternatives --config default.plymouth --skip-auto
 

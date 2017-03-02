@@ -36,8 +36,6 @@ then
     apt-get install -y software-properties-common
 fi
 
-add-apt-repository -y ppa:gns3/qemu
-
 if [ "$UNSTABLE_APT" == "1" ]
 then
     add-apt-repository -y ppa:gns3/ppa
@@ -50,17 +48,14 @@ fi
 dpkg --add-architecture i386
 apt-get update
 
-# VDE network
-apt-get install -y vde2 uml-utilities
-
 # VMware open-vm-tools
-apt-get install -y open-vm-tools-lts-trusty
+apt-get install -y open-vm-tools
 
 # Autologin
 apt-get install -y mingetty
 
 # Python
-apt-get install -y python3-dev python3.4-dev python3-setuptools
+apt-get install -y python3-dev python3.5-dev python3-setuptools
 
 # Install netifaces
 apt-get install -y python3-netifaces
