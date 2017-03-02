@@ -172,6 +172,11 @@ chown -R root:root /etc/systemd/system/getty@tty1.service.d/
 
 mkdir -p /etc/systemd/system/getty@tty2.service.d/
 cp tty.service /etc/systemd/system/getty@tty2.service.d/override.conf
-chmod -R 755  /etc/systemd/system/getty@tty2.service.d/
+chmod -R 755 /etc/systemd/system/getty@tty2.service.d/
 chown -R root:root /etc/systemd/system/getty@tty2.service.d/
 
+# Install systemd service
+cp gns3.service /lib/systemd/system/gns3.service
+chmod 755 /lib/systemd/system/gns3.service
+chown root:root /lib/systemd/system/gns3.service
+systemctl enable gns3
