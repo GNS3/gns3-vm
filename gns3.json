@@ -35,8 +35,16 @@
          "destination" : "/home/gns3/.config/GNS3/gns3vm_version",
          "type" : "file",
          "source" : "version"
-      }
-   ],
+      },
+      {
+         "type" : "shell",
+         "script" : "scripts/splashscreen.sh"
+      },
+      {
+         "type" : "shell",
+         "script" : "scripts/cleaner.sh"
+      },
+    ],
    "builders" : [
       {
          "type" : "virtualbox-iso",
@@ -134,9 +142,10 @@
          "guest_os_type" : "Ubuntu_64",
          "ssh_password" : "{{user `ssh_pass`}}",
          "boot_command" : [
-            "<esc><wait>",
-            "<esc><wait>",
-            "<enter><wait>",
+            "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+            "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
             "/install/vmlinuz",
             " auto",
             " fb=false",
@@ -144,13 +153,15 @@
             " netcfg/get_domain=vm",
             " netcfg/get_hostname={{user `hostname`}}",
             " netcfg/choose_interface=eth0",
-            " debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-            " keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-            " keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+            " debian-installer=en_US auto locale=en_US kbd-chooser/method=us",
+            " debconf/frontend=noninteractive",
+            " keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA",
+            " keyboard-configuration/variant=USA console-setup/ask_detect=false",
+            " grub-installer/bootdev=/dev/sda<wait>",
+            " net.ifnames=0 biosdevname=0",
             " noapic",
             " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
             " -- ",
-            "<enter><wait>"
          ],
          "guest_additions_mode" : "disable",
          "guest_os_type": "Ubuntu_64",

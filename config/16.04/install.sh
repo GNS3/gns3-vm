@@ -134,9 +134,6 @@ then
     mv /etc/rc6.d/K61zerofree /etc/rc6.d/S61zerofree
 fi
 
-cp tty1.conf /etc/init/tty1.conf
-cp tty2.conf /etc/init/tty2.conf
-
 # Sysctl
 cp sysctl.conf /etc/sysctl.conf
 chmod 644 /etc/sysctl.conf
@@ -166,3 +163,15 @@ chown root:root /etc/network/if-up.d/gns3-ifup
 cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
 chmod 755 /etc/sysctl.d/50-qlen_gns3.conf
 chown root:root /etc/network/if-up.d/gns3-ifup
+
+# Open GNS3 menu at startup
+mkdir -p /etc/systemd/system/getty@tty1.service.d/
+cp tty1.service /etc/systemd/system/getty@tty1.service.d/override.conf
+chmod -R 755  /etc/systemd/system/getty@tty1.service.d/
+chown -R root:root /etc/systemd/system/getty@tty1.service.d/
+
+mkdir -p /etc/systemd/system/getty@tty2.service.d/
+cp tty.service /etc/systemd/system/getty@tty2.service.d/override.conf
+chmod -R 755  /etc/systemd/system/getty@tty2.service.d/
+chown -R root:root /etc/systemd/system/getty@tty2.service.d/
+
