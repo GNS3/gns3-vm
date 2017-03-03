@@ -65,5 +65,4 @@ sudo rm -fr /var/cache/debconf/*
 
 
 # Setup zerofree for disk compaction
-sudo touch /zerofree
-
+sudo bash /usr/local/bin/zerofree

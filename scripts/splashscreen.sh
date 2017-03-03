@@ -85,7 +85,7 @@ fun refresh_callback () {
     # Currently we do nothing here
 }
 
-Plymouth.SetRefreshFunction (refresh_callback);
+#Plymouth.SetRefreshFunction (refresh_callback);
 
 #----------------------------------------- Progress Bar --------------------------------
 

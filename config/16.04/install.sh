@@ -119,15 +119,9 @@ chmod 644 /etc/network/interfaces
 chown root:root /etc/network/interfaces
 
 # Zerofree
-cp zerofree /etc/init.d/zerofree
-chown root:root /etc/init.d/zerofree
-chmod 744 /etc/init.d/zerofree
-update-rc.d zerofree defaults 61
-if [ -f /etc/rc0.d/K61zerofree ]
-then
-    mv /etc/rc0.d/K61zerofree /etc/rc0.d/S61zerofree
-    mv /etc/rc6.d/K61zerofree /etc/rc6.d/S61zerofree
-fi
+cp zerofree /usr/local/bin/zerofree
+chown root:root /usr/local/bin/zerofree
+chmod 755 /usr/local/bin/zerofree
 
 # Sysctl
 cp sysctl.conf /etc/sysctl.conf

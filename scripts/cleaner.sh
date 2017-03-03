@@ -40,6 +40,7 @@ sudo apt-get purge -y --yes cmake-data
 sudo apt-get purge -y --yes cpp-4.9
 sudo apt-get purge -y --yes language-pack-en
 sudo apt-get purge -y --yes language-pack-gnome-en-base
+sudo apt-get purge -y --yes perl
 
 # Purge old kernels
 dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | xargs sudo apt-get -y purge
@@ -66,7 +67,7 @@ sudo rm -Rf /var/log/installer/*
 sudo rm -Rf /usr/share/doc
 sudo rm -Rf /var/lib/docker/devicemapper
 
-# Setup zerofree for disk compaction
-sudo touch /zerofree
-
 sudo rm -rf /tmp/*
+
+# Setup zerofree for disk compaction
+sudo bash /usr/local/bin/zerofree
