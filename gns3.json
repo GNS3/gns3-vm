@@ -43,7 +43,7 @@
       {
          "type" : "shell",
          "script" : "scripts/cleaner.sh"
-      },
+      }
     ],
    "builders" : [
       {
@@ -158,10 +158,9 @@
             " keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA",
             " keyboard-configuration/variant=USA console-setup/ask_detect=false",
             " grub-installer/bootdev=/dev/sda<wait>",
-            " net.ifnames=0 biosdevname=0",
             " noapic",
             " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
-            " -- ",
+            " -- "
          ],
          "guest_additions_mode" : "disable",
          "guest_os_type": "Ubuntu_64",
@@ -227,7 +226,6 @@
             " keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA",
             " keyboard-configuration/variant=USA console-setup/ask_detect=false",
             " grub-installer/bootdev=/dev/sda<wait>",
-            " net.ifnames=0 biosdevname=0",
             " noapic",
             " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
             " -- ",

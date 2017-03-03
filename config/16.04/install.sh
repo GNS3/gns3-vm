@@ -96,11 +96,6 @@ chown root:root /etc/default/grub
 chmod 700 /etc/default/grub
 update-grub
 
-# Setup upstart
-cp "gns3.conf" "/etc/init/gns3.conf"
-chown root:root /etc/init/gns3.conf
-chmod 644 /etc/init/gns3.conf
-
 # Workaround a bug in VMware suspend
 # https://github.com/GNS3/gns3-vm/issues/82
 cp "network-vmware-fix" "/etc/init.d/network"
@@ -166,7 +161,7 @@ chown root:root /etc/network/if-up.d/gns3-ifup
 
 # Open GNS3 menu at startup
 mkdir -p /etc/systemd/system/getty@tty1.service.d/
-cp tty1.service /etc/systemd/system/getty@tty1.service.d/override.conf
+cp tty.service /etc/systemd/system/getty@tty1.service.d/override.conf
 chmod -R 755  /etc/systemd/system/getty@tty1.service.d/
 chown -R root:root /etc/systemd/system/getty@tty1.service.d/
 
