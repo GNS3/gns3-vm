@@ -20,6 +20,13 @@
 #
 
 export DEBIAN_FRONTEND="noninteractive"
+export UBUNTU_VERSION=`lsb_release -r -s`
+
+# For test we upgrade from the 16.04 branch
+if [ "$UBUNTU_VERSION" == "16.04" ]
+then
+  export BRANCH="16.04"
+fi
 
 set -e
 
@@ -29,7 +36,8 @@ echo "Download https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz"
 curl --location "https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz" > gns3vm.tar.gz
 tar -xzf gns3vm.tar.gz
 rm gns3vm.tar.gz
-cd gns3-vm-${BRANCH}/config
+
+cd gns3-vm-${BRANCH}/config/${UBUNTU_VERSION}
 sudo bash -x install.sh
 
 sudo dpkg --configure -a
