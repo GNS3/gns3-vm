@@ -22,7 +22,7 @@ fi
 
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo apt-get install -y --force-yes python3-setuptools python3.4-dev
+sudo apt-get install -y --force-yes python3-setuptools python3.5dev
 
 set -e
 
@@ -64,5 +64,5 @@ sudo rm -fr /var/cache/apt/*
 sudo rm -fr /var/cache/debconf/*
 
 
-# Setup zerofree for disk compaction
+# zerofree for disk compaction
 sudo bash /usr/local/bin/zerofree

@@ -12,6 +12,8 @@ set -e
 
 export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
+export GNS3_VM_FILE=$2
+
 
 if [ "$GNS3_VERSION" == "" ]
 then
@@ -24,13 +26,19 @@ export GNS3_UPDATE_FLAVOR=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Update flavor: $GNS3_UPDATE_FLAVOR"
 
-echo "Download VM"
-export GNS3VM_VERSION=`python last_vm_version.py`
-export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3.VM.VMware.${GNS3VM_VERSION}.zip"
-if [ ! -f "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" ]
+if [ "$GNS3_VM_FILE" == "" ]
 then
-    echo "Download $GNS3VM_URL"
-    curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
+    echo "Download VM"
+    export GNS3VM_VERSION=`python last_vm_version.py`
+    export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3.VM.VMware.${GNS3VM_VERSION}.zip"
+    if [ ! -f "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" ]
+    then
+        echo "Download $GNS3VM_URL"
+        curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
+    fi
+else
+    export GNS3VM_VERSION="dev"
+    cp "$GNS3_VM_FILE" "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
 fi
 unzip -p "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" "GNS3 VM.ova" > "/tmp/GNS3VM.VMWare.${GNS3VM_VERSION}.ova"
 
