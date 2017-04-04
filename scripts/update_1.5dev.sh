@@ -35,6 +35,7 @@ then
 fi
 
 cd gns3-server
+git reset --hard HEAD
 git fetch origin
 git checkout master 
 git pull -u
