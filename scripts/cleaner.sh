@@ -11,7 +11,6 @@ sudo apt-get purge -y --yes linux-firmware
 sudo apt-get purge -y --yes wpasupplicant
 sudo apt-get purge -y --yes wireless-tools
 sudo apt-get purge -y --yes wireless-regdb
-sudo apt-get purge -y --yes xauth
 sudo apt-get purge -y --yes ppp
 sudo apt-get purge -y --yes w3m
 sudo apt-get purge -y --yes python2.7-minimal
