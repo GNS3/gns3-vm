@@ -149,9 +149,13 @@ def vm_information():
     if version is None:
         content += "GNS3 is not installed please install it with sudo pip3 install gns3-server. Or download a preinstalled VM.\n\n"
     else:
-        content = "GNS3 version: {gns3_version}\nVM version: {gns3vm_version}\nKVM support available: {kvm}\n\n".format(
+        content = """GNS3 version: {gns3_version}
+VM version: {gns3vm_version}
+Ubuntu version: {ubuntu_version}
+KVM support available: {kvm}\n\n""".format(
             gns3vm_version=gns3vm_version(),
             gns3_version=version,
+            ubuntu_version=ubuntu_version(),
             kvm=kvm_support())
 
     ip = get_ip()
@@ -268,6 +272,13 @@ def kvm_support():
     Returns true if KVM is available
     """
     return subprocess.call("kvm-ok") == 0
+
+
+def ubuntu_version():
+    """
+    Returns the codename of the current ubuntu distribution
+    """
+    return subprocess.check_output(["lsb_release", "-s", "-c"]).strip().decode()
 
 
 def kvm_control():
