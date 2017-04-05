@@ -104,6 +104,18 @@ end.z = 3;
 
 checkpoint = 0;
 fun progress_callback (duration, progress) {
+    # Setting the backgrounds
+    Window.SetBackgroundTopColor(1.0, 1.0, 1.0);
+    Window.SetBackgroundBottomColor(1.0, 1.0, 1.0);
+ 
+    # Print the logo
+    logo.sprite = Sprite();
+    logo.sprite.SetImage(logo.scaled);
+    logo.sprite.SetX(logo.x);
+    logo.sprite.SetY(logo.y);
+    logo.sprite.SetZ(logo.z);
+    logo.sprite.SetOpacity(1);
+
     if (Plymouth.GetMode() == "boot") {
         if (progress * boot_scale <= 1) {
             # Boot scale can lead to large bar

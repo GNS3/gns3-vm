@@ -5,7 +5,7 @@ Description=GNS3 VM
 Type=oneshot
 User=root
 Group=root
-ExecStart=/usr/local/bin/gns3-vm.sh
+ExecStart=/usr/local/bin/gns3vm
 Requires=network.target
 
 [Install]
