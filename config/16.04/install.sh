@@ -96,12 +96,6 @@ chown root:root /etc/default/grub
 chmod 700 /etc/default/grub
 update-grub
 
-# Workaround a bug in VMware suspend
-# https://github.com/GNS3/gns3-vm/issues/82
-cp "network-vmware-fix" "/etc/init.d/network"
-chown root:root /etc/init.d/network
-chmod 755 /etc/init.d/network
-
 # Configure network
 if [ -f /etc/network/interfaces ]
 then
@@ -138,15 +132,15 @@ cp gns3-restore.sh /usr/local/bin/gns3restore
 chmod 755 /usr/local/bin/gns3restore
 chown root:root /usr/local/bin/gns3restore
 
+# GNS3 VM
+cp gns3-vm.sh /usr/local/bin/gns3vm
+chmod 755 /usr/local/bin/gns3vm
+chown root:root /usr/local/bin/gns3vm
+
 # Bash profile
 cp bash_profile /home/gns3/.bash_profile
 chmod 700 /home/gns3/.bash_profile
 chown gns3:gns3 /home/gns3/.bash_profile
-
-# ifup script
-cp gns3-ifup /etc/network/if-up.d/gns3-ifup
-chmod 755 /etc/network/if-up.d/gns3-ifup
-chown root:root /etc/network/if-up.d/gns3-ifup
 
 # System tuning for IOU
 cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
@@ -169,3 +163,8 @@ cp gns3.service /lib/systemd/system/gns3.service
 chmod 755 /lib/systemd/system/gns3.service
 chown root:root /lib/systemd/system/gns3.service
 systemctl enable gns3
+
+cp gns3vm.service /lib/systemd/system/gns3vm.service
+chmod 755 /lib/systemd/system/gns3vm.service
+chown root:root /lib/systemd/system/gns3vm.service
+systemctl enable gns3vm

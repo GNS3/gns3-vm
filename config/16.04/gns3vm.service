@@ -1,0 +1,12 @@
+[Unit]
+Description=GNS3 VM
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/usr/local/bin/gns3-vm.sh
+Requires=network.target
+
+[Install]
+WantedBy=multi-user.target
