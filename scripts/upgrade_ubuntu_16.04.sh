@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DEBIAN_FRONTEND=noninteractice 
+
 dialog --title "Upgrade ubuntu" \
     --default-button no \
     --yesno "Are you sure you want to upgrade the ubuntu version? Make sure to snapshot before. The network configuration will be reset" \
@@ -75,5 +77,5 @@ EOF
 rm /etc/init/gns3.conf
 rm /etc/init.d/network
 rm /etc/network/if-up.d/gns3-ifup
-do-release-upgrade -q
+do-release-upgrade -q  -f DistUpgradeViewNonInteractive 
 reboot
