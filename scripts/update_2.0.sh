@@ -21,7 +21,7 @@
 
 set -e
 
-export BRANCH="unstable"
+export BRANCH="16.10"
 export UNSTABLE_APT="1"
 
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
