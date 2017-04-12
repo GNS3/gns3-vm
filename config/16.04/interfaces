@@ -27,9 +27,9 @@ auto lo
 iface lo inet loopback
 
 # NAT interface
-allow-hotplug eth1
+auto eth1
 iface eth1 inet dhcp
 
 # Optional bridge interace
-allow-hotplug eth2
+auto eth2
 iface eth2 inet dhcp
