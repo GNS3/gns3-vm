@@ -30,8 +30,8 @@ echo "127.0.0.254 xml.cisco.com" | sudo tee --append /etc/hosts
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 
 # Install docker
-curl -sSL https://get.docker.com > /tmp/docker.sh
-sudo bash /tmp/docker.sh
+curl -sSL https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb > /tmp/docker.deb
+sudo dpkg -i /tmp/docker.deb
 sudo usermod -aG docker gns3
 sudo service docker stop
 sudo rm -rf /var/lib/docker/aufs

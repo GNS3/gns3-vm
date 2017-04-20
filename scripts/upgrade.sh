@@ -94,4 +94,11 @@ then
     echo -n '0.10.12' > /home/gns3/.config/GNS3/gns3vm_version
 fi
 
-
+if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.12' ]
+then
+    sudo apt-get remove docker docker-engine
+    sudo rm /etc/apt/sources.list.d/*
+    curl "https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb" > /tmp/docker.deb
+    sudo dpkg -i /tmp/docker.deb
+    echo -n '0.10.13' > /home/gns3/.config/GNS3/gns3vm_version
+fi
