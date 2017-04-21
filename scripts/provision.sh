@@ -31,7 +31,7 @@ sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 
 # Install docker
 curl -sSL https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb > /tmp/docker.deb
-sudo apt-get install -i libltdl7 libsystemd-journal0
+sudo apt-get install -y libltdl7 libsystemd-journal0
 sudo dpkg -i /tmp/docker.deb
 sudo usermod -aG docker gns3
 sudo service docker stop
