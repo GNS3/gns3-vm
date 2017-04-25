@@ -26,13 +26,6 @@ echo "127.0.0.254 xml.cisco.com" | sudo tee --append /etc/hosts
 # Force hostid for IOU
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 
-# Install docker
-curl -sSL https://get.docker.com > /tmp/docker.sh
-sudo bash /tmp/docker.sh
-sudo usermod -aG docker gns3
-sudo service docker stop
-sudo rm -rf /var/lib/docker/aufs
-
 # Setup server
 if [ -f ~/.config/GNS3/gns3_server.conf ]
 then

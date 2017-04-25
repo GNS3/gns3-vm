@@ -72,6 +72,14 @@ apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 # Install gns3 dependencies
 apt-get install -y dynamips iouyap ubridge
 
+# Install docker
+curl -sSL https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb > /tmp/docker.deb
+sudo apt-get install -y libltdl7 libsystemd-journal0
+sudo dpkg -i /tmp/docker.deb
+sudo usermod -aG docker gns3
+sudo service docker stop
+sudo rm -rf /var/lib/docker/aufs
+
 # Install VNC support for Docker
 apt-get install -y x11vnc xvfb
 
