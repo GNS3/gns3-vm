@@ -38,7 +38,7 @@ cd gns3-server
 git reset --hard HEAD
 git fetch origin --tags
 
-TAG=`git tag -l 'v2.0*' | | grep -v '[abr]' |tail -n 1`
+TAG=`git tag -l 'v2.0*' | grep -v '[abr]' | tail -n 1`
 
 git checkout $TAG 
 sed -i.bak "s/yarl>=0.9.8/yarl>=0.9.8,<0.10/g" requirements.txt
