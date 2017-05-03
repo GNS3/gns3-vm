@@ -93,9 +93,9 @@ def mode():
     d.msgbox("You have been warned...")
     code, tag = d.menu("Select the GNS3 version",
                        choices=[("1.4", "Old stable release"),
-                                ("1.5", "Current stable release RECOMMENDED"),
-                                ("2.0", "Next major release candidate version"),
-                                ("2.0dev", "Next major release development version"),
+                                ("1.5", "Old stable release"),
+                                ("2.0", "Current stable release RECOMMENDED"),
+                                ("2.0dev", "Next stable release development version"),
                                 ("2.1", "Totaly unstable version")])
     d.clear()
     if code == Dialog.OK:

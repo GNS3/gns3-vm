@@ -22,7 +22,7 @@
 set -e
 
 export BRANCH="16.10"
-export UNSTABLE_APT="1"
+export UNSTABLE_APT="0"
 
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
 
@@ -38,7 +38,7 @@ cd gns3-server
 git reset --hard HEAD
 git fetch origin --tags
 
-TAG=`git tag -l 'v2.0*' |tail -n 1`
+TAG=`git tag -l 'v2.0*' | grep -v '[abr]' | tail -n 1`
 
 git checkout $TAG 
 sed -i.bak "s/yarl>=0.9.8/yarl>=0.9.8,<0.10/g" requirements.txt
