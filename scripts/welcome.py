@@ -208,6 +208,7 @@ def set_security():
 
 
 def log():
+    os.system("/usr/bin/sudo chmod 755 /var/log/upstart/gns3.log")
     with open("/var/log/upstart/gns3.log") as f:
         try:
             while True:
