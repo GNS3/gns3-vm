@@ -4,3 +4,4 @@ opt.vmdk
 *.ova
 GNS3 VM*.zip
 .vagrant
+.idea
