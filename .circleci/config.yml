@@ -159,19 +159,19 @@ jobs:
             cd gns3-build
             pip3 install -r requirements.txt
             cd ..
-#            python3 gns3-build/upload.py $GNS3_VERSION artifacts/*.zip
+            python3 gns3-build/upload.py $GNS3_VERSION artifacts/*.zip
       - store_artifacts:
           path: artifacts
           destination: artifacts
 
 
-#workflows:
-#  version: 2
-#  build_only_on_tag:
-#    jobs:
-#      - build:
-#          filters:
-#            tags:
-#              only: /v.*/
-#            branches:
-#              ignore: /.*/
+workflows:
+  version: 2
+  build_only_on_tag:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              ignore: /.*/
