@@ -159,7 +159,9 @@ jobs:
             cd gns3-build
             pip3 install -r requirements.txt
             cd ..
-            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/*.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VirtualBox\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip
       - store_artifacts:
           path: artifacts
           destination: artifacts
