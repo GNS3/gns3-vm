@@ -17,12 +17,12 @@ jobs:
           command: |
             echo "export GNS3_VERSION=\"${CIRCLE_TAG:-"v2.1.0b2"}\"" >> env_vars
             echo "export GNS3_NUMBER=\`echo \$GNS3_VERSION | sed \"s/^v//\"\`" >> env_vars
-#      - run:
-#          name: Install dependencies
-#          command: |
-#            python3 -m venv env
-#            source env/bin/activate
-#            pip install packet-python
+      - run:
+          name: Install dependencies
+          command: |
+            python3 -m venv env
+            source env/bin/activate
+            pip install packet-python
 #      - run:
 #          name: Get builder device
 #          command: |
