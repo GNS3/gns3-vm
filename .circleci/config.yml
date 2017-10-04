@@ -56,13 +56,15 @@ jobs:
               apt-get -y install gcc-6 g++-6
               update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60
 
-              if [ ! -f "/tmp/VMWare.bundle" ]
+              if [ ! -f "/tmp/VMware-Workstation-12.5.7-5813279.x86_64.bundle" ]
               then
-                wget https://www.vmware.com/go/tryworkstation-linux-64 -O /tmp/VMWare.bundle
+                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/12.5.7/5813279/linux/core/VMware-Workstation-12.5.7-5813279.x86_64.bundle.tar -O /tmp/VMWare.bundle
+                tar xvvf /tmp/VMWare.bundle.tar -C /tmp/
               fi
 
-              chmod a+x /tmp/VMWare.bundle
-              /tmp/VMWare.bundle --eulas-agreed --required --console
+              chmod a+x /tmp/VMware-Workstation-12.5.7-5813279.x86_64.bundle
+
+              /tmp/VMware-Workstation-12.5.7-5813279.x86_64.bundle --eulas-agreed --required --console
               /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
@@ -150,30 +152,30 @@ jobs:
           command: |
             source env/bin/activate
             python3 .circleci/device.py ${PACKET_TOKEN} destroy
-#      - deploy:
-#          name: Deploying on Github
-#          command: |
-#            source env/bin/activate
-#            echo "Deploying version: ${CIRCLE_TAG}"
-#            git clone git@github.com:GNS3/gns3-build.git
-#            cd gns3-build
-#            pip3 install -r requirements.txt
-#            cd ..
-#            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VirtualBox\ *.zip
-#            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip
-#            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip
+      - deploy:
+          name: Deploying on Github
+          command: |
+            source env/bin/activate
+            echo "Deploying version: ${CIRCLE_TAG}"
+            git clone git@github.com:GNS3/gns3-build.git
+            cd gns3-build
+            pip3 install -r requirements.txt
+            cd ..
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VirtualBox\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip
       - store_artifacts:
           path: artifacts
           destination: artifacts
 
 
-#workflows:
-#  version: 2
-#  build_only_on_tag:
-#    jobs:
-#      - build:
-#          filters:
-#            tags:
-#              only: /v.*/
-#            branches:
-#              ignore: /.*/
+workflows:
+  version: 2
+  build_only_on_tag:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              ignore: /.*/
