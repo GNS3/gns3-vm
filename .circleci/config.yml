@@ -58,7 +58,7 @@ jobs:
 
               if [ ! -f "/tmp/VMware-Workstation-12.5.7-5813279.x86_64.bundle" ]
               then
-                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/12.5.7/5813279/linux/core/VMware-Workstation-12.5.7-5813279.x86_64.bundle.tar -O /tmp/VMWare.bundle
+                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/12.5.7/5813279/linux/core/VMware-Workstation-12.5.7-5813279.x86_64.bundle.tar -O /tmp/VMWare.bundle.tar
                 tar xvvf /tmp/VMWare.bundle.tar -C /tmp/
               fi
 
