@@ -91,6 +91,9 @@ with tempfile.TemporaryDirectory() as tmp_dir:
                 connection.text = "nat"
             connection_id += 1
 
+    for extra in root.iter('{http://www.vmware.com/schema/ovf}ExtraConfig'):
+        extra.set("{http://schemas.dmtf.org/ovf/envelope/1}required", "false")
+
     #tree.write(ovf_path, default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
     tree.write(ovf_path)
     subprocess.call(["ovftool",
