@@ -88,15 +88,14 @@ else:
 
 
 def mode():
-    if d.yesno("This feature is for testers only. You can break your GNS3 install. Are you REALLY sure you want to continue?", yes_label="Exit (Safe option)", no_label="Continue") == d.OK:
+    if d.yesno("This feature is for testers only. You may break your GNS3 installation. Are you REALLY sure you want to continue?", yes_label="Exit (Safe option)", no_label="Continue") == d.OK:
         return
-    d.msgbox("You have been warned...")
     code, tag = d.menu("Select the GNS3 version",
-                       choices=[("1.4", "Old stable release"),
-                                ("1.5", "Old stable release"),
-                                ("2.0", "Current stable release RECOMMENDED"),
-                                ("2.0dev", "Next stable release development version"),
-                                ("2.1", "Totally unstable version")])
+                       choices=[("1.5", "Old stable release"),
+                                ("2.0", "Old stable release"),
+                                ("2.1", "Current stable release (RECOMMENDED)"),
+                                ("2.1dev", "Next stable release development version"),
+                                ("2.2", "Totally unstable version")])
     d.clear()
     if code == Dialog.OK:
         os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
@@ -129,7 +128,7 @@ def update(force=False):
         if d.yesno("PLEASE SNAPSHOT THE VM BEFORE RUNNING THE UPGRADE IN CASE OF FAILURE. The server will reboot at the end of the upgrade process. Continue?") != d.OK:
             return
     release = get_release()
-    if release == "1.4dev" or release == "2.0dev" or release == "2.1" or release == "1.5dev":
+    if release.endswith("dev") or release == "2.2":
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     else:
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
