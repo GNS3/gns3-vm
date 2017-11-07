@@ -168,7 +168,7 @@ jobs:
             ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
             mkdir -p artifacts/release
             cp artifacts/GNS3\ VM\ VirtualBox\ *.zip artifacts/release/GNS3.VM.VirtualBox.${CIRCLE_TAG}.zip
-            cp artifacts/GNS3\ VMware\ Workstation\ *.zip artifacts/release/GNS3.VM.VMware.Workstation.${CIRCLE_TAG}.zip
+            cp artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip artifacts/release/GNS3.VM.VMware.Workstation.${CIRCLE_TAG}.zip
             cp artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip artifacts/release/GNS3.VM.VMware.ESXI.${CIRCLE_TAG}.zip
             scp artifacts/release/* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
 
