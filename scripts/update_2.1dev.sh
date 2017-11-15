@@ -37,7 +37,7 @@ fi
 cd gns3-server
 git reset --hard HEAD
 git fetch origin
-git checkout 2.1  #FIXME: switch to master when branch 2.1 becomes master on gns3-server
+git checkout master
 git pull -u
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
