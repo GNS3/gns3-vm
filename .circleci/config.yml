@@ -27,7 +27,7 @@ jobs:
           name: Get builder device
           command: |
             source env/bin/activate
-            DEVICE_IP=`python3 .circleci/device.py ${PACKET_TOKEN} get`
+            DEVICE_IP=`python3 .circleci/device.py ${PACKET_TOKEN} get "${PACKET_PROJECT}"`
             echo "export DEVICE_IP=\"$DEVICE_IP\"" >> env_vars
             echo "Obtained device on $DEVICE_IP"
             ssh-keyscan -H ${DEVICE_IP} >> ~/.ssh/known_hosts
@@ -151,7 +151,7 @@ jobs:
 #          when: always
           command: |
             source env/bin/activate
-            python3 .circleci/device.py ${PACKET_TOKEN} destroy
+            python3 .circleci/device.py ${PACKET_TOKEN} destroy "${PACKET_PROJECT}"
       - deploy:
           name: Deploying on Github and SourceForge
           command: |
