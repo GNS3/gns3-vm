@@ -56,15 +56,15 @@ jobs:
               apt-get -y install gcc-6 g++-6
               update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60
 
-              if [ ! -f "/tmp/VMWare.bundle.tar" ]
+              if [ ! -f "/tmp/VMware-Workstation-12.5.8-7098237.x86_64.bundle" ]
               then
                 wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/12.5.8/7098237/linux/core/VMware-Workstation-12.5.8-7098237.x86_64.bundle.tar -O /tmp/VMWare.bundle.tar
                 tar xvvf /tmp/VMWare.bundle.tar -C /tmp/
               fi
 
-              chmod a+x /tmp/VMware-Workstation-12.5.7-5813279.x86_64.bundle
+              chmod a+x /tmp/VMware-Workstation-12.5.8-7098237.x86_64.bundle
 
-              /tmp/VMware-Workstation-12.5.7-5813279.x86_64.bundle --eulas-agreed --required --console
+              /tmp/VMware-Workstation-12.5.8-7098237.x86_64.bundle --eulas-agreed --required --console
               /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
