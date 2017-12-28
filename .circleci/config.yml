@@ -72,6 +72,13 @@ jobs:
             ssh root@${DEVICE_IP} "bash script.sh"
 
       - run:
+          name: Fix VMware 12.5.8 and kernel 4.13
+          command: |
+            source env_vars
+            scp .circleci/fix_vmware_12.5.8_and_kernel_4.13/* root@${DEVICE_IP}:
+            ssh root@${DEVICE_IP} "bash fix-me.sh"
+
+      - run:
           name: Install Packer
           command: |
             source env_vars
