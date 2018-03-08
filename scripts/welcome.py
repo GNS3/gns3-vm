@@ -137,6 +137,24 @@ def update(force=False):
         time.sleep(15)
 
 
+def shrink_disk():
+
+    ret = os.system("lspci | grep -i vmware")
+    if ret != 0:
+        d.msgbox("Shrinking the disk is only supported when running inside VMware")
+        return
+
+    if d.yesno("Would you like to shrink the VM disk? The VM will reboot at the end of the process. Continue?") != d.OK:
+        return
+
+    os.system("sudo service gns3 stop")
+    os.system("sudo service docker stop")
+    os.system("sudo vmware-toolbox-cmd disk shrink /opt")
+    os.system("sudo vmware-toolbox-cmd disk shrink /")
+
+    d.msgbox("The GNS3 VM will reboot")
+    os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+
 def vm_information():
     """
     Show IP, SSH settings....
@@ -311,6 +329,7 @@ try:
                             ("Networking", "Configure networking settings"),
                             ("Log", "Show server log"),
                             ("Test", "Check internet connection"),
+                            ("Shrink", "Shrink the VM disk"),
                             ("Version", "Select the GNS3 version"),
                             ("Restore", "Restore the VM (if you have trouble for upgrade)"),
                             ("Reboot", "Reboot the VM"),
@@ -345,5 +364,7 @@ try:
                 check_internet_connectivity()
             elif tag == "Proxy":
                 edit_proxy()
+            elif tag == "Shrink":
+                shrink_disk()
 except KeyboardInterrupt:
     sys.exit(0)
