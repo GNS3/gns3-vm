@@ -39,6 +39,10 @@ git reset --hard HEAD
 git fetch origin
 git checkout 2.2
 git pull -u
+
+# async-timeout-3.0 drops support for Python 3.4
+echo -e "\nasync-timeout<3.0.0" >> requirements.txt
+
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 
