@@ -42,9 +42,6 @@ TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | tail -n 1`
 
 git checkout $TAG
 
-# async-timeout-3.0 drops support for Python 3.4
-echo -e "\nasync-timeout<3.0.0" >> requirements.txt
-
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 
