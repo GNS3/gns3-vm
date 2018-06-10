@@ -45,7 +45,7 @@ for prefix, uri in namespaces:
 
 with tempfile.TemporaryDirectory() as tmp_dir:
     print("Temporary directory: {}".format(tmp_dir))
-    subprocess.call(["tar", "-xvzf", sys.argv[1], "-C", tmp_dir])
+    subprocess.call(["tar", "-xvf", sys.argv[1], "-C", tmp_dir])
     ovf_path = os.path.join(tmp_dir, 'GNS3 VM.ovf')
 
     print("=> Content of GNS3 VM.ovf")
@@ -91,10 +91,14 @@ with tempfile.TemporaryDirectory() as tmp_dir:
                 connection.text = "nat"
             connection_id += 1
 
+    for extra in root.iter('{http://www.vmware.com/schema/ovf}ExtraConfig'):
+        extra.set("{http://schemas.dmtf.org/ovf/envelope/1}required", "false")
+
     #tree.write(ovf_path, default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
     tree.write(ovf_path)
     subprocess.call(["ovftool",
                      "--overwrite",
+                     "--skipManifestCheck",
                      "--allowAllExtraConfig",
                      ovf_path,
                      sys.argv[2]])

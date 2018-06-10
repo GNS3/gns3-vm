@@ -5,17 +5,17 @@
       "hostname" : "gns3vm",
       "memory": "2048",
       "disk_size": "20000",
-      "data_disk": "100000",
+      "data_disk": "300000",
       "iso_checksum_type": "sha256",
-      "iso_checksum": "737ae7041212c628de5751d15c3016058b0e833fdc32e7420209b76ca3d0a535",
-      "iso_url": "http://releases.ubuntu.com/16.04/ubuntu-16.04.2-server-amd64.iso",
+      "iso_checksum": "7a1c2966f82268c14560386fbc467d58c3fbd2793f3b1f657baee609b80d39a8",
+      "iso_url": "http://releases.ubuntu.com/18.04/ubuntu-18.04-live-server-amd64.iso",
       "gns3_version": "{{env `GNS3_VERSION`}}"
    },
    "provisioners" : [
       {
          "destination" : "/tmp/config",
          "type" : "file",
-         "source" : "config/16.04"
+         "source" : "config/18.04"
       },
       {
          "destination" : "/tmp/gns3welcome.py",
@@ -44,7 +44,7 @@
          "type" : "shell",
          "script" : "scripts/cleaner.sh"
       }
-    ],
+   ],
    "builders" : [
       {
          "type" : "virtualbox-iso",

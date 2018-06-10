@@ -88,15 +88,14 @@ else:
 
 
 def mode():
-    if d.yesno("This feature is for testers only. You can break your GNS3 install. Are you REALLY sure you want to continue?", yes_label="Exit (Safe option)", no_label="Continue") == d.OK:
+    if d.yesno("This feature is for testers only. You may break your GNS3 installation. Are you REALLY sure you want to continue?", yes_label="Exit (Safe option)", no_label="Continue") == d.OK:
         return
-    d.msgbox("You have been warned...")
     code, tag = d.menu("Select the GNS3 version",
-                       choices=[("1.4", "Old stable release"),
-                                ("1.5", "Old stable release"),
-                                ("2.0", "Current stable release RECOMMENDED"),
-                                ("2.0dev", "Next stable release development version"),
-                                ("2.1", "Totaly unstable version")])
+                       choices=[("1.5", "Old stable release"),
+                                ("2.0", "Old stable release"),
+                                ("2.1", "Current stable release (RECOMMENDED)"),
+                                ("2.1dev", "Next stable release development version"),
+                                ("2.2", "Totally unstable version")])
     d.clear()
     if code == Dialog.OK:
         os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
@@ -129,7 +128,7 @@ def update(force=False):
         if d.yesno("PLEASE SNAPSHOT THE VM BEFORE RUNNING THE UPGRADE IN CASE OF FAILURE. The server will reboot at the end of the upgrade process. Continue?") != d.OK:
             return
     release = get_release()
-    if release == "1.4dev" or release == "2.0dev" or release == "2.1" or release == "1.5dev":
+    if release.endswith("dev") or release == "2.2":
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     else:
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
@@ -137,6 +136,24 @@ def update(force=False):
         print("ERROR DURING UPGRADE PROCESS PLEASE TAKE A SCREENSHOT IF YOU NEED SUPPORT")
         time.sleep(15)
 
+
+def shrink_disk():
+
+    ret = os.system("lspci | grep -i vmware")
+    if ret != 0:
+        d.msgbox("Shrinking the disk is only supported when running inside VMware")
+        return
+
+    if d.yesno("Would you like to shrink the VM disk? The VM will reboot at the end of the process. Continue?") != d.OK:
+        return
+
+    os.system("sudo service gns3 stop")
+    os.system("sudo service docker stop")
+    os.system("sudo vmware-toolbox-cmd disk shrink /opt")
+    os.system("sudo vmware-toolbox-cmd disk shrink /")
+
+    d.msgbox("The GNS3 VM will reboot")
+    os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
 
 def vm_information():
     """
@@ -212,6 +229,7 @@ def set_security():
 
 
 def log():
+    os.system("/usr/bin/sudo chmod 755 /var/log/upstart/gns3.log")
     with open("/var/log/upstart/gns3.log") as f:
         try:
             while True:
@@ -322,6 +340,7 @@ try:
                             ("Networking", "Configure networking settings"),
                             ("Log", "Show server log"),
                             ("Test", "Check internet connection"),
+                            ("Shrink", "Shrink the VM disk"),
                             ("Version", "Select the GNS3 version"),
                             ("Restore", "Restore the VM (if you have trouble for upgrade)"),
                             ("Reboot", "Reboot the VM"),
@@ -356,5 +375,7 @@ try:
                 check_internet_connectivity()
             elif tag == "Proxy":
                 edit_proxy()
+            elif tag == "Shrink":
+                shrink_disk()
 except KeyboardInterrupt:
     sys.exit(0)

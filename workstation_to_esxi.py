@@ -48,7 +48,7 @@ for prefix, uri in namespaces:
 
 with tempfile.TemporaryDirectory() as tmp_dir:
     print("Temporary directory: {}".format(tmp_dir))
-    subprocess.call(["tar", "-xvzf", sys.argv[1], "-C", tmp_dir])
+    subprocess.call(["tar", "-xvf", sys.argv[1], "-C", tmp_dir])
 
     ovf_path = os.path.join(tmp_dir, 'GNS3 VM.ovf')
     print("=> Content of GNS3 VM.ovf")
@@ -106,6 +106,7 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     tree.write(ovf_path)
     subprocess.call(["ovftool",
                      "--overwrite",
+                     "--skipManifestCheck",
                      os.path.join(tmp_dir, 'GNS3 VM.ovf'),
                      sys.argv[2]])
 

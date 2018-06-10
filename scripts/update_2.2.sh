@@ -16,13 +16,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Update script called from the GNS 3 VM in stable mode
+# Update script called from the GNS 3 VM in unstable mode
 #
 
 set -e
 
-export BRANCH="master"
-export UNSTABLE_APT="0"
+export BRANCH="unstable"
+export UNSTABLE_APT="1"
 
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
 
@@ -36,12 +36,9 @@ fi
 
 cd gns3-server
 git reset --hard HEAD
-git fetch origin --tags
-
-TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | tail -n 1`
-
-git checkout $TAG
-sed -i.bak "s/yarl>=0.9.8/yarl>=0.9.8,<0.10/g" requirements.txt
+git fetch origin
+git checkout 2.2
+git pull -u
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 
