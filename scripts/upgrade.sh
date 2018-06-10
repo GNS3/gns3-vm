@@ -22,10 +22,10 @@
 export DEBIAN_FRONTEND="noninteractive"
 export UBUNTU_VERSION=`lsb_release -r -s`
 
-# For test we upgrade from the 16.04 branch
-if [ "$UBUNTU_VERSION" == "16.04" ]
+# For test we upgrade from the 18.04 branch
+if [ "$UBUNTU_VERSION" == "18.04" ]
 then
-  export BRANCH="16.04"
+  export BRANCH="18.04"
 fi
 
 set -e

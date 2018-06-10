@@ -17,7 +17,7 @@ fi
 
 IP="$1"
 
-rsync -av config/16.04 gns3@$IP:/tmp/config/
+rsync -av config/18.04 gns3@$IP:/tmp/config/
 scp scripts/welcome.py gns3@$IP:/usr/local/bin/gns3welcome.py
 
 ssh gns3@$IP "cd /tmp/config && sudo bash install.sh"
