@@ -104,3 +104,9 @@ then
     sudo dpkg -i /tmp/docker.deb
     echo -n '0.10.14' > /home/gns3/.config/GNS3/gns3vm_version
 fi
+
+if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.14' ]
+then
+    sudo apt-get purge -y open-vm-tools
+    sudo apt-get install -y open-vm-tools
+fi
