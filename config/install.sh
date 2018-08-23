@@ -38,7 +38,7 @@ fi
 
 add-apt-repository -y ppa:gns3/qemu
 
-if [ "$UNSTABLE_APT" == "1" ]
+if [ "$UNSTABLE_APT" = "1" ]
 then
     add-apt-repository -y ppa:gns3/ppa
     add-apt-repository -y -r ppa:gns3/unstable
@@ -54,11 +54,6 @@ apt-get update
 apt-get install -y vde2 uml-utilities
 
 # VMware open-vm-tools
-echo "Installing open-vm-tools"
-sleep 5
-apt-get -y remove open-vm-tools
-apt-get -y autoremove
-apt-get -y purge open-vm-tools
 apt-get -y install open-vm-tools
 
 # Autologin
