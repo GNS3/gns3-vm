@@ -24,12 +24,6 @@ set -e
 export BRANCH="master"
 export UNSTABLE_APT="0"
 
-# Uninstall open-vm-tools because it created issues when upgrading.
-# it will be reinstalled later with the install.sh script
-sudo apt-get -y remove open-vm-tools
-sudo apt-get -y autoremove
-sudo apt-get -y purge open-vm-tools
-
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
 
 

@@ -47,6 +47,11 @@ else
     add-apt-repository -y ppa:gns3/unstable
 fi
 
+# Uninstall open-vm-tools because it created issues when upgrading.
+apt-get -y remove open-vm-tools
+apt-get -y autoremove
+apt-get -y purge open-vm-tools
+
 dpkg --add-architecture i386
 apt-get update
 
