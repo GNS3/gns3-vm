@@ -107,6 +107,8 @@ fi
 
 if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.14' ]
 then
+    echo "Reinstalling open-vm-tools"
+    sleep 5
     sudo apt-get purge -y open-vm-tools
     sudo apt-get install -y open-vm-tools
 fi
