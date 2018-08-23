@@ -54,6 +54,7 @@ apt-get update
 apt-get install -y vde2 uml-utilities
 
 # VMware open-vm-tools
+apt-get purge -y open-vm-tools
 apt-get install -y open-vm-tools
 
 # Autologin
