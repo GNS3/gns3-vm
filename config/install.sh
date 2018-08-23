@@ -54,8 +54,12 @@ apt-get update
 apt-get install -y vde2 uml-utilities
 
 # VMware open-vm-tools
-apt-get purge -y open-vm-tools
-apt-get install -y open-vm-tools
+echo "Installing open-vm-tools"
+sleep 5
+apt-get -y remove open-vm-tools
+apt-get -y autoremove
+apt-get -y purge open-vm-tools
+apt-get -y install open-vm-tools
 
 # Autologin
 apt-get install -y mingetty
