@@ -38,7 +38,7 @@ cd gns3-server
 git reset --hard HEAD
 git fetch origin --tags
 
-TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | tail -n 1`
+TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | xargs -I@ git log --format=format:'%ai @%n' -1 @ | sort | awk '{print $4}' | tail -n 1`
 
 git checkout $TAG
 
