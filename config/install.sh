@@ -24,6 +24,11 @@ set -e
 
 export DEBIAN_FRONTEND="noninteractive"
 
+# Uninstall open-vm-tools because it created issues when upgrading.
+apt-get -y remove open-vm-tools
+apt-get -y autoremove
+apt-get -y purge open-vm-tools
+
 # Sources.list
 cp sources.list /etc/apt/sources.list
 chmod 644 /etc/apt/sources.list
@@ -46,11 +51,6 @@ else
     add-apt-repository -y -r ppa:gns3/ppa
     add-apt-repository -y ppa:gns3/unstable
 fi
-
-# Uninstall open-vm-tools because it created issues when upgrading.
-apt-get -y remove open-vm-tools
-apt-get -y autoremove
-apt-get -y purge open-vm-tools
 
 dpkg --add-architecture i386
 apt-get update
