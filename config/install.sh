@@ -25,8 +25,11 @@ set -e
 export DEBIAN_FRONTEND="noninteractive"
 
 # Uninstall open-vm-tools because it created issues when upgrading.
-apt-get -y remove open-vm-tools
-apt-get -y autoremove
+if [ -f /etc/init.d/open-vm-tools ]
+then
+    /etc/init.d/open-vm-tools stop
+fi
+apt-get remove -y --auto-remove open-vm-tools
 
 # Sources.list
 cp sources.list /etc/apt/sources.list
@@ -58,8 +61,9 @@ apt-get update
 apt-get install -y vde2 uml-utilities
 
 # VMware open-vm-tools
-apt-get -y purge open-vm-tools
-apt-get -y install open-vm-tools
+apt-get purge -y --auto-remove open-vm-tools
+rm -R /etc/vmware-tools
+apt-get install -y open-vm-tools
 
 # Autologin
 apt-get install -y mingetty
