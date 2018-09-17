@@ -57,6 +57,9 @@ fi
 dpkg --add-architecture i386
 apt-get update
 
+# Do not ask users any question
+DEBIAN_FRONTEND=noninteractive apt-get -y -o DPkg::options::="--force-confdef" -o DPkg::options::="--force-confold" upgrade
+
 # VDE network
 apt-get install -y vde2 uml-utilities
 
