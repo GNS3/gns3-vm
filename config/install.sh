@@ -27,7 +27,6 @@ export DEBIAN_FRONTEND="noninteractive"
 # Uninstall open-vm-tools because it created issues when upgrading.
 apt-get -y remove open-vm-tools
 apt-get -y autoremove
-apt-get -y purge open-vm-tools
 
 # Sources.list
 cp sources.list /etc/apt/sources.list
@@ -59,6 +58,7 @@ apt-get update
 apt-get install -y vde2 uml-utilities
 
 # VMware open-vm-tools
+apt-get -y purge open-vm-tools
 apt-get -y install open-vm-tools
 
 # Autologin
