@@ -62,7 +62,10 @@ apt-get install -y vde2 uml-utilities
 
 # VMware open-vm-tools
 apt-get purge -y --auto-remove open-vm-tools
-rm -R /etc/vmware-tools
+if [ -d /etc/vmware-tools ]
+then
+    rm -R /etc/vmware-tools
+fi
 apt-get install -y open-vm-tools
 
 # Autologin
