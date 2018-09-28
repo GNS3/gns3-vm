@@ -130,7 +130,7 @@ def get_all_versions(major_version):
         command = "git tag -l 'v{major_version}*' | grep -v '[abr]' | sort -rV".format(major_version=major_version)
         results = subprocess.check_output(command, shell=True).decode().splitlines()
         for version in results:
-            versions.append((version, "Version {}".format(versions[1:])))
+            versions.append((version, "Version {}".format(version[1:])))
         return versions
     except subprocess.CalledProcessError:
         return None
@@ -144,16 +144,16 @@ def update(force=False):
     if release.endswith("dev") or release == "2.2":
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     else:
-        versions = get_all_versions(release)
-        if not versions:
-            d.infobox("No GNS3 versions could be found")
-            return
-        code, version = d.menu("Select the GNS3 version", choices=versions)
-        d.clear()
-        if code == Dialog.OK:
-            ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh {}".format(release, version))
-        else:
-            return
+        #versions = get_all_versions(release)
+        #if not versions:
+        #    d.infobox("No GNS3 versions could be found")
+        #    return
+        #code, version = d.menu("Select the GNS3 version", choices=versions)
+        #d.clear()
+        #if code == Dialog.OK:
+        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh {}".format(release, version))
+        #else:
+        #    return
     if ret != 0:
         print("ERROR DURING UPGRADE PROCESS PLEASE TAKE A SCREENSHOT IF YOU NEED SUPPORT")
         time.sleep(15)
