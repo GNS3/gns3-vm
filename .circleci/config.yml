@@ -80,7 +80,7 @@ jobs:
 
               if [ ! -f "/tmp/packer.zip" ]
               then
-                wget https://releases.hashicorp.com/packer/1.0.4/packer_1.0.4_linux_amd64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.3.1/packer_1.3.1_linux_amd64.zip -O /tmp/packer.zip
               fi
 
               unzip -o /tmp/packer.zip -d /usr/local/bin/

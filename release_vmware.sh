@@ -44,7 +44,6 @@ echo "Upgrade with packer"
 rm "/tmp/GNS3VM.VMWare.${GNS3VM_VERSION}.ova"
 rm -Rf output-vmware-vmx
 export GNS3_SRC="output-vmx/gns3.vmx"
-export PACKER_LOG=1
 packer build -only=vmware-vmx gns3_release.json
 
 cd output-vmware-vmx
