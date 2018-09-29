@@ -139,7 +139,7 @@
          "vm_name" : "GNS3 VM",
          "ssh_username" : "{{user `ssh_name`}}",
          "iso_checksum" : "{{user `iso_checksum`}}",
-         "guest_os_type" : "Ubuntu_64",
+         "guest_os_type" : "ubuntu-64",
          "ssh_password" : "{{user `ssh_pass`}}",
          "boot_command" : [
             "<esc><wait>",
@@ -161,7 +161,7 @@
             "<enter><wait>"
          ],
          "guest_additions_mode" : "disable",
-         "guest_os_type": "Ubuntu_64",
+         "guest_os_type": "ubuntu-64",
          "iso_url" : "{{user `iso_url`}}"
       },
       {
