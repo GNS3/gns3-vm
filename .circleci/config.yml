@@ -2,7 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -27,7 +27,7 @@ jobs:
           name: Get builder device
           command: |
             source env/bin/activate
-            DEVICE_IP=`python3 .circleci/device.py ${PACKET_TOKEN} get "${PACKET_PROJECT}"`
+            DEVICE_IP=`python3 .circleci/device.py ${PACKET_TOKEN_2} get "${PACKET_PROJECT}"`
             echo "export DEVICE_IP=\"$DEVICE_IP\"" >> env_vars
             echo "Obtained device on $DEVICE_IP"
             ssh-keyscan -H ${DEVICE_IP} >> ~/.ssh/known_hosts
@@ -155,10 +155,10 @@ jobs:
             scp root@${DEVICE_IP}:"gns3-vm/GNS3\ VM\ *.zip" artifacts
       - run:
           name: Destroy device
-#          when: always
+          when: always
           command: |
             source env/bin/activate
-            python3 .circleci/device.py ${PACKET_TOKEN} destroy "${PACKET_PROJECT}"
+            python3 .circleci/device.py ${PACKET_TOKEN_2} destroy "${PACKET_PROJECT}"
       - deploy:
           name: Deploying on Github and SourceForge
           command: |
