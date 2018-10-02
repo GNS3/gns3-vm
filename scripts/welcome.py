@@ -235,7 +235,7 @@ def log():
             while True:
                 line = f.readline()
                 sys.stdout.write(line)
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, MemoryError):
             return
 
 

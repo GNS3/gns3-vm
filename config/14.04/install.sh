@@ -24,6 +24,13 @@ set -e
 
 export DEBIAN_FRONTEND="noninteractive"
 
+# Uninstall open-vm-tools because it created issues when upgrading.
+if [ -f /etc/init.d/open-vm-tools ]
+then
+    /etc/init.d/open-vm-tools stop
+fi
+apt-get remove -y --auto-remove open-vm-tools
+
 # Sources.list
 cp sources.list /etc/apt/sources.list
 chmod 644 /etc/apt/sources.list
@@ -36,7 +43,9 @@ then
     apt-get install -y software-properties-common
 fi
 
-if [ "$UNSTABLE_APT" == "1" ]
+add-apt-repository -y ppa:gns3/qemu
+
+if [ "$UNSTABLE_APT" = "1" ]
 then
     add-apt-repository -y ppa:gns3/ppa
     add-apt-repository -y -r ppa:gns3/unstable
@@ -48,14 +57,25 @@ fi
 dpkg --add-architecture i386
 apt-get update
 
+# Do not ask users any question
+DEBIAN_FRONTEND=noninteractive apt-get -y -o DPkg::options::="--force-confdef" -o DPkg::options::="--force-confold" upgrade
+
+# VDE network
+apt-get install -y vde2 uml-utilities
+
 # VMware open-vm-tools
+apt-get purge -y --auto-remove open-vm-tools
+if [ -d /etc/vmware-tools ]
+then
+    rm -R /etc/vmware-tools
+fi
 apt-get install -y open-vm-tools
 
 # Autologin
 apt-get install -y mingetty
 
 # Python
-apt-get install -y python3-dev python3.5-dev python3-setuptools
+apt-get install -y python3-dev python3.4-dev python3-setuptools
 
 # Install netifaces
 apt-get install -y python3-netifaces
