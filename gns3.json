@@ -7,8 +7,8 @@
       "disk_size": "20000",
       "data_disk": "300000",
       "iso_checksum_type": "sha256",
-      "iso_checksum": "7a1c2966f82268c14560386fbc467d58c3fbd2793f3b1f657baee609b80d39a8",
-      "iso_url": "http://releases.ubuntu.com/18.04/ubuntu-18.04-live-server-amd64.iso",
+      "iso_checksum": "a825805899310626474ec22340bf42b69ccb222aeb0ff1ed481793fa3e81cbfb",
+      "iso_url": "http://releases.ubuntu.com/18.04/ubuntu-18.04.1-live-server-amd64.iso",
       "gns3_version": "{{env `GNS3_VERSION`}}"
    },
    "provisioners" : [
