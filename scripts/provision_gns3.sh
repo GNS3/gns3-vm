@@ -22,7 +22,7 @@ fi
 
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo apt-get install -y --force-yes python3-setuptools python3.5dev
+sudo apt-get install -y --force-yes python3-setuptools python3.6-dev
 
 set -e
 

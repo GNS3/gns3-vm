@@ -1,11 +1,11 @@
 ###### Ubuntu Update Repos
-deb http://archive.ubuntu.com/ubuntu/ xenial-security main restricted universe 
-deb http://archive.ubuntu.com/ubuntu/ xenial-updates main restricted universe 
-deb http://archive.ubuntu.com/ubuntu/ xenial main restricted universe 
-deb http://archive.ubuntu.com/ubuntu/ xenial-backports main restricted universe 
+deb http://archive.ubuntu.com/ubuntu/ bionic-security main restricted universe
+deb http://archive.ubuntu.com/ubuntu/ bionic-updates main restricted universe
+deb http://archive.ubuntu.com/ubuntu/ bionic main restricted universe
+deb http://archive.ubuntu.com/ubuntu/ bionic-backports main restricted universe
 
 # Fast but unstable mirrors near you
-#deb mirror://mirrors.ubuntu.com/mirrors.txt xenial main restricted universe multiverse
-#deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-updates main restricted universe multiverse
-#deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-backports main restricted universe multiverse
-#deb mirror://mirrors.ubuntu.com/mirrors.txt xenial-security main restricted universe multiverse
+#deb mirror://mirrors.ubuntu.com/mirrors.txt bionic main restricted universe multiverse
+#deb mirror://mirrors.ubuntu.com/mirrors.txt bionic-updates main restricted universe multiverse
+#deb mirror://mirrors.ubuntu.com/mirrors.txt bionic-backports main restricted universe multiverse
+#deb mirror://mirrors.ubuntu.com/mirrors.txt bionic-security main restricted universe multiverse

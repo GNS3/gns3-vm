@@ -36,14 +36,18 @@ then
     apt-get install -y software-properties-common
 fi
 
-if [ "$UNSTABLE_APT" == "1" ]
-then
-    add-apt-repository -y ppa:gns3/ppa
-    add-apt-repository -y -r ppa:gns3/unstable
-else
-    add-apt-repository -y -r ppa:gns3/ppa
-    add-apt-repository -y ppa:gns3/unstable
-fi
+#FIXME: unstable repository
+
+add-apt-repository -y ppa:gns3/ppa
+
+#if [ "$UNSTABLE_APT" == "1" ]
+#then
+#    add-apt-repository -y ppa:gns3/ppa
+#    add-apt-repository -y -r ppa:gns3/unstable
+#else
+#    add-apt-repository -y -r ppa:gns3/ppa
+#    add-apt-repository -y ppa:gns3/unstable
+#fi
 
 dpkg --add-architecture i386
 apt-get update
@@ -55,7 +59,7 @@ apt-get install -y open-vm-tools
 apt-get install -y mingetty
 
 # Python
-apt-get install -y python3-dev python3.5-dev python3-setuptools
+apt-get install -y python3-dev python3.6-dev python3-setuptools
 
 # Install netifaces
 apt-get install -y python3-netifaces
@@ -73,15 +77,18 @@ apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 apt-get install -y dynamips iouyap ubridge
 
 # Install docker
-curl -sSL https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb > /tmp/docker.deb
-sudo apt-get install -y libltdl7 libsystemd-journal0
+curl -sSL https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb > /tmp/docker.deb
+sudo apt-get install -y libltdl7
+# libsystemd-journal0
 sudo dpkg -i /tmp/docker.deb
 sudo usermod -aG docker gns3
 sudo service docker stop
 sudo rm -rf /var/lib/docker/aufs
+# necessary to prevent docker from being blocked
+systemctl mask systemd-networkd-wait-online.service
 
 # Install VNC support for Docker
-apt-get install -y x11vnc xvfb
+apt-get install -y tigervnc-standalone-server
 
 # Install iou dependencies
 apt-get install -y gns3-iou 
@@ -89,36 +96,27 @@ apt-get install -y gns3-iou
 # Setup Python 3
 apt-get install -y python3-pip
 
+# Install net-tools for ifconfig etc.
+apt-get install -y net-tools
+
 cp "rc.local" "/etc/rc.local"
 chmod 700 /etc/rc.local
 chown root:root /etc/rc.local
 
-# Setup dhclient
-cp "dhclient.conf" "/etc/dhcp/dhclient.conf"
-chown root:root /etc/dhcp/dhclient.conf
-chmod 644 /etc/dhcp/dhclient.conf
+# Setup netplan
+cp "gns3vm_default_netcfg.yaml" "/etc/netplan/80_gns3vm_default_netcfg.yaml"
+chown root:root /etc/netplan/80_gns3vm_default_netcfg.yaml
+chmod 644 /etc/netplan/80_gns3vm_default_netcfg.yaml
+cp "gns3vm_static_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
+chown root:root /etc/netplan/90_gns3vm_static_netcfg.yaml
+chmod 644 /etc/netplan/90_gns3vm_static_netcfg.yaml
+netplan apply
 
 # Setup grub
 cp "grub" "/etc/default/grub"
 chown root:root /etc/default/grub
 chmod 700 /etc/default/grub
 update-grub
-
-# Configure network
-if [ -f /etc/network/interfaces ]
-then
-    # We need to detect if user has modify the config for eth0 (ESXi without vsphere)
-    if grep -q 'MANUAL=1' /etc/network/interfaces
-    then
-        echo "User asked for not replacing /etc/network/interfaces"
-    else
-        cp interfaces /etc/network/interfaces
-    fi
-else
-    cp interfaces /etc/network/interfaces
-fi
-chmod 644 /etc/network/interfaces
-chown root:root /etc/network/interfaces
 
 # Zerofree
 cp zerofree /usr/local/bin/zerofree

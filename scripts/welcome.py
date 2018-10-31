@@ -35,7 +35,7 @@ def get_ip():
     """
     Return the IP of the eth0
     """
-    my_ip = subprocess.Popen(['ifconfig eth0 | grep "inet\ addr" | cut -d: -f2 | cut -d" " -f1'], stdout=subprocess.PIPE, shell=True)
+    my_ip = subprocess.Popen([r"ip addr show eth0 | awk '/inet / {print $2}' | cut -d/ -f1"], stdout=subprocess.PIPE, shell=True)
     (IP,errors) = my_ip.communicate()
     my_ip.stdout.close()
     if len(IP) == 0:
@@ -196,7 +196,7 @@ def check_internet_connectivity():
     try:
         response = urllib.request.urlopen('http://pypi.python.org/', timeout=5)
     except urllib.request.URLError as err:
-        d.infobox("Can't connect to gns3.com: {}".format(str(err)))
+        d.infobox("Can't connect to Internet: {}".format(str(err)))
         time.sleep(15)
         return
     d.infobox("Connection to internet: OK")
@@ -229,8 +229,8 @@ def set_security():
 
 
 def log():
-    os.system("/usr/bin/sudo chmod 755 /var/log/upstart/gns3.log")
-    with open("/var/log/upstart/gns3.log") as f:
+    os.system("/usr/bin/sudo chmod 755 /var/log/gns3/gns3.log")
+    with open("/var/log/gns3/gns3.log") as f:
         try:
             while True:
                 line = f.readline()
@@ -252,7 +252,8 @@ def edit_network():
     """
     if d.yesno("The server will reboot at the end of the process. Continue?") != d.OK:
         return
-    os.system("sudo nano /etc/network/interfaces")
+    os.system("sudo nano /etc/netplan/90_gns3vm_static_netcfg.yaml")
+    os.system("sudo netplan apply")
     os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
 
 

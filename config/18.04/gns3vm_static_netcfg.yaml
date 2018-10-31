@@ -1,0 +1,15 @@
+# This file describes the network interfaces available on your system
+# For more information, see netplan(5).
+
+# Uncomment the following lines if you want to manually configure your network
+
+#network:
+#  version: 2
+#  renderer: networkd
+#  ethernets:
+#    eth0:
+#      addresses:
+#        - 10.10.10.2/24
+#      gateway4: 10.10.10.1
+#      nameservers:
+#          addresses: [8.8.8.8, 8.8.8.4]
