@@ -32,12 +32,12 @@ except locale.Error:
     pass
 
 
-def get_ip(adapter="eth0"):
+def get_ip():
     """
-    Returns an adapter IP address.
+    Returns eth0 IP address.
     """
 
-    my_ip = subprocess.Popen([r"ip addr show {adapter} | awk '/inet / {print $2}' | cut -d/ -f1".format(adapter=adapter)],
+    my_ip = subprocess.Popen([r"ip addr show eth0 | awk '/inet / {print $2}' | cut -d/ -f1"],
                              stdout=subprocess.PIPE,
                              shell=True)
 
@@ -136,7 +136,7 @@ def update(force=False):
             return
     release = get_release()
 
-    if release == "2.2dev":
+    if release == "2.2dev" or release == "2.2":
         #FIXME: temporary for GNS3 VM development
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/18.04/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     elif release.endswith("dev"):

@@ -7,9 +7,6 @@
 
 set -e
 
-
-
-
 export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
 export GNS3_VM_FILE=$2
