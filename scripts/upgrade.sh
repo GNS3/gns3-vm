@@ -16,19 +16,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-# Upgrade VM to a new release if require
+# Upgrade VM to a new release
 #
+
+# Exit immediately if a command exits with a non-zero status.
+set -e
 
 export DEBIAN_FRONTEND="noninteractive"
 export UBUNTU_VERSION=`lsb_release -r -s`
 
-# For test we upgrade from the 18.04 branch
+#FIXME: for development, we upgrade from the 18.04 branch
 if [ "$UBUNTU_VERSION" == "18.04" ]
 then
-  export BRANCH="18.04"
+    export BRANCH="18.04"
 fi
-
-set -e
 
 cd /tmp
 rm -Rf gns3-vm-*
@@ -37,12 +38,14 @@ curl --location "https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz" > gns
 tar -xzf gns3vm.tar.gz
 rm gns3vm.tar.gz
 
-cd gns3-vm-${BRANCH}/config/${UBUNTU_VERSION}
+# install required Ubuntu packages including GNS3 dependencies
+cd gns3-vm-${BRANCH}/config
 sudo bash -x install.sh
 
 sudo dpkg --configure -a
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade -y 
 
+# upgrade the GNS3 welcome script
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/welcome.py" > /tmp/gns3welcome.py
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 755 "/usr/local/bin/gns3welcome.py"

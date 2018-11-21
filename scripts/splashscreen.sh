@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install boot splashscreen
+# Install boot splash screen
 
 set -e
 

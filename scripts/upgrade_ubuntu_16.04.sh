@@ -77,5 +77,5 @@ EOF
 rm /etc/init/gns3.conf
 rm /etc/init.d/network
 rm /etc/network/if-up.d/gns3-ifup
-do-release-upgrade -q  -f DistUpgradeViewNonInteractive 
+do-release-upgrade -q -f DistUpgradeViewNonInteractive
 reboot

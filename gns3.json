@@ -16,7 +16,7 @@
       {
          "destination" : "/tmp/config",
          "type" : "file",
-         "source" : "config/18.04"
+         "source" : "config/"
       },
       {
          "destination" : "/tmp/gns3welcome.py",

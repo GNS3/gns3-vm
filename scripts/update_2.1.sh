@@ -15,18 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-#
-# Update script called from the GNS 3 VM in stable mode
-#
 
+# Exit immediately if a command exits with a non-zero status.
 set -e
 
-export BRANCH="master"
+export BRANCH="18.04"  #FIXME: for development, we upgrade from the 18.04 branch (originally master branch)
 export UNSTABLE_APT="0"
 
+# upgrade the GNS3 VM first
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
 
-
+# install the GNS3 server
 if [ ! -d "gns3-server" ]
 then
     sudo apt-get update
@@ -38,14 +37,12 @@ cd gns3-server
 git reset --hard HEAD
 git fetch origin --tags
 
+# get the latest tag for stable release of 2.1
 TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | sort -V | tail -n 1`
-
 git checkout $TAG
-
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 
-echo "Reboot in 5s"
-sleep 5
-
+echo "Update completed, rebooting in 10 seconds..."
+sleep 10
 sudo reboot

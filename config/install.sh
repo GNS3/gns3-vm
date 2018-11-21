@@ -20,6 +20,7 @@
 # the directory before running it
 #
 
+# Exit immediately if a command exits with a non-zero status.
 set -e
 
 export DEBIAN_FRONTEND="noninteractive"
@@ -36,7 +37,7 @@ then
     apt-get install -y software-properties-common
 fi
 
-#FIXME: unstable repository
+#FIXME: unstable repository, need to upload unstable packages
 
 add-apt-repository -y ppa:gns3/ppa
 
@@ -74,7 +75,7 @@ apt-get install -y vpcs
 apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 
 # Install gns3 dependencies
-apt-get install -y dynamips iouyap ubridge
+apt-get install -y dynamips ubridge
 
 # Install docker
 curl -sSL https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb > /tmp/docker.deb
