@@ -123,7 +123,7 @@ def get_release():
             content = f.read()
             return content
     except OSError:
-        return "2.1"
+        return "2.2"
 
 
 def update(force=False):

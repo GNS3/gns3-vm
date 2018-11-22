@@ -21,7 +21,6 @@ set -e
 
 export BRANCH="18.04"  #FIXME: for development, we upgrade from the 18.04 branch (originally unstable branch)
 export UNSTABLE_APT="1"
-export GNS3_SERVER_DEV_BRANCH="2.1"
 
 # upgrade the GNS3 VM first
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
@@ -37,7 +36,7 @@ fi
 cd gns3-server
 git reset --hard HEAD
 git fetch origin
-git checkout $GNS3_SERVER_DEV_BRANCH
+git checkout 2.1
 git pull -u
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
