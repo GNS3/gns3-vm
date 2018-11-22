@@ -10,13 +10,14 @@
       "iso_checksum": "a5b0ea5918f850124f3d72ef4b85bda82f0fcd02ec721be19c1a6952791c8ee8",
       "iso_url": "http://cdimage.ubuntu.com/ubuntu/releases/bionic/release/ubuntu-18.04.1-server-amd64.iso",
       "gns3_version": "{{env `GNS3_VERSION`}}",
+      "gns3_update_flavor": "2.2dev",
       "boot_command_prefix": "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>"
    },
    "provisioners" : [
       {
          "destination" : "/tmp/config",
          "type" : "file",
-         "source" : "config/"
+         "source" : "config"
       },
       {
          "destination" : "/tmp/gns3welcome.py",
@@ -38,8 +39,19 @@
          "source" : "version"
       },
       {
+         "type": "shell",
+         "script": "scripts/splashscreen.sh"
+      },
+      {
+        "inline": "echo -n \"{{user `gns3_update_flavor`}}\" > /home/gns3/.config/GNS3/gns3_release",
+        "type": "shell"
+      },
+      {
          "type" : "shell",
-         "script" : "scripts/splashscreen.sh"
+         "script" : "scripts/provision_gns3.sh",
+          "environment_vars": [
+            "GNS3_VERSION={{user `gns3_version`}}"
+          ]
       },
       {
          "type" : "shell",
@@ -140,7 +152,6 @@
          "vm_name" : "GNS3 VM",
          "ssh_username" : "{{user `ssh_name`}}",
          "iso_checksum" : "{{user `iso_checksum`}}",
-         "guest_os_type" : "ubuntu-64",
          "ssh_password" : "{{user `ssh_pass`}}",
          "boot_command": [
             "{{ user `boot_command_prefix` }}",

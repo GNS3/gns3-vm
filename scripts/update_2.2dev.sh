@@ -37,7 +37,7 @@ cd gns3-server
 git reset --hard HEAD
 git fetch origin
 git checkout 2.2
-git pull -u
+git pull
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 
