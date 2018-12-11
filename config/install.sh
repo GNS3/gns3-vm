@@ -73,6 +73,7 @@ apt-get install -y vpcs
 
 # Install qemu
 apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
+sudo usermod -aG kvm gns3
 
 # Install gns3 dependencies
 apt-get install -y dynamips ubridge
