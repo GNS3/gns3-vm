@@ -37,17 +37,15 @@ then
     apt-get install -y software-properties-common
 fi
 
-#FIXME: unstable repository, need to upload unstable packages
-
-add-apt-repository -y ppa:gns3/ppa
-
+# use sudo -E to preserve proxy config
+sudo -E add-apt-repository -y ppa:gns3/ppa
 #if [ "$UNSTABLE_APT" == "1" ]
 #then
-#    add-apt-repository -y ppa:gns3/ppa
+#    sudo -E add-apt-repository -y ppa:gns3/ppa
 #    add-apt-repository -y -r ppa:gns3/unstable
 #else
 #    add-apt-repository -y -r ppa:gns3/ppa
-#    add-apt-repository -y ppa:gns3/unstable
+#    sudo -E add-apt-repository -y ppa:gns3/unstable
 #fi
 
 # Allows to install 32-bit packages

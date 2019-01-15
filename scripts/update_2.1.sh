@@ -35,11 +35,18 @@ fi
 
 cd gns3-server
 git reset --hard HEAD
-git fetch origin --tags
 
-# get the latest tag for stable release of 2.1
-TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | sort -V | tail -n 1`
-git checkout $TAG
+if [ -z "$1" ]
+then
+  # get the latest tag for stable release of 2.1
+  git fetch origin --tags
+  LATEST_VERSION_TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | sort -V | tail -n 1`
+  git checkout $LATEST_VERSION_TAG
+else
+  git checkout $1
+fi
+
+
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 

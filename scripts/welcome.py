@@ -24,6 +24,7 @@ import time
 import subprocess
 import configparser
 import urllib.request
+import json
 from dialog import Dialog, PythonDialogBug
 
 try:
@@ -127,6 +128,39 @@ def get_release():
         return "2.2"
 
 
+def get_all_releases(version):
+    """
+    Returns all releases for a corresponding version (e.g. 2.1)
+    Excludes alphas, betas, RCs and development releases.
+    """
+
+    releases = []
+    try:
+        tags_url = urllib.request.urlopen("https://api.github.com/repos/GNS3/gns3-server/tags")
+        raw_data = tags_url.read()
+    except urllib.request.URLError as e:
+        d.infobox("Cannot connect to GitHub to get the GNS3 versions: {}".format(str(e)))
+        return None
+    encoding = tags_url.info().get_content_charset("utf-8")
+    try:
+        json_data = json.loads(raw_data.decode(encoding))
+    except ValueError as e:
+        d.infobox("Invalid JSON data received: {}".format(str(e)))
+        return None
+    for tag in json_data:
+        release = tag.get("name")
+        if release and release[1:].startswith(version) and not re.search("dev|a|rc|b", release):
+            releases.append(release)
+
+    def atoi(text):
+        return int(text) if text.isdigit() else text
+
+    def natural_keys(text):
+        return [atoi(c) for c in re.split(r"(\d+)", text)]
+
+    return sorted(releases, key=natural_keys, reverse=True)
+
+
 def update(force=False):
     """
     Updates the GNS3 VM.
@@ -142,8 +176,23 @@ def update(force=False):
         # development release (unstable), download and execute update script from the unstable branch on GitHub
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     else:
-        # current release (stable), download and execute update script from the stable branch on GitHub
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
+        releases = get_all_releases(release)
+
+        if len(releases) > 1:
+            choices = []
+            for version in releases:
+                choices.append((version, "Version {}".format(version)))
+            code, tag = d.menu("Select the GNS3 version",
+                               choices=choices)
+            d.clear()
+            if code == Dialog.OK:
+                # current release (stable), download and execute update script from the stable branch on GitHub
+                ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh {}".format(release, tag))
+            else:
+                return
+        else:
+            # current release (stable), download and execute update script from the stable branch on GitHub
+            ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     if ret != 0:
         print("ERROR DURING THE UPDATE PROCESS PLEASE, TAKE A SCREENSHOT IF YOU NEED SUPPORT")
         time.sleep(30)
