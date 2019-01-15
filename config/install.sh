@@ -36,15 +36,16 @@ then
     apt-get install -y software-properties-common
 fi
 
-add-apt-repository -y ppa:gns3/qemu
+# Use sudo -E in case there is a proxy config
+sudo -E add-apt-repository -y ppa:gns3/qemu
 
 if [ "$UNSTABLE_APT" == "1" ]
 then
-    add-apt-repository -y ppa:gns3/ppa
+    sudo -E add-apt-repository -y ppa:gns3/ppa
     add-apt-repository -y -r ppa:gns3/unstable
 else
     add-apt-repository -y -r ppa:gns3/ppa
-    add-apt-repository -y ppa:gns3/unstable
+    sudo -E add-apt-repository -y ppa:gns3/unstable
 fi
 
 dpkg --add-architecture i386
