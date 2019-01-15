@@ -41,6 +41,6 @@ git pull
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 
-echo "Update completed, rebooting in 10 seconds..."
+echo "Update to 2.2dev completed, rebooting in 10 seconds..."
 sleep 10
 sudo reboot

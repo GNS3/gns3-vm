@@ -17,10 +17,10 @@ then
     exit 1
 fi
 
-export GNS3_UPDATE_FLAVOR=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
+export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 
 echo "Build VM for GNS3 $GNS3_VERSION"
-echo "Update flavor: $GNS3_UPDATE_FLAVOR"
+echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
 rm -Rf output-*
 export GNS3VM_VERSION=`python last_vm_version.py`

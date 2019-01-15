@@ -103,34 +103,34 @@ def mode():
 
     if d.yesno("This feature is for testers only. You may break your GNS3 installation. Are you REALLY sure you want to continue?", yes_label="Exit (Safe option)", no_label="Continue") == d.OK:
         return
-    code, tag = d.menu("Select the GNS3 version",
+    code, tag = d.menu("Select the GNS3 release channel",
                        choices=[("2.1", "Current stable release (RECOMMENDED)"),
                                 ("2.1dev", "Next stable release, development version"),
                                 ("2.2dev", "Totally unstable version")])
     d.clear()
     if code == Dialog.OK:
         os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
-        with open(os.path.expanduser("~/.config/GNS3/gns3_release"), "w+") as f:
+        with open(os.path.expanduser("~/.config/GNS3/gns3_release_channel"), "w+") as f:
             f.write(tag)
         update(force=True)
 
 
-def get_release():
+def get_release_channel():
     """
-    Returns the current server version.
+    Returns the current release channel.
     """
 
     try:
-        with open(os.path.expanduser("~/.config/GNS3/gns3_release")) as f:
+        with open(os.path.expanduser("~/.config/GNS3/gns3_release_channel")) as f:
             content = f.read()
             return content
     except OSError:
         return "2.2"
 
 
-def get_all_releases(version):
+def get_all_releases(release_channel):
     """
-    Returns all releases for a corresponding version (e.g. 2.1)
+    Returns all releases for a corresponding release channel (e.g. 2.1, 2.2 etc.)
     Excludes alphas, betas, RCs and development releases.
     """
 
@@ -149,7 +149,7 @@ def get_all_releases(version):
         return None
     for tag in json_data:
         release = tag.get("name")
-        if release and release[1:].startswith(version) and not re.search("dev|a|rc|b", release):
+        if release and release[1:].startswith(release_channel) and not re.search("dev|a|rc|b", release):
             releases.append(release)
 
     def atoi(text):
@@ -170,29 +170,29 @@ def update(force=False):
         if d.yesno("PLEASE SNAPSHOT THE VM BEFORE RUNNING THE UPDATE IN CASE OF FAILURE. The server will reboot at the end of the update process. Continue?") != d.OK:
             return
 
-    release = get_release()
-    match = re.search("dev|a|rc|b", release)
+    release_channel = get_release_channel()
+    match = re.search("dev|a|rc|b", release_channel)
     if match:
         # development release (unstable), download and execute update script from the unstable branch on GitHub
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     else:
-        releases = get_all_releases(release)
-
+        releases = get_all_releases(release_channel)
         if len(releases) > 1:
+            # only show the menu if more than 1 release
             choices = []
-            for version in releases:
-                choices.append((version, "Version {}".format(version)))
-            code, tag = d.menu("Select the GNS3 version",
+            for release_tag in releases:
+                choices.append((release_tag, "Release {}".format(release_tag)))
+            code, gns3_version = d.menu("Select a GNS3 version",
                                choices=choices)
             d.clear()
             if code == Dialog.OK:
-                # current release (stable), download and execute update script from the stable branch on GitHub
-                ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh {}".format(release, tag))
+                # current release (stable), download and execute update script from the stable branch on GitHub and pass the GNS3 version we want
+                ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh {}".format(release_channel, gns3_version))
             else:
                 return
         else:
             # current release (stable), download and execute update script from the stable branch on GitHub
-            ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
+            ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release_channel))
     if ret != 0:
         print("ERROR DURING THE UPDATE PROCESS PLEASE, TAKE A SCREENSHOT IF YOU NEED SUPPORT")
         time.sleep(30)

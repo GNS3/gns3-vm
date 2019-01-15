@@ -3,7 +3,7 @@
       "ssh_pass" : "gns3",
       "ssh_name" : "gns3",
       "gns3_version": "{{env `GNS3_VERSION`}}",
-      "gns3_update_flavor": "{{env `GNS3_UPDATE_FLAVOR`}}",
+      "gns3_release_channel": "{{env `GNS3_RELEASE_CHANNEL`}}",
       "gns3_src": "{{env `GNS3_SRC`}}"
    },
    "provisioners" : [
@@ -12,7 +12,7 @@
           "type": "shell"
       },
       {
-        "inline": "echo -n \"{{user `gns3_update_flavor`}}\" > /home/gns3/.config/GNS3/gns3_release",
+        "inline": "echo -n \"{{user `gns3_release_channel`}}\" > /home/gns3/.config/GNS3/gns3_release_channel",
         "type": "shell"
       },
       {

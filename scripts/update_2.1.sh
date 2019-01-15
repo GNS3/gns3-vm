@@ -40,16 +40,14 @@ if [ -z "$1" ]
 then
   # get the latest tag for stable release of 2.1
   git fetch origin --tags
-  LATEST_VERSION_TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | sort -V | tail -n 1`
-  git checkout $LATEST_VERSION_TAG
+  TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | sort -V | tail -n 1`
 else
-  git checkout $1
+  TAG=$1
 fi
-
-
+git checkout $TAG
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 
-echo "Update completed, rebooting in 10 seconds..."
+echo "Update to $TAG completed, rebooting in 10 seconds..."
 sleep 10
 sudo reboot

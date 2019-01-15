@@ -16,10 +16,10 @@ then
     exit 1
 fi
 
-export GNS3_UPDATE_FLAVOR=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
+export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 
 echo "Build VM for GNS3 $GNS3_VERSION"
-echo "Update flavor: $GNS3_UPDATE_FLAVOR"
+echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
 echo "Download VM"
 export GNS3VM_URL="https://github.com/GNS3/gns3-gui/releases/download/v${GNS3_VERSION}/GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip"
