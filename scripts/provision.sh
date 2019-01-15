@@ -1,10 +1,12 @@
+#!/bin/bash
+
 export DEBIAN_FRONTEND="noninteractive"
 
+# Exit immediately if a command exits with a non-zero status.
 set -e
 
-# Update system
+# Update the system
 sudo apt-get update
-
 sudo apt-get upgrade -y
 sudo apt-get dist-upgrade -y
 
@@ -13,23 +15,23 @@ sudo apt-get install -y curl software-properties-common
 cd /tmp/config
 sudo bash install.sh
 
-# Install & compile psutil because it's require c dependencies
+# Install & compile psutil because it is a required dependency
 sudo pip3 install psutil
 
-# For the menu
+# Install the GNS3 VM menu dependency
 sudo apt-get install -y dialog
 sudo pip3 install pythondialog
 
-# Block iou call. The server is down
+# Block IOU phone home call
 echo "127.0.0.254 xml.cisco.com" | sudo tee --append /etc/hosts
 
-# Force hostid for IOU
+# Force the hostid for IOU license check
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 
-# Setup server
+# Configure the GNS3 server
 if [ -f ~/.config/GNS3/gns3_server.conf ]
 then
-    echo "Server is already configured"
+    echo "The GNS3 server is already configured"
 else
     mkdir -p ~/.config/GNS3
     cat > ~/.config/GNS3/gns3_server.conf << EOF
@@ -55,13 +57,10 @@ EOF
     fi
 fi
 
-# Create GNS3 folders
+# Create the GNS3 folders
 sudo mkdir -p /opt/gns3
 sudo chown -R gns3:gns3 /opt/gns3
 
-# Setup release flavor
-# echo -n "stable" > ~/.config/GNS3/gns3_release
-
-# Menu
+# Install the GNS3 VM menu
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 755 "/usr/local/bin/gns3welcome.py"

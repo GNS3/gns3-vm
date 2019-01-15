@@ -19,7 +19,7 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-export BRANCH="18.04"  #FIXME: for development, we upgrade from the 18.04 branch (originally master branch)
+export BRANCH="bionic-stable"
 export UNSTABLE_APT="0"
 
 # upgrade the GNS3 VM first

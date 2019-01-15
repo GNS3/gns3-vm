@@ -1,8 +1,8 @@
-# If not running interactively, don't do anything
+# Don't do anything if not running interactively
 case $- in
     *i*) ;;
       *) return;;
 esac
 
 /usr/local/bin/gns3welcome.py
-echo "If the GNS3 menu is no longer working run sudo gns3restore"
+echo "Please run 'sudo gns3restore' in case the menu is no longer showing"

@@ -23,13 +23,6 @@
 set -e
 
 export DEBIAN_FRONTEND="noninteractive"
-export UBUNTU_VERSION=`lsb_release -r -s`
-
-#FIXME: for development, we upgrade from the 18.04 branch
-if [ "$UBUNTU_VERSION" == "18.04" ]
-then
-    export BRANCH="18.04"
-fi
 
 cd /tmp
 rm -Rf gns3-vm-*
@@ -52,66 +45,8 @@ sudo chmod 755 "/usr/local/bin/gns3welcome.py"
 
 set +e
 
-# The upgrade from 0.8 to 0.8.6 is safe
-if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.8' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.8.1' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.8.2' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.8.3' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.8.4' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.8.5' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.9.0' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.9.1' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.9.2' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.9.3' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.9.4' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.9.5' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.9.6' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.9.7' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.9.8' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.9.9' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.9.10' ]
-then
-    sudo apt-get -y dist-upgrade
-    sudo usermod -a -G vde2-net gns3
-    
-    echo -n '0.10.0' > /home/gns3/.config/GNS3/gns3vm_version
-fi
-
-if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.0' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.1' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.2' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.3' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.4' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.5' ]
-then
-    sudo rm -f /usr/local/bin/vpcs
-    sed '/port = 8000$/d' -i /home/gns3/.config/GNS3/gns3_server.conf
-    echo -n '0.10.6' > /home/gns3/.config/GNS3/gns3vm_version
-fi
-
-if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.6' ]
-then
-    # It seem an upgrade of docker can leave dirty stuff
-    sudo rm -rf /var/lib/docker/aufs
-    echo -n '0.10.7' > /home/gns3/.config/GNS3/gns3vm_version    
-fi
-
-if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.7' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.8' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.9' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.10' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.11' ] 
-then
-    echo -n '0.10.12' > /home/gns3/.config/GNS3/gns3vm_version
-fi
-
-if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.12' ] \
-    || [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.13' ] 
-then
-    sudo apt-get remove -y docker docker-engine
-    sudo rm /etc/apt/sources.list.d/*
-    curl "https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb" > /tmp/docker.deb
-    sudo apt-get install -y libltdl7 libsystemd-journal0
-    sudo dpkg -i /tmp/docker.deb
-    echo -n '0.10.14' > /home/gns3/.config/GNS3/gns3vm_version
-fi
+#if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.14' ]
+#then
+#    # upgrade the VM
+#    echo -n '0.10.14' > /home/gns3/.config/GNS3/gns3vm_version
+#fi

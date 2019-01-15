@@ -1,12 +1,13 @@
 #!/bin/bash
 #
-# This command allow to rescue a broken installation of the
-# GNS3 VM
+# This command allows to fix a broken installation
 #
 
 if [[ $(id -u) -ne 0 ]] 
 then
-    echo "Please run as root or with sudo"
+    echo "Please run this script as root or using sudo"
     exit 1
 fi
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/restore.sh" | bash
+
+export BRANCH="bionic-stable"
+curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/restore.sh" | bash

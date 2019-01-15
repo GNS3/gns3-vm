@@ -10,7 +10,6 @@
       "iso_checksum": "a5b0ea5918f850124f3d72ef4b85bda82f0fcd02ec721be19c1a6952791c8ee8",
       "iso_url": "http://cdimage.ubuntu.com/ubuntu/releases/bionic/release/ubuntu-18.04.1-server-amd64.iso",
       "gns3_version": "{{env `GNS3_VERSION`}}",
-      "gns3_update_flavor": "2.2dev",
       "boot_command_prefix": "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>"
    },
    "provisioners" : [
@@ -41,17 +40,6 @@
       {
          "type": "shell",
          "script": "scripts/splashscreen.sh"
-      },
-      {
-        "inline": "echo -n \"{{user `gns3_update_flavor`}}\" > /home/gns3/.config/GNS3/gns3_release",
-        "type": "shell"
-      },
-      {
-         "type" : "shell",
-         "script" : "scripts/provision_gns3.sh",
-          "environment_vars": [
-            "GNS3_VERSION={{user `gns3_version`}}"
-          ]
       },
       {
          "type" : "shell",
@@ -192,6 +180,8 @@
             "cpuid.coresPerSocket" : "1",
             "numvcpus": "1",
             "vhv.enable": "TRUE",
+            "hints.hideAll": "TRUE",
+            "msg.noOk": "TRUE",
             "ethernet0.present": "TRUE",
             "ethernet0.startConnected": "TRUE",
             "ethernet0.connectionType": "nat",

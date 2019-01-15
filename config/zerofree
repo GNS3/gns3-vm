@@ -1,5 +1,5 @@
 #! /bin/sh
-# Fill the disk with zero to allow VMware to compress the disk at export
+# Fill the disk with zero to allow VMware to compress the disk when exporting the VM
 
 dd if=/dev/zero of=/EMPTY bs=1M
 rm -f /EMPTY

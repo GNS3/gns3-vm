@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import re
 import locale
 import os
 import sys
@@ -134,17 +135,15 @@ def update(force=False):
     if not force:
         if d.yesno("PLEASE SNAPSHOT THE VM BEFORE RUNNING THE UPDATE IN CASE OF FAILURE. The server will reboot at the end of the update process. Continue?") != d.OK:
             return
-    release = get_release()
 
-    if release == "2.2dev" or release == "2.2":
-        #FIXME: temporary for GNS3 VM development
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/18.04/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
-    elif release.endswith("dev"):
-        # development release (unstable), download and execute update script from unstable branch on GitHub
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
+    release = get_release()
+    match = re.search("dev|a|rc|b", release)
+    if match:
+        # development release (unstable), download and execute update script from the unstable branch on GitHub
+        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     else:
-        # current release (stable), download and execute update script from master branch on GitHub
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
+        # current release (stable), download and execute update script from the stable branch on GitHub
+        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     if ret != 0:
         print("ERROR DURING THE UPDATE PROCESS PLEASE, TAKE A SCREENSHOT IF YOU NEED SUPPORT")
         time.sleep(30)
@@ -192,7 +191,7 @@ KVM support available: {kvm}\n\n""".format(
 
     ip = get_ip()
     if ip:
-        content += "IP: {ip}\n\nTo log in using SSH:\nssh gns3@{ip}\nPassword: gns3\n\nImages and projects are located in /opt/gns3""".format(ip=ip)
+        content += "IP: {ip}\n\nTo log in using SSH:\nssh gns3@{ip}\nPassword: gns3\n\nImages and projects are stored in '/opt/gns3'""".format(ip=ip)
     else:
         content += "eth0 is not configured. Please manually configure by selecting the 'Network' entry in the menu."
 
@@ -211,7 +210,7 @@ def check_internet_connectivity():
 
     d.pause("Checking connection. Please wait...\n\n")
     try:
-        response = urllib.request.urlopen('http://pypi.python.org/', timeout=5)
+        urllib.request.urlopen('http://pypi.python.org/', timeout=5)
     except urllib.request.URLError as err:
         d.infobox("Cannot connect to Internet: {}".format(str(err)))
         time.sleep(15)
@@ -309,7 +308,7 @@ def edit_proxy():
     os.system("sudo chmod 744 /etc/profile.d/proxy.sh")
     os.system("sudo cp /etc/profile.d/proxy.sh /etc/default/docker")
 
-    d.msgbox("The GNS3 VM will reboot")
+    d.msgbox("The GNS3 VM will reboot now")
     os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
 
 
@@ -326,7 +325,7 @@ def ubuntu_version():
     Returns the codename of the current Ubuntu distribution
     """
 
-    return subprocess.check_output(["lsb_release", "-s", "-c"]).strip().decode()
+    return subprocess.check_output(["lsb_release", "-sc"]).strip().decode()
 
 
 def kvm_control():
@@ -339,7 +338,7 @@ def kvm_control():
     try:
         if config.getboolean("Qemu", "enable_kvm") is True:
             if kvm_ok is False:
-                if d.yesno("KVM is not supported!\n\nQemu VM will crash!!\n\nThis could be due to unsupported hardware or another virtualization solution is already running.\n\nDisable KVM and get lower performance?") == d.OK:
+                if d.yesno("KVM is not supported!\n\nQemu VMs will run extremely slowly!!\n\nThis could be due to unsupported hardware or another virtualization solution is already running.\n\nDisable KVM and get lower performance?") == d.OK:
                     config.set("Qemu", "enable_kvm", False)
                     write_config(config)
                     os.execvp("sudo", ['/usr/bin/sudo', "reboot"])

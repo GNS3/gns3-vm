@@ -1,4 +1,6 @@
-# Setup the ubuntu system
+#!/bin/bash
+
+# Setup Ubuntu
 # This script should be run as root
 
 
@@ -14,4 +16,4 @@ mkfs.ext4 /dev/sdb1
 echo "/dev/sdb1  /opt  ext4  nodiratime  0  2" >> /etc/fstab
 mount -a
 
-echo "Setup ubuntu OK"
+echo "Ubuntu has been "

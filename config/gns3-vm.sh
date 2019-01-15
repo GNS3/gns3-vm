@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Add the IP address of the first adapter to the VM guest info
 command -v vmtoolsd >/dev/null 2>&1 || exit 0
 
 IP=""

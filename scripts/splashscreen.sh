@@ -1,5 +1,6 @@
 #!/bin/bash
-# Install boot splash screen
+
+# Install the boot splash screen
 
 set -e
 
@@ -24,11 +25,8 @@ ScriptFile=/usr/share/plymouth/themes/gns3/gns3.script
 EOF
 
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/logo_wo_bar.png" > /usr/share/plymouth/themes/gns3/logo_wo_bar.png
-
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/bar.png" > /usr/share/plymouth/themes/gns3/bar.png
-
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/end.png" > /usr/share/plymouth/themes/gns3/end.png
-
 
 cat > /usr/share/plymouth/themes/gns3/gns3.script <<EOF
 # Original script

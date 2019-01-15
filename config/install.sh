@@ -30,7 +30,7 @@ cp sources.list /etc/apt/sources.list
 chmod 644 /etc/apt/sources.list
 chown root:root /etc/apt/sources.list
 
-# Add our ppa
+# Add the GNS3 PPA
 if [ ! -f /usr/bin/add-apt-repository ]
 then
     apt-get update
@@ -50,6 +50,7 @@ add-apt-repository -y ppa:gns3/ppa
 #    add-apt-repository -y ppa:gns3/unstable
 #fi
 
+# Allows to install 32-bit packages
 dpkg --add-architecture i386
 apt-get update
 
@@ -62,45 +63,36 @@ apt-get install -y mingetty
 # Python
 apt-get install -y python3-dev python3.6-dev python3-setuptools
 
-# Install netifaces
-apt-get install -y python3-netifaces
-
-# For nat interface
+# For the NAT node
 apt-get install -y libvirt-bin
 
-# Install vpcs
-apt-get install -y vpcs
-
-# Install qemu
+# Install Qemu
 apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
 sudo usermod -aG kvm gns3
 
-# Install gns3 dependencies
-apt-get install -y dynamips ubridge
+# Install other GNS3 dependencies
+apt-get install -y gns3-iou dynamips vpcs ubridge
 
-# Install docker
+# Install Docker
 curl -sSL https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb > /tmp/docker.deb
 sudo apt-get install -y libltdl7
-# libsystemd-journal0
 sudo dpkg -i /tmp/docker.deb
 sudo usermod -aG docker gns3
 sudo service docker stop
 sudo rm -rf /var/lib/docker/aufs
-# necessary to prevent docker from being blocked
+# Necessary to prevent Docker from being blocked
 systemctl mask systemd-networkd-wait-online.service
 
 # Install VNC support for Docker
 apt-get install -y tigervnc-standalone-server
 
-# Install iou dependencies
-apt-get install -y gns3-iou 
-
-# Setup Python 3
+# Install pip
 apt-get install -y python3-pip
 
 # Install net-tools for ifconfig etc.
 apt-get install -y net-tools
 
+# Setup rc.local
 cp "rc.local" "/etc/rc.local"
 chmod 700 /etc/rc.local
 chown root:root /etc/rc.local
@@ -114,7 +106,7 @@ chown root:root /etc/netplan/90_gns3vm_static_netcfg.yaml
 chmod 644 /etc/netplan/90_gns3vm_static_netcfg.yaml
 netplan apply
 
-# Setup grub
+# Setup Grub
 cp "grub" "/etc/default/grub"
 chown root:root /etc/default/grub
 chmod 700 /etc/default/grub
@@ -130,7 +122,7 @@ cp sysctl.conf /etc/sysctl.conf
 chmod 644 /etc/sysctl.conf
 chown root:root /etc/sysctl.conf
 
-# Iptables
+# IPtables
 cp iptables /etc/network/if-pre-up.d/iptables
 chmod 755 /etc/network/if-pre-up.d/iptables
 chown root:root /etc/network/if-pre-up.d/iptables
@@ -150,7 +142,7 @@ cp bash_profile /home/gns3/.bash_profile
 chmod 700 /home/gns3/.bash_profile
 chown gns3:gns3 /home/gns3/.bash_profile
 
-# System tuning for IOU
+# System tuning for IOU support
 cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
 chmod 755 /etc/sysctl.d/50-qlen_gns3.conf
 chown root:root /etc/sysctl.d/50-qlen_gns3.conf
@@ -172,6 +164,7 @@ chmod 755 /lib/systemd/system/gns3.service
 chown root:root /lib/systemd/system/gns3.service
 systemctl enable gns3
 
+# Install GNS3 VM service
 cp gns3vm.service /lib/systemd/system/gns3vm.service
 chmod 755 /lib/systemd/system/gns3vm.service
 chown root:root /lib/systemd/system/gns3vm.service

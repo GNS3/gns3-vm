@@ -1,3 +1,5 @@
+#!/bin/bash
+
 sudo apt-get purge -y --yes vim-common
 sudo apt-get purge -y --yes fonts-ubuntu-font-family-console
 sudo apt-get purge -y --yes linux-headers-generic

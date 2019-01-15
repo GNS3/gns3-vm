@@ -7,9 +7,6 @@
 
 set -e
 
-
-
-
 export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
 
@@ -45,4 +42,3 @@ zip -9 "../GNS3 VM VMware ESXI ${GNS3_VERSION}.zip" "GNS3 VM.ova"
 cd ..
 rm -Rf output-*
 #rm  "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
-

@@ -1,9 +1,10 @@
-#
-# Install GNS3 on a fresh VM
+#!/bin/bash
+
+# Installs GNS3 on a fresh VM
 
 env
 
-# Add our ppa
+# Add the GNS3 PPA
 if [ ! -f /usr/bin/add-apt-repository ]
 then
     apt-get update
@@ -24,6 +25,7 @@ sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 sudo apt-get install -y --force-yes python3-setuptools python3.6-dev
 
+# Exit immediately if a command exits with a non-zero status.
 set -e
 
 if [ "$GNS3_VERSION" == "master" ]
@@ -62,7 +64,6 @@ sudo apt-get -y clean
 sudo rm -fr /var/lib/apt/lists/*
 sudo rm -fr /var/cache/apt/*
 sudo rm -fr /var/cache/debconf/*
-
 
 # zerofree for disk compaction
 sudo bash /usr/local/bin/zerofree
