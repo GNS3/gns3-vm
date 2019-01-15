@@ -174,7 +174,7 @@ def update(force=False):
     match = re.search("dev|a|rc|b", release_channel)
     if match:
         # development release (unstable), download and execute update script from the unstable branch on GitHub
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
+        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release_channel))
     else:
         releases = get_all_releases(release_channel)
         if len(releases) > 1:
@@ -244,7 +244,7 @@ KVM support available: {kvm}\n\n""".format(
     else:
         content += "eth0 is not configured. Please manually configure by selecting the 'Network' entry in the menu."
 
-    content += "\n\nRelease channel: " + get_release()
+    content += "\n\nRelease channel: " + get_release_channel()
 
     try:
         d.msgbox(content)
