@@ -316,6 +316,14 @@ def keyboard_configuration():
     os.system("/usr/bin/sudo dpkg-reconfigure keyboard-configuration")
 
 
+def console_configuration():
+    """
+    Allows users to change the console settings
+    """
+
+    os.system("/usr/bin/sudo dpkg-reconfigure console-setup")
+
+
 def set_security():
     """
     Configures authentication on the GNS3 server.
@@ -455,6 +463,7 @@ try:
                             ("Shell", "Open a shell"),
                             ("Security", "Configure server authentication"),
                             ("Keyboard", "Change keyboard layout"),
+                            ("Console", "Change console settings (font size etc.)"),
                             ("Configure", "Edit server configuration (advanced users ONLY)"),
                             ("Proxy", "Configure proxy settings"),
                             ("Network", "Configure network settings"),
@@ -493,6 +502,8 @@ try:
                 set_security()
             elif tag == "Keyboard":
                 keyboard_configuration()
+            elif tag == "Console":
+                console_configuration()
             elif tag == "Test":
                 check_internet_connectivity()
             elif tag == "Proxy":

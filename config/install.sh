@@ -110,6 +110,11 @@ chown root:root /etc/default/grub
 chmod 700 /etc/default/grub
 update-grub
 
+# Setup Console
+cp "console-setup" "/etc/default/console-setup"
+chown root:root /etc/default/console-setup
+chmod 644 /etc/default/console-setup
+
 # Zerofree
 cp zerofree /usr/local/bin/zerofree
 chown root:root /usr/local/bin/zerofree
