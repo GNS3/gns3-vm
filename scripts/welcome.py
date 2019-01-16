@@ -151,7 +151,7 @@ def migrate():
         if answer != d.OK:
             return
         if option == "Send":
-            command = r"rsync -avz --progress -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/gns3-vm-key' /opt/gns3 gns3@{}:/opt".format(destination)
+            command = r"rsync -az --progress -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/gns3-vm-key' /opt/gns3 gns3@{}:/opt".format(destination)
             ret = os.system('bash -c "{}"'.format(command))
             time.sleep(10)
             if ret != 0:
