@@ -96,9 +96,9 @@ else:
     d.set_background_title("GNS3 {}".format(gns3_version()))
 
 
-def mode():
+def set_release_channel():
     """
-    Selects the GNS3 version to run.
+    Selects the GNS3 release channel.
     """
 
     if d.yesno("This feature is for testers only. You may break your GNS3 installation. Are you REALLY sure you want to continue?", yes_label="Exit (Safe option)", no_label="Continue") == d.OK:
@@ -254,7 +254,7 @@ KVM support available: {kvm}\n\n""".format(
 
 def migrate():
     """
-    Migrate GNS3 VM data
+    Migrate GNS3 VM data.
     """
 
     code, option = d.menu("Select an option",
@@ -270,25 +270,23 @@ def migrate():
             ret = os.system('bash -c "{}"'.format(command))
             time.sleep(10)
             if ret != 0:
-                d.msgbox("Data has been successfully migrated")
+                d.msgbox("Could not send data to the other GNS3 VM located at {}".format(destination))
             else:
-                d.msgbox("Could not migrate the data")
+                d.msgbox("Images and projects have been successfully sent to the other GNS3 VM located at {}".format(destination))
         elif option == "Setup":
             script = """
 if [ ! -f ~/.ssh/gns3-vm-key ]
 then
     ssh-keygen -f ~/.ssh/gns3-vm-key -N ""
 fi
-
 ssh-copy-id -i ~/.ssh/gns3-vm-key gns3@{}
 """.format(destination)
-            ret = os.system('bash -x {}'.format(script))
-            #ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/setup_migrate.sh > /tmp/setup_migrate.sh && bash -x /tmp/setup_migrate.sh {}".format(destination))
+            ret = os.system('bash -c "{}"'.format(script))
             time.sleep(10)
             if ret != 0:
                 d.msgbox("Error while setting up the migrate feature")
             else:
-                d.msgbox("Configuration successful, you can now migrate data from the GNS3 VM at {}".format(destination))
+                d.msgbox("Configuration successful, you can now migrate data from the GNS3 VM located at {}".format(destination))
 
 
 def check_internet_connectivity():
@@ -460,16 +458,16 @@ try:
                             ("Log", "Show server log"),
                             ("Test", "Check internet connection"),
                             ("Shrink", "Shrink the VM disk"),
-                            ("Version", "Select the GNS3 version"),
-                            ("Restore", "Restore the VM (if a update failed)"),
+                            ("Channel", "Select the release channel"),
+                            ("Restore", "Restore the VM (if an update has failed)"),
                             ("Reboot", "Reboot the VM"),
                             ("Shutdown", "Shutdown the VM")])
         d.clear()
         if code == Dialog.OK:
             if tag == "Shell":
                 os.execvp("bash", ['/bin/bash'])
-            elif tag == "Version":
-                mode()
+            elif tag == "Channel":
+                set_release_channel()
             elif tag == "Restore":
                 os.execvp("sudo", ['/usr/bin/sudo', "/usr/local/bin/gns3restore"])
             elif tag == "Reboot":
