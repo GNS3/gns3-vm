@@ -154,7 +154,7 @@ def migrate():
             d.msgbox("The destination cannot be the same as this VM IP address ({})".format(destination))
             return
         if option == "Send":
-            command = r"rsync -az --progress -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/gns3-vm-key' /opt/gns3 gns3@{}:/opt".format(destination)
+            command = r"rsync -az --progress -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/gns3/.ssh/gns3-vm-key' /opt/gns3 gns3@{}:/opt".format(destination)
             ret = os.system('bash -c "{}"'.format(command))
             time.sleep(10)
             if ret != 0:
