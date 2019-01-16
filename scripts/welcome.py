@@ -143,12 +143,15 @@ def migrate():
     """
 
     code, option = d.menu("Select an option",
-                          choices=[("Setup", "Configure this VM to receive data from another GNS3 VM"),
+                          choices=[("Setup", "Configure this VM to send data to another GNS3 VM"),
                                    ("Send", "Send images and projects to another GNS3 VM")])
     d.clear()
     if code == Dialog.OK:
         (answer, destination) = d.inputbox("What is IP address or hostname of the other GNS3 VM?", init="172.16.1.128")
         if answer != d.OK:
+            return
+        if destination == get_ip():
+            d.msgbox("The destination cannot be the same as this VM IP address ({})".format(destination))
             return
         if option == "Send":
             command = r"rsync -az --progress -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/gns3-vm-key' /opt/gns3 gns3@{}:/opt".format(destination)
@@ -162,16 +165,16 @@ def migrate():
             script = """
 if [ ! -f ~/.ssh/gns3-vm-key ]
 then
-    ssh-keygen -f ~/.ssh/gns3-vm-key -N ''
+    ssh-keygen -f ~/.ssh/gns3-vm-key -N '' -C gns3@{}
 fi
 ssh-copy-id -i ~/.ssh/gns3-vm-key gns3@{}
-""".format(destination)
+""".format(get_ip(), destination)
             ret = os.system('bash -c "{}"'.format(script))
             time.sleep(10)
             if ret != 0:
                 d.msgbox("Error while setting up the migrate feature")
             else:
-                d.msgbox("Configuration successful, you can now migrate data from the GNS3 VM located at {}".format(destination))
+                d.msgbox("Configuration successful, you can now send data to the GNS3 VM located at {} without password".format(destination))
 
 
 def shrink_disk():
