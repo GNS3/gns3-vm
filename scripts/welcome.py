@@ -258,25 +258,27 @@ def migrate():
     """
 
     code, option = d.menu("Select an option",
-                          choices=[("Setup", "Generate a SSH key and copy it to a remote GNS3 VM to allow to receive data"),
-                                   ("Send", "Send images and projects to a remote GNS3 VM")])
+                          choices=[("Setup", "Configure this VM to receive data from another GNS3 VM"),
+                                   ("Send", "Send images and projects to another GNS3 VM")])
     d.clear()
     if code == Dialog.OK:
-        (answer, destination) = d.inputbox("What is IP address or hostname of the remote GNS3 VM?", init="172.16.1.128")
+        (answer, destination) = d.inputbox("What is IP address or hostname of the other GNS3 VM?", init="172.16.1.128")
         if answer != d.OK:
             return
         if option == "Send":
             ret = os.system('bash -c "rsync -Prtuz /opt/gns3 gns3@{}:/opt"'.format(destination))
+            time.sleep(10)
             if ret != 0:
-                d.msgbox("Could not migrate data")
+                d.msgbox("Data has been successfully migrated")
             else:
-                d.msgbox("Process completed, the GNS3 VM will reboot now")
-        elif option == "Receive":
+                d.msgbox("Could not migrate the data")
+        elif option == "Setup":
             ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/setup_migrate.sh > /tmp/setup_migrate.sh && bash -x /tmp/setup_migrate.sh {}".format(destination))
+            time.sleep(10)
             if ret != 0:
-                print("Could not setup the migrate feature")
-                time.sleep(15)
-
+                d.msgbox("Could not setup the migrate feature")
+            else:
+                d.msgbox("Success, you can now migrate data from your remote GNS3 VM")
 
 def check_internet_connectivity():
     """
