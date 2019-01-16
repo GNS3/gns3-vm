@@ -125,7 +125,7 @@ def get_release_channel():
             content = f.read()
             return content
     except OSError:
-        return "2.2"
+        return "2.1"
 
 
 def get_all_releases(release_channel):
@@ -266,22 +266,29 @@ def migrate():
         if answer != d.OK:
             return
         if option == "Send":
-            command = r'bash -c "rsync -avz --progress -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/gns3-vm-key" /opt/gns3 gns3@{}:/opt"'.format(destination)
-            ret = os.system(command)
+            command = r"rsync -avz --progress -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/gns3-vm-key' /opt/gns3 gns3@{}:/opt".format(destination)
+            ret = os.system('bash -c "{}"'.format(command))
             time.sleep(10)
             if ret != 0:
                 d.msgbox("Data has been successfully migrated")
             else:
                 d.msgbox("Could not migrate the data")
         elif option == "Setup":
-            command = r'bash -c "ssh-keygen -f ~/.ssh/gns3-vm-key -q -P "" && ssh-copy-id -i ~/.ssh/gns3-vm-key gns3@{}"'.format(destination)
-            ret = os.system(command)
+            script = """
+if [ ! -f ~/.ssh/gns3-vm-key ]
+then
+    ssh-keygen -f ~/.ssh/gns3-vm-key -N ""
+fi
+
+ssh-copy-id -i ~/.ssh/gns3-vm-key gns3@{}
+""".format(destination)
+            ret = os.system('bash -x {}'.format(script))
             #ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/setup_migrate.sh > /tmp/setup_migrate.sh && bash -x /tmp/setup_migrate.sh {}".format(destination))
             time.sleep(10)
             if ret != 0:
-                d.msgbox("Could not setup the migrate feature")
+                d.msgbox("Error while setting up the migrate feature")
             else:
-                d.msgbox("Configuration successful, you can now migrate data from your remote GNS3 VM")
+                d.msgbox("Configuration successful, you can now migrate data from the GNS3 VM at {}".format(destination))
 
 
 def check_internet_connectivity():
