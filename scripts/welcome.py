@@ -252,6 +252,32 @@ KVM support available: {kvm}\n\n""".format(
         os.execvp("bash", ['/bin/bash'])
 
 
+def migrate():
+    """
+    Migrate GNS3 VM data
+    """
+
+    code, option = d.menu("Select an option",
+                          choices=[("Setup", "Generate a SSH key and copy it to a remote GNS3 VM to allow to receive data"),
+                                   ("Send", "Send images and projects to a remote GNS3 VM")])
+    d.clear()
+    if code == Dialog.OK:
+        (answer, destination) = d.inputbox("What is IP address or hostname of the remote GNS3 VM?", init="172.16.1.128")
+        if answer != d.OK:
+            return
+        if option == "Send":
+            ret = os.system('bash -c "rsync -Prtuz /opt/gns3 gns3@{}:/opt"'.format(destination))
+            if ret != 0:
+                d.msgbox("Could not migrate data")
+            else:
+                d.msgbox("Process completed, the GNS3 VM will reboot now")
+        elif option == "Receive":
+            ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/setup_migrate.sh > /tmp/setup_migrate.sh && bash -x /tmp/setup_migrate.sh {}".format(destination))
+            if ret != 0:
+                print("Could not setup the migrate feature")
+                time.sleep(15)
+
+
 def check_internet_connectivity():
     """
     Checks for Internet connectivity.
@@ -404,12 +430,14 @@ def kvm_control():
 vm_information()
 kvm_control()
 
+# rsync -e "ssh -o StrictHostKeyChecking=no" -rtz /opt/gns3 gns3@IP:/opt
 
 try:
     while True:
         code, tag = d.menu("GNS3 {}".format(gns3_version()),
                            choices=[("Information", "Display VM information"),
                             ("Update", "Update the GNS3 VM"),
+                            ("Migrate", "Migrate data to a remote GNS3 VM"),
                             ("Shell", "Open a shell"),
                             ("Security", "Configure server authentication"),
                             ("Keyboard", "Change keyboard layout"),
@@ -439,6 +467,8 @@ try:
                 update()
             elif tag == "Information":
                 vm_information()
+            elif tag == "Migrate":
+                migrate()
             elif tag == "Log":
                 log()
             elif tag == "Configure":
