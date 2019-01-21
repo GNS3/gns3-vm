@@ -232,10 +232,12 @@ def vm_information():
         content = """GNS3 server version: {gns3_version}
 VM version: {gns3vm_version}
 Ubuntu version: {ubuntu_version}
+Qemu version: {qemu_version}
 KVM support available: {kvm}\n\n""".format(
             gns3vm_version=gns3vm_version(),
             gns3_version=version,
             ubuntu_version=ubuntu_version(),
+            qemu_version=qemu_version(),
             kvm=kvm_support())
 
     ip = get_ip()
@@ -423,6 +425,23 @@ def ubuntu_version():
     """
 
     return subprocess.check_output(["lsb_release", "-sc"]).strip().decode()
+
+
+def qemu_version():
+    """
+    Returns Qemu version
+    """
+
+    try:
+        output = subprocess.check_output(["qemu-system-x86_64", "-version"]).strip().decode()
+        match = re.search(r"version\s+([0-9a-z\-\.]+)", output)
+        if match:
+            version = match.group(1)
+            return version
+        else:
+            return "N/A"
+    except (OSError, subprocess.SubprocessError):
+        return "Not installed"
 
 
 def kvm_control():
