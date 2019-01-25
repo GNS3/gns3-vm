@@ -31,19 +31,19 @@ jobs:
             echo "export DEVICE_IP=\"$DEVICE_IP\"" >> env_vars
             echo "Obtained device on $DEVICE_IP"
             ssh-keyscan -H ${DEVICE_IP} >> ~/.ssh/known_hosts
-#      - run:
-#          name: Install VirtualBox
-#          command: |
-#            source env_vars
-#            ssh root@${DEVICE_IP} "
-#              set -e
-#              apt update
-#              apt -y install linux-headers-\$(uname -r) zip unzip git
-#              apt-add-repository \"deb http://download.virtualbox.org/virtualbox/debian \$(lsb_release -sc) contrib\"
-#              wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
-#              apt update
-#              apt -y install virtualbox-5.1 dkms
-#            "
+      - run:
+          name: Install VirtualBox
+          command: |
+            source env_vars
+            ssh root@${DEVICE_IP} "
+              set -e
+              apt update
+              apt -y install linux-headers-\$(uname -r) zip unzip git
+              apt-add-repository \"deb http://download.virtualbox.org/virtualbox/debian \$(lsb_release -sc) contrib\"
+              wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
+              apt update
+              apt -y install virtualbox-5.1 dkms
+            "
       - run:
           name: Install VMWare
           command: |
