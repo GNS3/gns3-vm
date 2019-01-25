@@ -101,6 +101,7 @@ jobs:
               if [ ! -d "~/gns3-vm" ]
               then
                 git clone https://github.com/GNS3/gns3-vm.git
+                cd gns3-vm
                 git checkout bionic-stable
               fi
             "
