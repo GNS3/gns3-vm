@@ -203,7 +203,7 @@
             "ethernet1.virtualDev": "e1000"
          },
          "iso_checksum_type" : "{{user `iso_checksum_type`}}",
-         "headless": false,
+         "headless": true,
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
          "shutdown_timeout": "60m",
          "ssh_password" : "{{user `ssh_pass`}}",
