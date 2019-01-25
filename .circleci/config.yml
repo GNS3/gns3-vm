@@ -129,7 +129,7 @@ jobs:
               if [ ! -e \"GNS3 VM VMware Workstation ${GNS3_NUMBER}.zip\" ];
               then
                 ./vmware.sh
-                ./release_vmware.sh ${GNS3_VERSION}
+                ./release_vmware.sh ${GNS3_VERSION} GNS3\ VM.ova
               fi
             "
 #      - run:
