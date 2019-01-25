@@ -33,6 +33,7 @@ then
         curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
     fi
 else
+    echo "GNS3 VM file: $GNS3_VM_FILE"
     export GNS3VM_VERSION=`cat version`
     cp "$GNS3_VM_FILE" "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
 fi
