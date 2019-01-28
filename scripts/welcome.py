@@ -230,11 +230,13 @@ def vm_information():
         content += "The GNS3 server is not installed, please manually install it or download a pre-installed VM.\n\n"
     else:
         content = """GNS3 server version: {gns3_version}
+Release channel: {release_channel}
 VM version: {gns3vm_version}
 Ubuntu version: {ubuntu_version}
 Qemu version: {qemu_version}
 KVM support available: {kvm}\n\n""".format(
             gns3vm_version=gns3vm_version(),
+            release_channel=get_release_channel(),
             gns3_version=version,
             ubuntu_version=ubuntu_version(),
             qemu_version=qemu_version(),
@@ -245,8 +247,6 @@ KVM support available: {kvm}\n\n""".format(
         content += "IP: {ip}\n\nTo log in using SSH:\nssh gns3@{ip}\nPassword: gns3\n\nImages and projects are stored in '/opt/gns3'""".format(ip=ip)
     else:
         content += "eth0 is not configured. Please manually configure by selecting the 'Network' entry in the menu."
-
-    content += "\n\nRelease channel: " + get_release_channel()
 
     try:
         d.msgbox(content)
