@@ -39,6 +39,7 @@ fi
 
 # use sudo -E to preserve proxy config
 sudo -E add-apt-repository -y ppa:gns3/ppa
+
 #if [ "$UNSTABLE_APT" == "1" ]
 #then
 #    sudo -E add-apt-repository -y ppa:gns3/ppa
@@ -49,7 +50,8 @@ sudo -E add-apt-repository -y ppa:gns3/ppa
 #fi
 
 # Allows to install 32-bit packages
-dpkg --add-architecture i386
+# dpkg --add-architecture i386
+
 apt-get update
 
 # VMware open-vm-tools
@@ -80,6 +82,11 @@ sudo service docker stop
 sudo rm -rf /var/lib/docker/aufs
 # Necessary to prevent Docker from being blocked
 systemctl mask systemd-networkd-wait-online.service
+
+# Configure Docker to store its data in /opt/docker
+cp "daemon.json" "/etc/docker/daemon.json"
+chown root:root /etc/docker/daemon.json
+chmod 644 /etc/docker/daemon.json
 
 # Install VNC support for Docker
 apt-get install -y tigervnc-standalone-server
