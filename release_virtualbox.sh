@@ -23,7 +23,7 @@ echo "Update flavor: $GNS3_UPDATE_FLAVOR"
 
 rm -Rf output-*
 #export GNS3VM_VERSION=`python last_vm_version.py`
-export GNS3VM_VERSION="0.10.15"
+export GNS3VM_VERSION="0.10.14"
 export GNS3_SRC="/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.ova"
 
 if [ ! -f $GNS3_SRC ]
