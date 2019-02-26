@@ -7,9 +7,6 @@
 
 set -e
 
-
-
-
 export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
 
@@ -25,7 +22,8 @@ echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Update flavor: $GNS3_UPDATE_FLAVOR"
 
 echo "Download VM"
-export GNS3VM_VERSION=`python last_vm_version.py`
+#export GNS3VM_VERSION=`python last_vm_version.py`
+export GNS3VM_VERSION="0.10.15"
 export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3.VM.VMware.${GNS3VM_VERSION}.zip"
 if [ ! -f "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" ]
 then
