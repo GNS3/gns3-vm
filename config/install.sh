@@ -40,6 +40,9 @@ fi
 # use sudo -E to preserve proxy config
 sudo -E add-apt-repository -y ppa:gns3/ppa
 
+# for Qemu backports
+sudo -E add-apt-repository -y ppa:gns3/qemu
+
 #if [ "$UNSTABLE_APT" == "1" ]
 #then
 #    sudo -E add-apt-repository -y ppa:gns3/ppa
@@ -67,8 +70,10 @@ apt-get install -y python3-dev python3.6-dev python3-setuptools
 apt-get install -y libvirt-bin
 
 # Install Qemu
-apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
+apt-get install -y qemu-system-x86 qemu-kvm cpulimit
 sudo usermod -aG kvm gns3
+sudo chown root:kvm /dev/kvm
+sudo chmod 660 /dev/kvm
 
 # Install other GNS3 dependencies
 apt-get install -y gns3-iou dynamips vpcs ubridge

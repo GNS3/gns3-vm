@@ -105,20 +105,21 @@ jobs:
                 git checkout bionic-stable
               fi
             "
-#      - run:
-#          name: Release VirtualBox VM
-#          command: |
-#            source env_vars
-#            ssh root@${DEVICE_IP} "
-#              set -e
-#
-#              cd gns3-vm
-#
-#              if [ ! -e \"GNS3 VM VirtualBox ${GNS3_NUMBER}.zip\" ];
-#              then
-#                ./release_virtualbox.sh ${GNS3_VERSION}
-#              fi
-#            "
+      - run:
+          name: Release VirtualBox VM
+          command: |
+            source env_vars
+            ssh root@${DEVICE_IP} "
+              set -e
+
+              cd gns3-vm
+
+              if [ ! -e \"GNS3 VM VirtualBox ${GNS3_NUMBER}.zip\" ];
+              then
+                ./virtualbox.sh
+                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.15.zip
+              fi
+            "
       - run:
           name: Release VMWare VM
           command: |
@@ -155,7 +156,7 @@ jobs:
           command: |
             source env_vars
             mkdir artifacts
-            scp root@${DEVICE_IP}:"gns3-vm/GNS3\ VM\ *.zip" artifacts
+            scp root@${DEVICE_IP}:"gns3-vm/GNS3*.zip" artifacts
       - run:
           name: Destroy device
           when: always
