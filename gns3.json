@@ -159,7 +159,7 @@
             "-- <enter>"
          ],
          "guest_additions_mode" : "disable",
-         "guest_os_type": "ubuntu-64",
+         "guest_os_type": "Ubuntu_64",
          "iso_url" : "{{user `iso_url`}}"
       },
       {
