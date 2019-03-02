@@ -21,9 +21,10 @@ fi
 #export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 #FIXME: force to 2.2dev
 export GNS3_RELEASE_CHANNEL="2.2dev"
-
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
+
+export GNS3_SRC="/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.ova"
 
 if [[ "$GNS3_VM_FILE" == "" ]]
 then
@@ -40,7 +41,7 @@ else
     export GNS3VM_VERSION=`cat version`
     cp "$GNS3_VM_FILE" "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"
 fi
-unzip -p "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip" "GNS3 VM.ova" > "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.ova"
+unzip -p "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip" "GNS3 VM.ova" > $GNS3_SRC
 
 packer build -only=virtualbox-ovf gns3_release.json
 
@@ -51,4 +52,3 @@ zip -9 "../GNS3 VM VirtualBox ${GNS3_VERSION}.zip" "GNS3 VM.ova"
 cd ..
 rm -Rf output-*
 rm $GNS3_SRC
-
