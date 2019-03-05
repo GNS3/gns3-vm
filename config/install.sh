@@ -20,7 +20,7 @@
 # the directory before running it
 #
 
-set -e
+set +e
 
 export DEBIAN_FRONTEND="noninteractive"
 
@@ -30,6 +30,8 @@ then
     /etc/init.d/open-vm-tools stop
 fi
 apt-get remove -y --auto-remove open-vm-tools
+
+set -e
 
 # Sources.list
 cp sources.list /etc/apt/sources.list
