@@ -116,8 +116,7 @@ jobs:
 
               if [ ! -e \"GNS3 VM VirtualBox ${GNS3_NUMBER}.zip\" ];
               then
-                ./virtualbox.sh
-                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.15.zip
+                ./release_virtualbox.sh ${GNS3_VERSION}
               fi
             "
       - run:
@@ -131,8 +130,7 @@ jobs:
 
               if [ ! -e \"GNS3 VM VMware Workstation ${GNS3_NUMBER}.zip\" ];
               then
-                ./vmware.sh
-                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.10.15.zip
+                ./release_vmware.sh ${GNS3_VERSION}
               fi
             "
       - run:
@@ -172,13 +170,13 @@ jobs:
             cd gns3-build
             pip3 install -r requirements.txt
             cd ..
-            #python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VirtualBox\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VirtualBox\ *.zip
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip
             echo "Deploying on SourceForge"
             ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
             mkdir -p artifacts/release
-            #cp artifacts/GNS3\ VM\ VirtualBox\ *.zip artifacts/release/GNS3.VM.VirtualBox.${CIRCLE_TAG}.zip
+            cp artifacts/GNS3\ VM\ VirtualBox\ *.zip artifacts/release/GNS3.VM.VirtualBox.${CIRCLE_TAG}.zip
             cp artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip artifacts/release/GNS3.VM.VMware.Workstation.${CIRCLE_TAG}.zip
             cp artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip artifacts/release/GNS3.VM.VMware.ESXI.${CIRCLE_TAG}.zip
             scp artifacts/release/* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
