@@ -37,7 +37,7 @@ tar -xvf "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
 for vmdk_file in *.vmdk; do
     echo "Converting ${vmdk_file} to VHD format..."
     vhd_file=`basename "${vmdk_file}" .vmdk`
-    vboxmanage clonemedium --format vhd "${vmdk_file}" "${vhd_file}.vhd"
+    vboxmanage clonemedium --format vhd "${vmdk_file}" "${vhd_file}.vhd" ../create-vm.ps1
 done
 
 zip -9 "../GNS3 VM Hyper-V ${GNS3_VERSION}.zip" *.vhd
