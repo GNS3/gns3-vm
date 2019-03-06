@@ -29,7 +29,7 @@ then
     export GNS3VM_VERSION=`python last_vm_version.py`
     export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
-    if [ ! -f "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" ]
+    if [[ ! -f "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" ]]
     then
         echo "Downloading $GNS3VM_URL"
         curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"

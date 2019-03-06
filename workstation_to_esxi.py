@@ -94,7 +94,7 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     for node in nodes_to_remove:
         virtual_hardware.remove(node)
 
-    #Add product informations require by VMware ESXi 6.5
+    # Add product information required by VMware ESXi 6.5
     virtual_system = root.find("{http://schemas.dmtf.org/ovf/envelope/1}VirtualSystem")
     product_section = ET.SubElement(virtual_system, '{http://schemas.dmtf.org/ovf/envelope/1}ProductSection')
     info = ET.SubElement(product_section, '{http://schemas.dmtf.org/ovf/envelope/1}Info')

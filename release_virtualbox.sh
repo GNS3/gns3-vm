@@ -31,7 +31,7 @@ then
     export GNS3VM_VERSION=`python last_vm_version.py`
     export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
-    if [ ! -f "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip" ]
+    if [[ ! -f "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip" ]]
     then
         echo "Downloading $GNS3VM_URL"
         curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"
@@ -41,7 +41,7 @@ else
     export GNS3VM_VERSION=`cat version`
     cp "$GNS3_VM_FILE" "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"
 fi
-unzip -p "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip" "GNS3 VM.ova" > $GNS3_SRC
+unzip -p "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip" "GNS3 VM.ova" > ${GNS3_SRC}
 
 packer build -only=virtualbox-ovf gns3_release.json
 
@@ -51,4 +51,4 @@ zip -9 "../GNS3 VM VirtualBox ${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 cd ..
 rm -Rf output-*
-rm $GNS3_SRC
+rm ${GNS3_SRC}

@@ -150,6 +150,22 @@ jobs:
               fi
             "
       - run:
+          name: Release Hyper-V VM
+          command: |
+            source env_vars
+            ssh root@${DEVICE_IP} "
+              set -e
+
+              cd gns3-vm
+
+              cp \"GNS3 VM VirtualBox ${GNS3_NUMBER}.zip\" /tmp/GNS3VM.VirtualBox.${GNS3_NUMBER}.zip
+
+              if [ ! -e \"GNS3 VM Hyper-V ${GNS3_NUMBER}.zip\" ];
+              then
+                ./release_hyperv.sh ${GNS3_VERSION}
+              fi
+            "
+      - run:
           name: Gather arifacts from device
           command: |
             source env_vars
@@ -173,12 +189,14 @@ jobs:
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VirtualBox\ *.zip
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ Hyper-V\ *.zip
             echo "Deploying on SourceForge"
             ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
             mkdir -p artifacts/release
             cp artifacts/GNS3\ VM\ VirtualBox\ *.zip artifacts/release/GNS3.VM.VirtualBox.${CIRCLE_TAG}.zip
             cp artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip artifacts/release/GNS3.VM.VMware.Workstation.${CIRCLE_TAG}.zip
             cp artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip artifacts/release/GNS3.VM.VMware.ESXI.${CIRCLE_TAG}.zip
+            cp artifacts/GNS3\ VM\ Hyper-V\ *.zip artifacts/release/GNS3.VM.Hyper-V.${CIRCLE_TAG}.zip
             scp artifacts/release/* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
 
       - store_artifacts:

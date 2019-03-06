@@ -10,7 +10,7 @@ set -e
 export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
 
-if [ "$GNS3_VERSION" == "" ]
+if [[ "$GNS3_VERSION" == "" ]]
 then
     echo "You need to pass the GNS3 version as parameter"
     exit 1
@@ -21,16 +21,16 @@ export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
-echo "Download VM"
-export GNS3VM_URL="https://github.com/GNS3/gns3-gui/releases/download/v${GNS3_VERSION}/GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip"
-if [ ! -f "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" ]
+if [[ ! -f "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" ]]
 then
-    echo "Download $GNS3VM_URL"
+    export GNS3VM_URL="https://github.com/GNS3/gns3-gui/releases/download/v${GNS3_VERSION}/GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip"
+    echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
     curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip"
 fi
+
 unzip -p "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" "GNS3 VM.ova" > "/tmp/GNS3VM.VMWare.${GNS3_VERSION}.ova"
 
-echo "Upgrade OVA for ESXI"
+echo "Upgrading OVA for VMware ESXi"
 rm -Rf output-esxi
 mkdir output-esxi
 cd output-esxi
@@ -38,7 +38,5 @@ python3 ../workstation_to_esxi.py "/tmp/GNS3VM.VMWare.${GNS3_VERSION}.ova" "GNS3
 
 zip -9 "../GNS3 VM VMware ESXI ${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
-
 cd ..
 rm -Rf output-*
-#rm  "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
