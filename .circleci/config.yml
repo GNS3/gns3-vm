@@ -130,8 +130,7 @@ jobs:
 
               if [ ! -e \"GNS3 VM VMware Workstation ${GNS3_NUMBER}.zip\" ];
               then
-                ./vmware.sh
-                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.10.15.zip
+                ./release_vmware.sh ${GNS3_VERSION}
               fi
             "
       - run:
