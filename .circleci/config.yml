@@ -116,8 +116,7 @@ jobs:
 
               if [ ! -e \"GNS3 VM VirtualBox ${GNS3_NUMBER}.zip\" ];
               then
-                ./virtualbox.sh
-                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.15.zip
+                ./release_virtualbox.sh ${GNS3_VERSION}
               fi
             "
       - run:
