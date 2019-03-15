@@ -72,11 +72,11 @@ apt-get install -y libvirt-bin
 # Install Qemu
 apt-get install -y qemu-system-x86 qemu-kvm cpulimit
 sudo usermod -aG kvm gns3
-#if kvm-ok
-#then
-#   sudo chown root:kvm /dev/kvm
-#   sudo chmod 660 /dev/kvm
-#fi
+if kvm-ok
+then
+   sudo chown root:kvm /dev/kvm
+   sudo chmod 660 /dev/kvm
+fi
 
 # Install other GNS3 dependencies
 apt-get install -y gns3-iou dynamips vpcs ubridge
