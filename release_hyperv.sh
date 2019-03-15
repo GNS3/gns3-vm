@@ -42,6 +42,7 @@ for vmdk_file in *.vmdk; do
     vboxmanage clonemedium --format vhd "${vmdk_file}" "${vhd_file}.vhd"
 done
 
-zip -9 "../GNS3 VM Hyper-V ${GNS3_VERSION}.zip" *.vhd ../create-vm.ps1
+cp ../create-vm.ps1 create-vm.ps1
+zip -9 "../GNS3 VM Hyper-V ${GNS3_VERSION}.zip" *.vhd create-vm.ps1
 cd ..
 rm -Rf output-*

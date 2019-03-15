@@ -198,6 +198,7 @@ jobs:
             cp artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip artifacts/release/GNS3.VM.VMware.ESXI.${CIRCLE_TAG}.zip
             cp artifacts/GNS3\ VM\ Hyper-V\ *.zip artifacts/release/GNS3.VM.Hyper-V.${CIRCLE_TAG}.zip
             scp artifacts/release/* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
+            rm -rf artifacts/release
 
       - store_artifacts:
           path: artifacts
