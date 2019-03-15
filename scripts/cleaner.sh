@@ -57,7 +57,7 @@ sudo locale-gen --purge --lang en_US
 # Tools for cleaning the disk
 sudo apt-get install -y zerofree
 
-sudo apt-get -y autoremove
+sudo apt-get -y autoremove --purge
 sudo apt-get -y clean
 
 sudo rm -fr /var/lib/apt/lists/*

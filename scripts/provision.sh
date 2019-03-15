@@ -29,7 +29,7 @@ echo "127.0.0.254 xml.cisco.com" | sudo tee --append /etc/hosts
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 
 # Configure the GNS3 server
-if [ -f ~/.config/GNS3/gns3_server.conf ]
+if [[ -f ~/.config/GNS3/gns3_server.conf ]]
 then
     echo "The GNS3 server is already configured"
 else
@@ -41,20 +41,23 @@ images_path = /opt/gns3/images
 projects_path = /opt/gns3/projects
 report_errors = True
 EOF
-    if [ $PACKER_BUILDER_TYPE == "vmware-iso" ]
-    then
-        cat >> ~/.config/GNS3/gns3_server.conf << EOF
 
-[Qemu]
-enable_kvm = True
-EOF
-    else
-        cat >> ~/.config/GNS3/gns3_server.conf << EOF
+# Always activate KVM whatever the VM type
+#    if [[ $PACKER_BUILDER_TYPE == "vmware-iso" ]]
+#    then
+#        cat >> ~/.config/GNS3/gns3_server.conf << EOF
+#
+#[Qemu]
+#enable_kvm = True
+#EOF
+#    else
+#        cat >> ~/.config/GNS3/gns3_server.conf << EOF
+#
+#[Qemu]
+#enable_kvm = False
+#EOF
+#    fi
 
-[Qemu]
-enable_kvm = False
-EOF
-    fi
 fi
 
 # Create the GNS3 folders
