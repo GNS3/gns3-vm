@@ -19,14 +19,14 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-export BRANCH="bionic-stable"
-export UNSTABLE_APT="0"
+export BRANCH="bionic-unstable"
+export UNSTABLE_APT="1"
 
 # upgrade the GNS3 VM first
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
 
 # install the GNS3 server
-if [ ! -d "gns3-server" ]
+if [[ ! -d "gns3-server" ]]
 then
     sudo apt-get update
     sudo apt-get install -y git
@@ -35,19 +35,12 @@ fi
 
 cd gns3-server
 git reset --hard HEAD
-
-if [ -z "$1" ]
-then
-  # get the latest tag for stable release of 2.1
-  git fetch origin --tags
-  TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | sort -V | tail -n 1`
-else
-  TAG=$1
-fi
-git checkout $TAG
+git fetch origin
+git checkout 2.2
+git pull
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 
-echo "Update to $TAG completed, rebooting in 10 seconds..."
+echo "Update to 2.2dev completed, rebooting in 10 seconds..."
 sleep 10
 sudo reboot

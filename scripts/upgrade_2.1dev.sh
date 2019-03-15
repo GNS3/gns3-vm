@@ -26,7 +26,7 @@ export UNSTABLE_APT="1"
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
 
 # install the GNS3 server
-if [ ! -d "gns3-server" ]
+if [[ ! -d "gns3-server" ]]
 then
     sudo apt-get update
     sudo apt-get install -y git
@@ -36,11 +36,11 @@ fi
 cd gns3-server
 git reset --hard HEAD
 git fetch origin
-git checkout 2.2
+git checkout 2.1
 git pull
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 
-echo "Update to 2.2dev completed, rebooting in 10 seconds..."
+echo "Upgrade to 2.1dev completed, rebooting in 10 seconds..."
 sleep 10
 sudo reboot

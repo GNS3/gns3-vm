@@ -112,7 +112,7 @@ def set_release_channel():
         os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
         with open(os.path.expanduser("~/.config/GNS3/gns3_release_channel"), "w+") as f:
             f.write(tag)
-        update(force=True)
+        upgrade(force=True)
 
 
 def get_release_channel():
@@ -161,20 +161,20 @@ def get_all_releases(release_channel):
     return sorted(releases, key=natural_keys, reverse=True)
 
 
-def update(force=False):
+def upgrade(force=False):
     """
-    Updates the GNS3 VM.
+    Upgrade the GNS3 VM.
     """
 
     if not force:
-        if d.yesno("PLEASE SNAPSHOT THE VM BEFORE RUNNING THE UPDATE IN CASE OF FAILURE. The server will reboot at the end of the update process. Continue?") != d.OK:
+        if d.yesno("PLEASE SNAPSHOT THE VM BEFORE RUNNING THE UPGRADE IN CASE OF FAILURE. The server will reboot at the end of the upgrade process. Continue?") != d.OK:
             return
 
     release_channel = get_release_channel()
     match = re.search("dev|a|rc|b", release_channel)
     if match:
-        # development release (unstable), download and execute update script from the unstable branch on GitHub
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release_channel))
+        # development release (unstable), download and execute upgrade script from the unstable branch on GitHub
+        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/upgrade_{}.sh > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh".format(release_channel))
     else:
         releases = get_all_releases(release_channel)
         if len(releases) > 1:
@@ -182,19 +182,18 @@ def update(force=False):
             choices = []
             for release_tag in releases:
                 choices.append((release_tag, "Release {}".format(release_tag)))
-            code, gns3_version = d.menu("Select a GNS3 version",
-                               choices=choices)
+            code, gns3_version = d.menu("Select a GNS3 version", choices=choices)
             d.clear()
             if code == Dialog.OK:
-                # current release (stable), download and execute update script from the stable branch on GitHub and pass the GNS3 version we want
-                ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh {}".format(release_channel, gns3_version))
+                # current release (stable), download and execute ugrade script from the stable branch on GitHub and pass the GNS3 version we want
+                ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/upgrade_{}.sh > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh {}".format(release_channel, gns3_version))
             else:
                 return
         else:
-            # current release (stable), download and execute update script from the stable branch on GitHub
-            ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release_channel))
+            # current release (stable), download and execute upgrade script from the stable branch on GitHub
+            ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/upgrade_{}.sh > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh".format(release_channel))
     if ret != 0:
-        print("ERROR DURING THE UPDATE PROCESS PLEASE, TAKE A SCREENSHOT IF YOU NEED SUPPORT")
+        print("ERROR DURING THE UPGRADE PROCESS PLEASE, TAKE A SCREENSHOT IF YOU NEED SUPPORT")
         time.sleep(30)
 
 
@@ -416,8 +415,12 @@ def kvm_support():
     Returns true if KVM is supported.
     """
 
-    return subprocess.call("kvm-ok") == 0
-
+    ret = subprocess.call("kvm-ok") == 0
+    if ret is True:
+        # make sure /dev/kvm has the correct permissions
+        os.system("sudo chown root:kvm /dev/kvm")
+        os.system("sudo chmod 660 /dev/kvm")
+    return ret
 
 def ubuntu_version():
     """
@@ -477,7 +480,7 @@ try:
     while True:
         code, tag = d.menu("GNS3 {}".format(gns3_version()),
                            choices=[("Information", "Display VM information"),
-                            ("Update", "Update the GNS3 VM"),
+                            ("Upgrade", "Upgrade the GNS3 VM"),
                             ("Migrate", "Migrate data to another GNS3 VM"),
                             ("Shell", "Open a shell"),
                             ("Security", "Configure server authentication"),
@@ -490,7 +493,7 @@ try:
                             ("Test", "Check internet connection"),
                             ("Shrink", "Shrink the VM disk"),
                             ("Channel", "Select the release channel"),
-                            ("Restore", "Restore the VM (if an update has failed)"),
+                            ("Restore", "Restore the VM (if an upgrade has failed)"),
                             ("Reboot", "Reboot the VM"),
                             ("Shutdown", "Shutdown the VM")])
         d.clear()
@@ -505,8 +508,8 @@ try:
                 os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
             elif tag == "Shutdown":
                 os.execvp("sudo", ['/usr/bin/sudo', "poweroff"])
-            elif tag == "Update":
-                update()
+            elif tag == "Upgrade":
+                upgrade()
             elif tag == "Information":
                 vm_information()
             elif tag == "Migrate":
