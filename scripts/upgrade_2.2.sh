@@ -23,7 +23,7 @@ export BRANCH="bionic-stable"
 export UNSTABLE_APT="0"
 
 # upgrade the GNS3 VM first
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
+curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade_vm.sh" > /tmp/upgrade_vm.sh && bash -x /tmp/upgrade_vm.sh
 
 # install the GNS3 server
 if [[ ! -d "gns3-server" ]]
