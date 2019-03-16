@@ -33,18 +33,18 @@ then
     git clone https://github.com/GNS3/gns3-server.git gns3-server
 fi
 
-if [[ -z "$1" ]]
-then
-  TAG="2.1" # latest dev version on this branch
-else
-  TAG=$1
-fi
-
 cd gns3-server
 git reset --hard HEAD
 git fetch origin
-git checkout $TAG
-git pull
+
+if [[ -z "$1" ]]
+then
+  git checkout "2.1" # latest dev version on this branch
+  git pull
+else
+  git checkout $1
+fi
+
 sudo pip3 install -U -r requirements.txt
 sudo python3 setup.py install
 
