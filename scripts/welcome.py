@@ -128,10 +128,10 @@ def get_release_channel():
         return "2.1"
 
 
-def get_all_releases(release_channel):
+def get_all_releases(release_channel, dev=False):
     """
     Returns all releases for a corresponding release channel (e.g. 2.1, 2.2 etc.)
-    Excludes alphas, betas, RCs and development releases.
+    Excludes alphas, betas, RCs and development releases by default.
     """
 
     releases = []
@@ -149,7 +149,9 @@ def get_all_releases(release_channel):
         return None
     for tag in json_data:
         release = tag.get("name")
-        if release and release[1:].startswith(release_channel) and not re.search("dev|a|rc|b", release):
+        if release and release[1:].startswith(release_channel):
+            if dev is False and re.search("dev|a|rc|b", release):
+                continue
             releases.append(release)
 
     def atoi(text):
@@ -171,27 +173,33 @@ def upgrade(force=False):
             return
 
     release_channel = get_release_channel()
-    match = re.search("dev|a|rc|b", release_channel)
+    choices = []
+    match = re.search("(.*)dev|a|rc|b", release_channel)
     if match:
-        # development release (unstable), download and execute upgrade script from the unstable branch on GitHub
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/upgrade_{}.sh > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh".format(release_channel))
+        # development release (unstable)
+        releases = get_all_releases(match.group(1), dev=True)
+        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/upgrade_{}.sh".format(release_channel)
+        choices.append((match.group(1), "Latest development version on {}".format(match.group(1))))
     else:
+        # current release (stable)
         releases = get_all_releases(release_channel)
-        if len(releases) > 1:
-            # only show the menu if more than 1 release
-            choices = []
-            for release_tag in releases:
-                choices.append((release_tag, "Release {}".format(release_tag)))
-            code, gns3_version = d.menu("Select a GNS3 version", choices=choices)
-            d.clear()
-            if code == Dialog.OK:
-                # current release (stable), download and execute ugrade script from the stable branch on GitHub and pass the GNS3 version we want
-                ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/upgrade_{}.sh > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh {}".format(release_channel, gns3_version))
-            else:
-                return
+        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/upgrade_{}.sh".format(release_channel)
+
+    if len(releases) > 1:
+        # only show the menu if more than 1 release
+        for release_tag in releases:
+            choices.append((release_tag, "Release {}".format(release_tag)))
+        code, gns3_version = d.menu("Select a GNS3 version", choices=choices)
+        d.clear()
+        if code == Dialog.OK:
+            # download and execute upgrade script from the corresponding branch on GitHub and pass the GNS3 version we want
+            ret = os.system("curl {url} > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh {version}".format(url=script_url, version=gns3_version))
         else:
-            # current release (stable), download and execute upgrade script from the stable branch on GitHub
-            ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/upgrade_{}.sh > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh".format(release_channel))
+            return
+    else:
+        # download and execute upgrade script from the corresponding branch on GitHub, the latest GNS3 version will be installed
+        ret = os.system("curl {url} > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh".format(url=script_url))
+
     if ret != 0:
         print("ERROR DURING THE UPGRADE PROCESS PLEASE, TAKE A SCREENSHOT IF YOU NEED SUPPORT")
         time.sleep(30)
@@ -476,20 +484,20 @@ try:
     while True:
         code, tag = d.menu("GNS3 {}".format(gns3_version()),
                            choices=[("Information", "Display VM information"),
-                            ("Upgrade", "Upgrade the GNS3 VM"),
-                            ("Migrate", "Migrate data to another GNS3 VM"),
+                            ("Test", "Check Internet connection"),
                             ("Shell", "Open a shell"),
+                            ("Channel", "Select the release channel"),
+                            ("Upgrade", "Upgrade the GNS3 VM"),
+                            ("Restore", "Restore the VM (if an upgrade has failed)"),
+                            ("Log", "Show the GNS3 server log"),
                             ("Security", "Configure server authentication"),
                             ("Keyboard", "Change keyboard layout"),
                             ("Console", "Change console settings (font size etc.)"),
                             ("Configure", "Edit server configuration (advanced users ONLY)"),
                             ("Proxy", "Configure proxy settings"),
                             ("Network", "Configure network settings"),
-                            ("Log", "Show server log"),
-                            ("Test", "Check internet connection"),
+                            ("Migrate", "Migrate data to another GNS3 VM"),
                             ("Shrink", "Shrink the VM disk"),
-                            ("Channel", "Select the release channel"),
-                            ("Restore", "Restore the VM (if an upgrade has failed)"),
                             ("Reboot", "Reboot the VM"),
                             ("Shutdown", "Shutdown the VM")])
         d.clear()
