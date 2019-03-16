@@ -151,8 +151,9 @@ def get_all_releases(release_channel, dev=False):
         release = tag.get("name")
         if release and release[1:].startswith(release_channel):
             if dev is False and re.search("dev|a|rc|b", release):
-                continue
-            releases.append(release)
+                releases.append(release)
+            else:
+                releases.append(release)
 
     def atoi(text):
         return int(text) if text.isdigit() else text
