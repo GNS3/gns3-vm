@@ -484,12 +484,11 @@ try:
     while True:
         code, tag = d.menu("GNS3 {}".format(gns3_version()),
                            choices=[("Information", "Display VM information"),
-                            ("Test", "Check Internet connection"),
-                            ("Shell", "Open a shell"),
                             ("Channel", "Select the release channel"),
                             ("Upgrade", "Upgrade the GNS3 VM"),
-                            ("Restore", "Restore the VM (if an upgrade has failed)"),
+                            ("Shell", "Open a shell"),
                             ("Log", "Show the GNS3 server log"),
+                            ("Test", "Check Internet connection"),
                             ("Security", "Configure server authentication"),
                             ("Keyboard", "Change keyboard layout"),
                             ("Console", "Change console settings (font size etc.)"),
@@ -497,6 +496,7 @@ try:
                             ("Proxy", "Configure proxy settings"),
                             ("Network", "Configure network settings"),
                             ("Migrate", "Migrate data to another GNS3 VM"),
+                            ("Restore", "Restore the VM (if an upgrade has failed)"),
                             ("Shrink", "Shrink the VM disk"),
                             ("Reboot", "Reboot the VM"),
                             ("Shutdown", "Shutdown the VM")])
