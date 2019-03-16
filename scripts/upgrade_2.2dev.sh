@@ -35,7 +35,7 @@ fi
 
 if [[ -z "$1" ]]
 then
-  TAG="2.2" # latest dev version on this branch
+  TAG=2.2 # latest dev version on this branch
 else
   TAG=$1
 fi
