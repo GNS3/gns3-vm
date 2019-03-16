@@ -31,7 +31,7 @@ chmod 644 /etc/apt/sources.list
 chown root:root /etc/apt/sources.list
 
 # Add the GNS3 PPA
-if [ ! -f /usr/bin/add-apt-repository ]
+if [[ ! -f /usr/bin/add-apt-repository ]]
 then
     apt-get update
     apt-get install -y software-properties-common
@@ -119,6 +119,11 @@ cp "grub" "/etc/default/grub"
 chown root:root /etc/default/grub
 chmod 700 /etc/default/grub
 update-grub
+
+# Setup KVM permissions
+cp 60-qemu-system-common.rules /lib/udev/rules.d/60-qemu-system-common.rules
+chmod 644 /lib/udev/rules.d/60-qemu-system-common.rules
+chown root:root /lib/udev/rules.d/60-qemu-system-common.rules
 
 # Setup Console
 cp "console-setup" "/etc/default/console-setup"

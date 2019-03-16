@@ -415,12 +415,8 @@ def kvm_support():
     Returns true if KVM is supported.
     """
 
-    ret = subprocess.call("kvm-ok") == 0
-    if ret is True:
-        # make sure /dev/kvm has the correct permissions
-        os.system("sudo chown root:kvm /dev/kvm")
-        os.system("sudo chmod 660 /dev/kvm")
-    return ret
+    return subprocess.call("kvm-ok") == 0
+
 
 def ubuntu_version():
     """
