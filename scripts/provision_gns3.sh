@@ -28,7 +28,7 @@ sudo apt-get install -y --force-yes python3-setuptools python3.6-dev
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-if [ "$GNS3_VERSION" == "master" ]
+if [[ "$GNS3_VERSION" == "master" ]]
 then
   sudo apt-get install -y --force-yes git
   cd /tmp
@@ -36,7 +36,7 @@ then
   cd gns3-server
   git checkout -b "$GNS3_VERSION" 
   sudo python3 setup.py install
-elif [ "$GNS3_VERSION" == "2.1" ]
+elif [[ "$GNS3_VERSION" == "2.1" ]]
 then
   sudo apt-get install -y --force-yes git
   cd /tmp
@@ -44,7 +44,7 @@ then
   cd gns3-server
   git checkout -b 2.1
   sudo python3 setup.py install
-elif [ "$GNS3_VERSION" == "2.2" ]
+elif [[ "$GNS3_VERSION" == "2.2" ]]
 then
   sudo apt-get install -y --force-yes git
   cd /tmp

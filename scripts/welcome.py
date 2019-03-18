@@ -180,7 +180,7 @@ def upgrade(force=False):
         # development release (unstable)
         releases = get_all_releases(match.group(1), dev=True)
         script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/upgrade_{}.sh".format(release_channel)
-        choices.append((match.group(1), "Latest development version on {}".format(match.group(1))))
+        choices.append((match.group(1), "Latest development version on {} branch".format(match.group(1))))
     else:
         # current release (stable)
         releases = get_all_releases(release_channel)

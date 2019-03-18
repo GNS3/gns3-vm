@@ -60,6 +60,11 @@ EOF
 
 fi
 
+# Install the virtual kernel & tools, this is to support LIS (Linux Integration Services)
+# for Hyper-V to find the guest IP address for example
+sudo apt-get install --yes --install-recommends linux-virtual
+sudo apt-get install --yes linux-cloud-tools-virtual linux-tools-virtual
+
 # Create the GNS3 folders
 sudo mkdir -p /opt/gns3
 sudo chown -R gns3:gns3 /opt/gns3
