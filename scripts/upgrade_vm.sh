@@ -33,7 +33,7 @@ rm gns3vm.tar.gz
 
 # install required Ubuntu packages including GNS3 dependencies
 cd gns3-vm-${BRANCH}/config
-sudo bash -x install.sh
+sudo -E bash -x install.sh
 
 sudo dpkg --configure -a
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade -y 
