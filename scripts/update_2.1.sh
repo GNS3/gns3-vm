@@ -27,7 +27,7 @@ export UNSTABLE_APT="0"
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
 
 
-if [ ! -d "gns3-server" ]
+if [[ ! -d "gns3-server" ]]
 then
     sudo apt-get update
     sudo apt-get install -y git
@@ -42,7 +42,7 @@ TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | sort -V | tail -n 1`
 
 git checkout $TAG
 
-if  [! -z "$HTTP_PROXY" ]
+if  [[ ! -z "$HTTP_PROXY" ]]
 then
   sudo pip3 install -U -r requirements.txt
 else
