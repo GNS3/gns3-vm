@@ -30,7 +30,7 @@ curl --location "https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz" > gns
 tar -xzf gns3vm.tar.gz
 rm gns3vm.tar.gz
 cd gns3-vm-${BRANCH}/config
-sudo bash -x install.sh
+sudo -E bash -x install.sh
 
 sudo dpkg --configure -a
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade -y 
