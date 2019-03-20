@@ -45,7 +45,13 @@ else
   git checkout $1
 fi
 
-sudo pip3 install -U -r requirements.txt
+if  [[ ! -z "$HTTP_PROXY" ]]
+then
+  sudo pip3 install -U -r requirements.txt
+else
+  sudo pip3 --proxy $HTTP_PROXY install -U -r requirements.txt
+fi
+
 sudo python3 setup.py install
 
 echo "Update to 2.2dev completed, rebooting in 10 seconds..."

@@ -45,7 +45,14 @@ else
   TAG=$1
 fi
 git checkout $TAG
-sudo pip3 install -U -r requirements.txt
+
+if  [[ ! -z "$HTTP_PROXY" ]]
+then
+  sudo pip3 install -U -r requirements.txt
+else
+  sudo pip3 --proxy $HTTP_PROXY install -U -r requirements.txt
+fi
+
 sudo python3 setup.py install
 
 echo "Upgrade to $TAG completed, rebooting in 10 seconds..."
