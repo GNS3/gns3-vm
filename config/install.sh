@@ -20,9 +20,18 @@
 # the directory before running it
 #
 
-set -e
+set +e
 
 export DEBIAN_FRONTEND="noninteractive"
+
+# Uninstall open-vm-tools because it created issues when upgrading.
+if [ -f /etc/init.d/open-vm-tools ]
+then
+    /etc/init.d/open-vm-tools stop
+fi
+apt-get remove -y --auto-remove open-vm-tools
+
+set -e
 
 # Sources.list
 cp sources.list /etc/apt/sources.list
@@ -36,25 +45,34 @@ then
     apt-get install -y software-properties-common
 fi
 
-add-apt-repository -y ppa:gns3/qemu
+# Use sudo -E in case there is a proxy config
+sudo -E add-apt-repository -y ppa:gns3/qemu
 
-if [ "$UNSTABLE_APT" == "1" ]
+if [ "$UNSTABLE_APT" = "1" ]
 then
-    add-apt-repository -y ppa:gns3/ppa
+    sudo -E add-apt-repository -y ppa:gns3/ppa
     add-apt-repository -y -r ppa:gns3/unstable
 else
     add-apt-repository -y -r ppa:gns3/ppa
-    add-apt-repository -y ppa:gns3/unstable
+    sudo -E add-apt-repository -y ppa:gns3/unstable
 fi
 
 dpkg --add-architecture i386
 apt-get update
 
+# Do not ask users any question
+DEBIAN_FRONTEND=noninteractive apt-get -y -o DPkg::options::="--force-confdef" -o DPkg::options::="--force-confold" upgrade
+
 # VDE network
 apt-get install -y vde2 uml-utilities
 
 # VMware open-vm-tools
-apt-get install -y open-vm-tools-lts-trusty
+apt-get purge -y --auto-remove open-vm-tools
+if [ -d /etc/vmware-tools ]
+then
+    rm -R /etc/vmware-tools
+fi
+apt-get install -y open-vm-tools
 
 # Autologin
 apt-get install -y mingetty

@@ -159,6 +159,64 @@ def update(force=False):
         time.sleep(15)
 
 
+def migrate():
+    """
+    Migrate GNS3 VM data.
+    """
+
+    code, option = d.menu("Select an option",
+                          choices=[("Setup", "Configure this VM to send data to another GNS3 VM"),
+                                   ("Send", "Send images and projects to another GNS3 VM")])
+    d.clear()
+    if code == Dialog.OK:
+        (answer, destination) = d.inputbox("What is IP address or hostname of the other GNS3 VM?", init="172.16.1.128")
+        if answer != d.OK:
+            return
+        if destination == get_ip():
+            d.msgbox("The destination cannot be the same as this VM IP address ({})".format(destination))
+            return
+        if option == "Send":
+            command = r"rsync -az --progress -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/gns3/.ssh/gns3-vm-key' /opt/gns3 gns3@{}:/opt".format(destination)
+            ret = os.system('bash -c "{}"'.format(command))
+            time.sleep(10)
+            if ret != 0:
+                d.msgbox("Could not send data to the other GNS3 VM located at {}".format(destination))
+            else:
+                d.msgbox("Images and projects have been successfully sent to the other GNS3 VM located at {}".format(destination))
+        elif option == "Setup":
+            script = """
+if [ ! -f ~/.ssh/gns3-vm-key ]
+then
+    ssh-keygen -f ~/.ssh/gns3-vm-key -N '' -C gns3@{}
+fi
+ssh-copy-id -i ~/.ssh/gns3-vm-key gns3@{}
+""".format(get_ip(), destination)
+            ret = os.system('bash -c "{}"'.format(script))
+            time.sleep(10)
+            if ret != 0:
+                d.msgbox("Error while setting up the migrate feature")
+            else:
+                d.msgbox("Configuration successful, you can now send data to the GNS3 VM located at {} without password".format(destination))
+
+
+def shrink_disk():
+
+    ret = os.system("lspci | grep -i vmware")
+    if ret != 0:
+        d.msgbox("Shrinking the disk is only supported when running inside VMware")
+        return
+
+    if d.yesno("Would you like to shrink the VM disk? The VM will reboot at the end of the process. Continue?") != d.OK:
+        return
+
+    os.system("sudo service gns3 stop")
+    os.system("sudo service docker stop")
+    os.system("sudo vmware-toolbox-cmd disk shrink /opt")
+    os.system("sudo vmware-toolbox-cmd disk shrink /")
+
+    d.msgbox("The GNS3 VM will reboot")
+    os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+
 def vm_information():
     """
     Show IP, SSH settings....
@@ -235,7 +293,7 @@ def log():
             while True:
                 line = f.readline()
                 sys.stdout.write(line)
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, MemoryError):
             return
 
 
@@ -325,6 +383,7 @@ try:
         code, tag = d.menu("GNS3 {}".format(gns3_version()),
                            choices=[("Information", "Display VM information"),
                             ("Upgrade", "Upgrade GNS3"),
+                            ("Migrate", "Migrate data to another GNS3 VM"),
                             ("Shell", "Open a console"),
                             ("Security", "Configure authentication"),
                             ("Keyboard", "Change keyboard layout"),
@@ -333,6 +392,7 @@ try:
                             ("Networking", "Configure networking settings"),
                             ("Log", "Show server log"),
                             ("Test", "Check internet connection"),
+                            ("Shrink", "Shrink the VM disk"),
                             ("Version", "Select the GNS3 version"),
                             ("Restore", "Restore the VM (if you have trouble for upgrade)"),
                             ("Reboot", "Reboot the VM"),
@@ -355,6 +415,8 @@ try:
                 vm_information()
             elif tag == "Log":
                 log()
+            elif tag == "Migrate":
+                migrate()
             elif tag == "Configure":
                 edit_config()
             elif tag == "Networking":
@@ -367,5 +429,7 @@ try:
                 check_internet_connectivity()
             elif tag == "Proxy":
                 edit_proxy()
+            elif tag == "Shrink":
+                shrink_disk()
 except KeyboardInterrupt:
     sys.exit(0)

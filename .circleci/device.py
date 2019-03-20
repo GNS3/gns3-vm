@@ -27,6 +27,7 @@ GNS3_HOSTNAME = 'gns3-vm-builder'
 
 token = sys.argv[1]
 action = sys.argv[2]
+packet_project = sys.argv[3]
 
 
 def get_device(project, hostname):
@@ -38,11 +39,11 @@ def get_device(project, hostname):
 manager = packet.Manager(auth_token=token)
 
 gns3_projects = [p for p in manager.list_projects()
-                 if p.name == 'GNS3']
+                 if p.name == packet_project]
 if len(gns3_projects) > 0:
     gns3_project = gns3_projects[0]
 else:
-    sys.exit("Project GNS3 doesn't exist on packet.net. Please create it.")
+    sys.exit("Project `{}` doesn't exist on packet.net. Please create it.".format(packet_project))
 
 
 def get():
@@ -54,7 +55,7 @@ def get():
             project_id=gns3_project.id,
             hostname=GNS3_HOSTNAME,
             plan='c1.small.x86',
-            facility='ams1',
+            facility='any',
             operating_system="ubuntu_16_04"
         )
 

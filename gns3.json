@@ -5,7 +5,7 @@
       "hostname" : "gns3vm",
       "memory": "2048",
       "disk_size": "20000",
-      "data_disk": "100000",
+      "data_disk": "300000",
       "iso_checksum_type": "sha1",
       "iso_checksum": "5e567024c385cc8f90c83d6763c6e4f1cd5deb6f",
       "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04.5-server-amd64.iso",

@@ -7,7 +7,6 @@
 
 set -e
 
-
 export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
 
@@ -23,7 +22,8 @@ echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Update flavor: $GNS3_UPDATE_FLAVOR"
 
 rm -Rf output-*
-export GNS3VM_VERSION=`python last_vm_version.py`
+#export GNS3VM_VERSION=`python last_vm_version.py`
+export GNS3VM_VERSION="0.10.14"
 export GNS3_SRC="/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.ova"
 
 if [ ! -f $GNS3_SRC ]

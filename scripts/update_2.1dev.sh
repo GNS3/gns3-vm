@@ -27,7 +27,7 @@ export UNSTABLE_APT="1"
 curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade.sh" > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh
 
 
-if [ ! -d "gns3-server" ]
+if [[ ! -d "gns3-server" ]]
 then
     sudo apt-get update
     sudo apt-get install -y git
@@ -37,9 +37,16 @@ fi
 cd gns3-server
 git reset --hard HEAD
 git fetch origin
-git checkout 2.1  #FIXME: switch to master when branch 2.1 becomes master on gns3-server
+git checkout 2.1
 git pull -u
-sudo pip3 install -U -r requirements.txt
+
+if  [[ ! -z "$HTTP_PROXY" ]]
+then
+  sudo pip3 install -U -r requirements.txt
+else
+  sudo pip3 --proxy $HTTP_PROXY install -U -r requirements.txt
+fi
+
 sudo python3 setup.py install
 
 echo "Reboot in 5s"
