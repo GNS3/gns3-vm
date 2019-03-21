@@ -46,7 +46,7 @@ else
 fi
 git checkout $TAG
 
-if  [[ ! -z "$HTTP_PROXY" ]]
+if  [[ -z "$HTTP_PROXY" ]]
 then
   sudo pip3 install -U -r requirements.txt
 else
