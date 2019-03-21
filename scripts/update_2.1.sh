@@ -42,7 +42,7 @@ TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | sort -V | tail -n 1`
 
 git checkout $TAG
 
-if  [[ ! -z "$HTTP_PROXY" ]]
+if  [[ -z "$HTTP_PROXY" ]]
 then
   sudo pip3 install -U -r requirements.txt
 else
