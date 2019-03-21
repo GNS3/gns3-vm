@@ -40,7 +40,7 @@ git fetch origin
 git checkout 2.2
 git pull -u
 
-if  [[ ! -z "$HTTP_PROXY" ]]
+if  [[ -z "$HTTP_PROXY" ]]
 then
   sudo pip3 install -U -r requirements.txt
 else
