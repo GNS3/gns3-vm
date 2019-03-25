@@ -116,8 +116,7 @@ jobs:
 
               if [ ! -e \"GNS3 VM VirtualBox ${GNS3_NUMBER}.zip\" ];
               then
-                ./virtualbox.sh
-                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.16.zip
+                ./release_virtualbox.sh ${GNS3_VERSION}
               fi
             "
       - run:
@@ -131,8 +130,7 @@ jobs:
 
               if [ ! -e \"GNS3 VM VMware Workstation ${GNS3_NUMBER}.zip\" ];
               then
-                ./vmware.sh
-                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.10.16.zip
+                ./release_vmware.sh ${GNS3_VERSION}
               fi
             "
       - run:
