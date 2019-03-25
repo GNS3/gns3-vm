@@ -5,14 +5,14 @@
 env
 
 # Add the GNS3 PPA
-if [ ! -f /usr/bin/add-apt-repository ]
+if [[ ! -f /usr/bin/add-apt-repository ]]
 then
     apt-get update
     apt-get install -y software-properties-common
 fi
 
 echo "${GNS3_VERSION}" | grep -E  "(dev|a|rc|b|unstable|master)"
-if [ $? -eq 0 ]
+if [[ $? -eq 0 ]]
 then
   sudo add-apt-repository -y -r ppa:gns3/ppa
   sudo add-apt-repository -y ppa:gns3/unstable
@@ -65,5 +65,8 @@ sudo rm -fr /var/lib/apt/lists/*
 sudo rm -fr /var/cache/apt/*
 sudo rm -fr /var/cache/debconf/*
 
-# zerofree for disk compaction
+# Defragment
+sudo e4defrag /
+
+# Setup zerofree for disk compaction
 sudo bash /usr/local/bin/zerofree

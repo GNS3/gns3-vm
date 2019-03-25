@@ -1,5 +1,7 @@
-#! /bin/sh
-# Fill the disk with zero to allow VMware to compress the disk when exporting the VM
+#! /bin/sh -ex
 
-dd if=/dev/zero of=/EMPTY bs=1M
-rm -f /EMPTY
+echo "$(date): Filling the remaining disk space with zeros"
+sudo dd if=/dev/zero of=/tmp/zero.bin || true
+sudo rm /tmp/zero.bin
+sync
+echo "$(date): Disk cleanup completed."

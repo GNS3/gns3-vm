@@ -57,21 +57,18 @@ sudo -E add-apt-repository -y ppa:gns3/qemu
 
 apt-get update
 
-# VMware open-vm-tools
-apt-get install -y open-vm-tools
-
 # Autologin
 apt-get install -y mingetty
 
 # Python
 apt-get install -y python3-dev python3.6-dev python3-setuptools
 
+# For the NAT node
+apt-get install -y libvirt-bin
+
 # Install Qemu
 apt-get install -y qemu-system-x86 qemu-kvm cpulimit
 sudo usermod -aG kvm gns3
-
-# For the NAT node
-apt-get install -y libvirt-bin
 
 # Install other GNS3 dependencies
 apt-get install -y gns3-iou dynamips vpcs ubridge

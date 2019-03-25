@@ -5,7 +5,7 @@
       "hostname" : "gns3vm",
       "memory": "2048",
       "disk_size": "20000",
-      "data_disk": "300000",
+      "data_disk": "500000",
       "iso_checksum_type": "sha256",
       "iso_checksum": "a2cb36dc010d98ad9253ea5ad5a07fd6b409e3412c48f1860536970b073c98f5",
       "iso_url": "http://cdimage.ubuntu.com/ubuntu/releases/bionic/release/ubuntu-18.04.2-server-amd64.iso",
@@ -75,7 +75,7 @@
                "--format",
                "VDI",
                "--filename",
-               "opt.vmdk",
+               "output-{{build_name}}/opt.vdi",
                "--variant",
                "Standard",
                "--size",
@@ -101,7 +101,7 @@
                "--type",
                "hdd",
                "--medium",
-               "opt.vmdk"
+               "output-{{build_name}}/opt.vdi"
             ]
          ],
          "vboxmanage_post" : [
@@ -134,6 +134,16 @@
                "{{.Name}}",
                "--nictype2",
                "82540EM"
+             ],
+             [
+                "modifyhd",
+                "--compact",
+                "{{pwd}}/output-{{build_name}}/{{.Name}}.vdi"
+             ],
+             [
+                "modifyhd",
+                "--compact",
+                "{{pwd}}/output-{{build_name}}/opt.vdi"
              ]
          ],
          "http_directory" : "http",
