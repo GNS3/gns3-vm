@@ -40,11 +40,10 @@ git fetch origin
 if [[ -z "$1" ]]
 then
   git checkout "2.2" # latest dev version on this branch
+  git pull
 else
   git checkout $1
 fi
-
-git pull
 
 if  [[ -z "$HTTP_PROXY" ]]
 then
