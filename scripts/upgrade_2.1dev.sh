@@ -37,7 +37,7 @@ cd gns3-server
 git reset --hard HEAD
 git fetch origin
 
-if [[ -z "$1" ]]
+if [[ -z "$1" ]] || [[ "$1" == "2.1" ]]
 then
   git checkout "2.1" # latest dev version on this branch
   git pull
