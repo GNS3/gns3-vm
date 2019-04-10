@@ -12,7 +12,7 @@ then
 fi
 
 echo "${GNS3_VERSION}" | grep -E  "(dev|a|rc|b|unstable|master)"
-if [ $? -eq 0 ]
+if [[ $? -eq 0 ]]
 then
   sudo add-apt-repository -y -r ppa:gns3/ppa
   sudo add-apt-repository -y ppa:gns3/unstable
