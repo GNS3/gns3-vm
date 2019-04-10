@@ -128,7 +128,10 @@ def update(force=False):
         if d.yesno("PLEASE SNAPSHOT THE VM BEFORE RUNNING THE UPGRADE IN CASE OF FAILURE. The server will reboot at the end of the upgrade process. Continue?") != d.OK:
             return
     release = get_release()
-    if release.endswith("dev") or release == "2.2":
+    if release == "2.2":
+        d.msgbox("GNS3 >= version 2.2 requires a new GNS3 VM based on Ubuntu 18.04 LTS, please download this VM from our website")
+        return
+    if release.endswith("dev"):
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     else:
         ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
