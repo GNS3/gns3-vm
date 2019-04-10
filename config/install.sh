@@ -38,11 +38,6 @@ then
 fi
 
 # use sudo -E to preserve proxy config
-sudo -E add-apt-repository -y ppa:gns3/ppa
-
-# for Qemu backports
-sudo -E add-apt-repository -y ppa:gns3/qemu
-
 if [[ "$UNSTABLE_APT" == "1" ]]
 then
     sudo -E add-apt-repository -y ppa:gns3/ppa
@@ -51,6 +46,9 @@ else
     add-apt-repository -y -r ppa:gns3/ppa
     sudo -E add-apt-repository -y ppa:gns3/unstable
 fi
+
+# for Qemu backports
+sudo -E add-apt-repository -y ppa:gns3/qemu
 
 # Allows to install 32-bit packages
 # dpkg --add-architecture i386
