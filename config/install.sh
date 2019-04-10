@@ -40,11 +40,11 @@ fi
 # use sudo -E to preserve proxy config
 if [[ "$UNSTABLE_APT" == "1" ]]
 then
-    sudo -E add-apt-repository -y ppa:gns3/ppa
-    add-apt-repository -y -r ppa:gns3/unstable
-else
-    add-apt-repository -y -r ppa:gns3/ppa
     sudo -E add-apt-repository -y ppa:gns3/unstable
+    add-apt-repository -y --remove ppa:gns3/ppa
+else
+    sudo -E add-apt-repository -y ppa:gns3/ppa
+    add-apt-repository -y --remove ppa:gns3/unstable
 fi
 
 # for Qemu backports
