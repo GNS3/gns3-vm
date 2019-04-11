@@ -150,8 +150,9 @@ def get_all_releases(release_channel, dev=False):
     for tag in json_data:
         release = tag.get("name")
         if release and release[1:].startswith(release_channel):
-            if dev is False and re.search("dev|a|rc|b", release):
-                releases.append(release)
+            if dev is False:
+                if not re.search("dev|a|rc|b", release):
+                    releases.append(release)
             else:
                 releases.append(release)
 
