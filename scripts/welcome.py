@@ -150,8 +150,9 @@ def get_all_releases(release_channel, dev=False):
     for tag in json_data:
         release = tag.get("name")
         if release and release[1:].startswith(release_channel):
-            if dev is False and re.search("dev|a|rc|b", release):
-                releases.append(release)
+            if dev is False:
+                if not re.search("dev|a|rc|b", release):
+                    releases.append(release)
             else:
                 releases.append(release)
 
@@ -361,13 +362,7 @@ def log():
     """
 
     os.system("/usr/bin/sudo chmod 755 /var/log/gns3/gns3.log")
-    with open("/var/log/gns3/gns3.log") as f:
-        try:
-            while True:
-                line = f.readline()
-                sys.stdout.write(line)
-        except (KeyboardInterrupt, MemoryError):
-            return
+    os.system("tail -n 20 -f /var/log/gns3/gns3.log")
 
 
 def edit_config():
