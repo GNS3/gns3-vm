@@ -55,6 +55,9 @@ sudo -E add-apt-repository -y ppa:gns3/qemu
 
 apt-get update
 
+# Install virt-what
+apt-get install -y virt-what
+
 # Autologin
 apt-get install -y mingetty
 
@@ -88,6 +91,9 @@ chmod 644 /etc/docker/daemon.json
 
 # Install VNC support for Docker
 apt-get install -y tigervnc-standalone-server
+
+# Prevent tigervnc to be uninstalled by cleaner.sh
+apt-mark hold tigervnc-standalone-server
 
 # Install pip
 apt-get install -y python3-pip

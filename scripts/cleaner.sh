@@ -1,8 +1,6 @@
 #!/bin/bash
 
 sudo apt-get purge -y --yes vim-common
-sudo apt-get purge -y --yes linux-headers-generic
-sudo apt-get purge -y --yes linux-headers-virtual
 sudo apt-get purge -y --yes usbutils
 sudo apt-get purge -y --yes man-db
 sudo apt-get purge -y --yes mtr-tiny
@@ -66,7 +64,15 @@ sudo rm -Rf /usr/share/locale/*
 sudo locale-gen --purge --lang en_US
 
 sudo apt-get -y autoremove --purge
+sudo apt-get -y autoclean
 sudo apt-get -y clean
+
+# Clean up orphaned packages with deborphan
+sudo apt-get -y install deborphan
+while [[ -n "$(deborphan --guess-all --libdevel)" ]]; do
+    deborphan --guess-all --libdevel | xargs sudo apt-get -y purge
+done
+sudo apt-get -y purge deborphan dialog
 
 sudo rm -Rf /var/lib/apt/lists/*
 sudo rm -Rf /var/cache/apt/*

@@ -243,12 +243,14 @@ Release channel: {release_channel}
 VM version: {gns3vm_version}
 Ubuntu version: {ubuntu_version}
 Qemu version: {qemu_version}
+Virtualization: {virt}
 KVM support available: {kvm}\n\n""".format(
             gns3vm_version=gns3vm_version(),
             release_channel=get_release_channel(),
             gns3_version=version,
             ubuntu_version=ubuntu_version(),
             qemu_version=qemu_version(),
+            virt=virt_what(),
             kvm=kvm_support())
 
     ip = get_ip()
@@ -428,6 +430,14 @@ def ubuntu_version():
     """
 
     return subprocess.check_output(["lsb_release", "-sc"]).strip().decode()
+
+
+def virt_what():
+    """
+    Returns the virtualization technology used to run the GNS3 VM.
+    """
+
+    return subprocess.check_output(["sudo", "virt-what"]).strip().decode()
 
 
 def qemu_version():

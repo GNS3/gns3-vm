@@ -1,0 +1,92 @@
+{
+   "variables" : {
+      "ssh_pass" : "gns3",
+      "ssh_name" : "gns3",
+      "gns3_version": "{{env `GNS3_VERSION`}}",
+      "gns3_release_channel": "{{env `GNS3_RELEASE_CHANNEL`}}",
+      "gns3_src": "{{env `GNS3_SRC`}}"
+   },
+   "provisioners" : [
+      {
+          "inline": "sudo rm -rf /tmp/*",
+          "type": "shell"
+      },
+      {
+        "inline": "echo -n \"{{user `gns3_release_channel`}}\" > /home/gns3/.config/GNS3/gns3_release_channel",
+        "type": "shell"
+      },
+      {
+        "inline": "sudo apt update && sudo apt install --yes linux-virtual linux-cloud-tools-virtual linux-tools-virtual",
+        "type": "shell"
+      },
+      {
+         "type" : "shell",
+         "script" : "scripts/provision_gns3.sh",
+          "environment_vars": [
+            "GNS3_VERSION={{user `gns3_version`}}"
+          ]
+      }
+   ],
+   "builders" : [
+      {
+          "type": "vmware-vmx",
+          "vm_name" : "GNS3 VM",
+          "headless": true,
+          "source_path": "{{user `gns3_src`}}",
+          "ssh_username": "{{user `ssh_name`}}",
+          "ssh_password": "{{user `ssh_pass`}}",
+          "shutdown_timeout": "60m",
+          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+          "vmx_data" :
+          {
+            "ethernet0.connectionType": "nat",
+            "ethernet1.virtualDev": "e1000"
+          },
+          "vmx_data_post":
+          {
+              "ethernet0.connectionType": "hostonly"
+          },
+         "skip_compaction": false
+      },
+      {
+          "type": "virtualbox-ovf",
+          "vm_name" : "GNS3 VM",
+          "headless": true,
+          "source_path": "{{user `gns3_src`}}",
+          "ssh_username": "{{user `ssh_name`}}",
+          "ssh_password": "{{user `ssh_pass`}}",
+          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+          "shutdown_timeout": "60m",
+          "format": "ova",
+          "guest_additions_mode" : "disable",
+          "vboxmanage" : [
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--nic1",
+               "nat"
+             ]
+          ],
+          "vboxmanage_post" : [
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--nic1",
+               "hostonly"
+             ],
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--nictype1",
+               "82540EM"
+             ],
+             [
+                "modifyvm",
+                "{{.Name}}",
+                "--hostonlyadapter1",
+                "vboxnet0"
+             ]
+         ]
+      }
+   ]
+}

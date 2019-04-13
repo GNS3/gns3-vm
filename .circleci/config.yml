@@ -158,8 +158,6 @@ jobs:
 
               cd gns3-vm
 
-              cp \"GNS3 VM VirtualBox ${GNS3_NUMBER}.zip\" /tmp/GNS3VM.VirtualBox.${GNS3_NUMBER}.zip
-
               if [ ! -e \"GNS3 VM Hyper-V ${GNS3_NUMBER}.zip\" ];
               then
                 ./release_hyperv.sh ${GNS3_VERSION}
