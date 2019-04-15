@@ -8,7 +8,7 @@ env
 if [[ ! -f /usr/bin/add-apt-repository ]]
 then
     apt-get update
-    sudo apt-get install -y software-properties-common
+    apt-get install -y software-properties-common
 fi
 
 echo "${GNS3_VERSION}" | grep -E  "(dev|a|rc|b|unstable|master)"
@@ -21,10 +21,9 @@ else
   sudo add-apt-repository -y ppa:gns3/ppa
 fi
 
-sudo export DEBIAN_FRONTEND="noninteractive"
 sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get install -y python3-pip python3.6-dev
+sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+sudo apt-get install -y python3-setuptools python3.6-dev
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
@@ -54,7 +53,6 @@ then
   git checkout -b 2.2
   sudo python3 setup.py install
 else
-  locate pip3
   sudo pip3 install gns3-server==${GNS3_VERSION}
 fi
 
