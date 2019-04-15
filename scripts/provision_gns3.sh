@@ -23,7 +23,7 @@ fi
 
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo apt-get install -y python3-pip3 python3.6-dev
+sudo apt-get install -y python3-pip python3.6-dev
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
