@@ -23,14 +23,14 @@ fi
 
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo apt-get install -y --force-yes python3-setuptools python3.6-dev
+sudo apt-get install -y python3-setuptools python3.6-dev
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
 if [[ "$GNS3_VERSION" == "master" ]]
 then
-  sudo apt-get install -y --force-yes git
+  sudo apt-get install -y git
   cd /tmp
   git clone https://github.com/GNS3/gns3-server.git gns3-server
   cd gns3-server
@@ -38,7 +38,7 @@ then
   sudo python3 setup.py install
 elif [[ "$GNS3_VERSION" == "2.1" ]]
 then
-  sudo apt-get install -y --force-yes git
+  sudo apt-get install -y git
   cd /tmp
   git clone https://github.com/GNS3/gns3-server.git gns3-server
   cd gns3-server
@@ -46,7 +46,7 @@ then
   sudo python3 setup.py install
 elif [[ "$GNS3_VERSION" == "2.2" ]]
 then
-  sudo apt-get install -y --force-yes git
+  sudo apt-get install -y git
   cd /tmp
   git clone https://github.com/GNS3/gns3-server.git gns3-server
   cd gns3-server
