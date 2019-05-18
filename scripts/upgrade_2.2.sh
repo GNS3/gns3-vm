@@ -34,7 +34,7 @@ then
 
     # Make sure GCC is installed because psutil requires to be compiled
     # Maybe a wheel will be provided someday: https://github.com/giampaolo/psutil/issues/824
-    sudo apt-get install gcc
+    sudo apt-get install -y gcc
 fi
 
 cd gns3-server
