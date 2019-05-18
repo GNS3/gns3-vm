@@ -31,6 +31,10 @@ then
     sudo apt-get update
     sudo apt-get install -y git
     git clone https://github.com/GNS3/gns3-server.git gns3-server
+
+    # Make sure GCC is installed because psutil requires to be compiled
+    # Maybe a wheel will be provided someday: https://github.com/giampaolo/psutil/issues/824
+    sudo apt-get install gcc
 fi
 
 cd gns3-server
@@ -45,6 +49,7 @@ else
   TAG=$1
 fi
 git checkout $TAG
+
 
 if  [[ -z "$HTTP_PROXY" ]]
 then

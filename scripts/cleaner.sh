@@ -48,7 +48,6 @@ sudo apt-get purge -y --yes gpgsm
 sudo apt-get purge -y --yes gpgv
 sudo apt-get purge -y --yes gpgv2
 sudo apt-get purge -y --yes lvm2
-sudo apt-get purge -y --yes gcc-8-base
 
 # Purge old kernels
 dpkg -l 'linux-*' | sed '/^ii/!d;/'"$(uname -r | sed "s/\(.*\)-\([^0-9]\+\)/\1/")"'/d;s/^[^ ]* [^ ]* \([^ ]*\).*/\1/;/[0-9]/!d' | xargs sudo apt-get -y purge
