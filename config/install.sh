@@ -110,9 +110,15 @@ chown root:root /etc/rc.local
 cp "gns3vm_default_netcfg.yaml" "/etc/netplan/80_gns3vm_default_netcfg.yaml"
 chown root:root /etc/netplan/80_gns3vm_default_netcfg.yaml
 chmod 644 /etc/netplan/80_gns3vm_default_netcfg.yaml
-cp "gns3vm_static_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
-chown root:root /etc/netplan/90_gns3vm_static_netcfg.yaml
-chmod 644 /etc/netplan/90_gns3vm_static_netcfg.yaml
+
+# Do not overwrite user static network config
+if [[ ! -f "/etc/netplan/90_gns3vm_static_netcfg.yaml" ]]
+then
+    cp "gns3vm_static_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
+    chown root:root /etc/netplan/90_gns3vm_static_netcfg.yaml
+    chmod 644 /etc/netplan/90_gns3vm_static_netcfg.yaml
+fi
+
 netplan apply
 
 # Setup Grub
