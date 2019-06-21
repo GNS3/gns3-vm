@@ -10,4 +10,4 @@ then
 fi
 
 export BRANCH="bionic-stable"
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/restore.sh" | bash
+curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/restore.sh" | bash

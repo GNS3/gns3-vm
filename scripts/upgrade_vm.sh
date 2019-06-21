@@ -27,7 +27,7 @@ export DEBIAN_FRONTEND="noninteractive"
 cd /tmp
 rm -Rf gns3-vm-*
 echo "Download https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz"
-curl --insecure -L "https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz" > gns3vm.tar.gz
+curl -Lk "https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz" > gns3vm.tar.gz
 tar -xzf gns3vm.tar.gz
 rm gns3vm.tar.gz
 
@@ -39,7 +39,7 @@ sudo dpkg --configure -a
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade -y 
 
 # upgrade the GNS3 welcome script
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/welcome.py" > /tmp/gns3welcome.py
+curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/welcome.py" > /tmp/gns3welcome.py
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 755 "/usr/local/bin/gns3welcome.py"
 

@@ -75,7 +75,7 @@ sudo usermod -aG kvm gns3
 apt-get install -y gns3-iou dynamips vpcs ubridge
 
 # Install Docker
-curl -sSL https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb > /tmp/docker.deb
+curl -sSLk https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb > /tmp/docker.deb
 sudo apt-get install -y libltdl7
 sudo dpkg -i /tmp/docker.deb
 sudo usermod -aG docker gns3
