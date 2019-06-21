@@ -33,7 +33,7 @@ then
     if [[ ! -f "/tmp/GNS3VM.Hyper-V.${GNS3VM_VERSION}.zip" ]]
     then
         echo "Downloading $GNS3VM_URL"
-        curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.Hyper-V.${GNS3VM_VERSION}.zip"
+        curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.Hyper-V.${GNS3VM_VERSION}.zip"
     fi
 else
     echo "GNS3 VM file: $GNS3_VM_FILE"

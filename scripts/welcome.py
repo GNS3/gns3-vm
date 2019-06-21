@@ -195,12 +195,12 @@ def upgrade(force=False):
         d.clear()
         if code == Dialog.OK:
             # download and execute upgrade script from the corresponding branch on GitHub and pass the GNS3 version we want
-            ret = os.system("curl {url} > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh {version}".format(url=script_url, version=gns3_version))
+            ret = os.system("curl -Lk {url} > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh {version}".format(url=script_url, version=gns3_version))
         else:
             return
     else:
         # download and execute upgrade script from the corresponding branch on GitHub, the latest GNS3 version will be installed
-        ret = os.system("curl {url} > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh".format(url=script_url))
+        ret = os.system("curl -Lk {url} > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh".format(url=script_url))
 
     if ret != 0:
         print("ERROR DURING THE UPGRADE PROCESS PLEASE, TAKE A SCREENSHOT IF YOU NEED SUPPORT")
@@ -314,7 +314,7 @@ def check_internet_connectivity():
     try:
         urllib.request.urlopen('http://pypi.python.org/', timeout=5)
     except urllib.request.URLError as err:
-        d.infobox("Cannot connect to Internet: {}".format(str(err)))
+        d.infobox("Cannot connect to Internet (pypi.python.org): {}".format(str(err)))
         time.sleep(15)
         return
     d.infobox("Connection to Internet: OK")
@@ -344,6 +344,8 @@ def set_security():
 
     config = get_config()
     if d.yesno("Enable GNS3 server authentication?") == d.OK:
+        if not config.has_section("Server"):
+            config.add_section("Server")
         config.set("Server", "auth", True)
         (answer, text) = d.inputbox("Login?")
         if answer != d.OK:
