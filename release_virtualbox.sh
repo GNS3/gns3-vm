@@ -26,11 +26,11 @@ rm -Rf output-*
 export GNS3VM_VERSION="0.10.14"
 export GNS3_SRC="/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.ova"
 
-if [ ! -f $GNS3_SRC ]
+if [[ ! -f $GNS3_SRC ]]
 then
     export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3.VM.VirtualBox.${GNS3VM_VERSION}.zip"
     echo "Download $GNS3VM_URL"
-    curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"
+    curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"
     unzip -p "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip" "GNS3 VM.ova" > $GNS3_SRC
     rm  "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"    
 fi

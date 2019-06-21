@@ -26,10 +26,10 @@ echo "Update flavor: $GNS3_UPDATE_FLAVOR"
 
 echo "Download VM"
 export GNS3VM_URL="https://github.com/GNS3/gns3-gui/releases/download/v${GNS3_VERSION}/GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip"
-if [ ! -f "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" ]
+if [[ ! -f "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" ]]
 then
     echo "Download $GNS3VM_URL"
-    curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip"
+    curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip"
 fi
 unzip -p "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" "GNS3 VM.ova" > "/tmp/GNS3VM.VMWare.${GNS3_VERSION}.ova"
 

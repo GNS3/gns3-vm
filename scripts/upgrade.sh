@@ -26,7 +26,7 @@ set -e
 cd /tmp
 rm -Rf gns3-vm-*
 echo "Download https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz"
-curl --insecure -L "https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz" > gns3vm.tar.gz
+curl -Lk "https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz" > gns3vm.tar.gz
 tar -xzf gns3vm.tar.gz
 rm gns3vm.tar.gz
 cd gns3-vm-${BRANCH}/config
@@ -35,7 +35,7 @@ sudo -E bash -x install.sh
 sudo dpkg --configure -a
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade -y 
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/welcome.py" > /tmp/gns3welcome.py
+curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/welcome.py" > /tmp/gns3welcome.py
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 755 "/usr/local/bin/gns3welcome.py"
 
@@ -99,7 +99,7 @@ if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.12' ] \
 then
     sudo apt-get remove -y docker docker-engine
     sudo rm /etc/apt/sources.list.d/*
-    curl "https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb" > /tmp/docker.deb
+    curl -Lk "https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb" > /tmp/docker.deb
     sudo apt-get install -y libltdl7 libsystemd-journal0
     sudo dpkg -i /tmp/docker.deb
     echo -n '0.10.14' > /home/gns3/.config/GNS3/gns3vm_version

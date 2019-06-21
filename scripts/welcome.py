@@ -145,7 +145,7 @@ def update(force=False):
         d.msgbox("GNS3 >= version 2.2 requires a new GNS3 VM based on Ubuntu 18.04 LTS, please download this VM from our website")
         return
     if release.endswith("dev"):
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
+        ret = os.system("curl -Lk https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     else:
         #versions = get_all_versions(release)
         #if not versions:
@@ -154,7 +154,7 @@ def update(force=False):
         #code, version = d.menu("Select the GNS3 version", choices=versions)
         #d.clear()
         #if code == Dialog.OK:
-        ret = os.system("curl https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh {}".format(release, version))
+        ret = os.system("curl -Lk https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh {}".format(release, version))
         #else:
         #    return
     if ret != 0:
@@ -257,10 +257,10 @@ def check_internet_connectivity():
     try:
         response = urllib.request.urlopen('http://pypi.python.org/', timeout=5)
     except urllib.request.URLError as err:
-        d.infobox("Can't connect to gns3.com: {}".format(str(err)))
+        d.infobox("Can't connect to Internet (pypi.python.org): {}".format(str(err)))
         time.sleep(15)
         return
-    d.infobox("Connection to internet: OK")
+    d.infobox("Connection to Internet: OK")
     time.sleep(2)
 
 
@@ -274,6 +274,8 @@ def keyboard_configuration():
 def set_security():
     config = get_config()
     if d.yesno("Enable server authentication?") == d.OK:
+        if not config.has_section("Server"):
+            config.add_section("Server")
         config.set("Server", "auth", True)
         (answer, text) = d.inputbox("Login?")
         if answer != d.OK:

@@ -30,7 +30,7 @@ echo "127.0.0.254 xml.cisco.com" | sudo tee --append /etc/hosts
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 
 # Install docker
-curl -sSL https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb > /tmp/docker.deb
+curl -sSLk https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb > /tmp/docker.deb
 sudo apt-get install -y libltdl7 libsystemd-journal0
 sudo dpkg -i /tmp/docker.deb
 sudo usermod -aG docker gns3
@@ -38,7 +38,7 @@ sudo service docker stop
 sudo rm -rf /var/lib/docker/aufs
 
 # Setup server
-if [ -f ~/.config/GNS3/gns3_server.conf ]
+if [[ -f ~/.config/GNS3/gns3_server.conf ]]
 then
     echo "Server is already configured"
 else
@@ -50,7 +50,7 @@ images_path = /opt/gns3/images
 projects_path = /opt/gns3/projects
 report_errors = True
 EOF
-    if [ $PACKER_BUILDER_TYPE == "vmware-iso" ]
+    if [[ $PACKER_BUILDER_TYPE == "vmware-iso" ]]
     then
         cat >> ~/.config/GNS3/gns3_server.conf << EOF
 
