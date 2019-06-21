@@ -22,11 +22,11 @@ ImageDir=/lib/plymouth/themes/gns3
 ScriptFile=/lib/plymouth/themes/gns3/gns3.script
 EOF
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/logo_wo_bar.png" > /lib/plymouth/themes/gns3/logo_wo_bar.png
+curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/logo_wo_bar.png" > /lib/plymouth/themes/gns3/logo_wo_bar.png
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/bar.png" > /lib/plymouth/themes/gns3/bar.png
+curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/bar.png" > /lib/plymouth/themes/gns3/bar.png
 
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/end.png" > /lib/plymouth/themes/gns3/end.png
+curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/master/plymouth/end.png" > /lib/plymouth/themes/gns3/end.png
 
 
 cat > /lib/plymouth/themes/gns3/gns3.script <<EOF

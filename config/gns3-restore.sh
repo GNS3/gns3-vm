@@ -9,4 +9,4 @@ then
     echo "Please run as root or with sudo"
     exit 1
 fi
-curl "https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/restore.sh" | bash
+curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/restore.sh" | bash

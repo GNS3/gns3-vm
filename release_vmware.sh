@@ -10,7 +10,7 @@ set -e
 export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
 
-if [ "$GNS3_VERSION" == "" ]
+if [[ "$GNS3_VERSION" == "" ]]
 then
     echo "You need to pass the GNS3 version as parameter"
     exit 1
@@ -25,10 +25,10 @@ echo "Download VM"
 #export GNS3VM_VERSION=`python last_vm_version.py`
 export GNS3VM_VERSION="0.10.14"
 export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3.VM.VMware.${GNS3VM_VERSION}.zip"
-if [ ! -f "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" ]
+if [[ ! -f "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" ]]
 then
     echo "Download $GNS3VM_URL"
-    curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
+    curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
 fi
 unzip -p "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" "GNS3 VM.ova" > "/tmp/GNS3VM.VMWare.${GNS3VM_VERSION}.ova"
 
