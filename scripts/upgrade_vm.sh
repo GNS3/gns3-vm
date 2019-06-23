@@ -25,7 +25,7 @@ set -e
 export DEBIAN_FRONTEND="noninteractive"
 
 cd /tmp
-rm -Rf gns3-vm-*
+sudo rm -Rf gns3-vm-*
 echo "Download https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz"
 curl -Lk "https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz" > gns3vm.tar.gz
 tar -xzf gns3vm.tar.gz

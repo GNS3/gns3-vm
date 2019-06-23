@@ -62,7 +62,7 @@ apt-get install -y virt-what
 apt-get install -y mingetty
 
 # Python
-apt-get install -y python3-dev python3.6-dev python3-setuptools
+apt-get install -y python3-dev python3-setuptools
 
 # For the NAT node
 apt-get install -y libvirt-bin

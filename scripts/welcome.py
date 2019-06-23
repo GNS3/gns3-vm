@@ -187,7 +187,9 @@ def upgrade(force=False):
         releases = get_all_releases(release_channel)
         script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/upgrade_{}.sh".format(release_channel)
 
-    if len(releases) > 1:
+    if releases is None:
+        return
+    elif len(releases) > 1:
         # only show the menu if more than 1 release
         for release_tag in releases:
             choices.append((release_tag, "Release {}".format(release_tag)))
