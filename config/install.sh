@@ -57,7 +57,7 @@ apt-get update
 
 # Fix bug https://bugs.launchpad.net/ubuntu/+source/openssl/+bug/1832919
 dpkg-reconfigure libc6
-dpkg --configure libssl1.1
+#dpkg --configure libssl1.1
 
 # Install virt-what
 apt-get install -y virt-what
