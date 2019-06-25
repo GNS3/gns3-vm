@@ -75,6 +75,12 @@ apt-get install -y libvirt-bin
 apt-get install -y qemu-system-x86 qemu-kvm cpulimit
 sudo usermod -aG kvm gns3
 
+# Fix the KVM high CPU usage with some appliances
+# See https://github.com/GNS3/gns3-vm/issues/128
+if [[ ! $(cat /etc/modprobe.d/qemu-system-x86.conf | grep "halt_poll_ns") ]]; then
+   echo "options kvm halt_poll_ns=0" | sudo tee --append /etc/modprobe.d/qemu-system-x86.conf
+fi
+
 # Install other GNS3 dependencies
 apt-get install -y gns3-iou dynamips vpcs ubridge
 
