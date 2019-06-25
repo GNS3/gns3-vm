@@ -78,9 +78,9 @@ sudo usermod -aG kvm gns3
 # Install other GNS3 dependencies
 apt-get install -y gns3-iou dynamips vpcs ubridge
 
-# Install Docker if not installed or version is not 18.09.6
-if [[ ! $(which docker) ]] || [[ ! $(docker --version | grep "18.09.6") ]]; then
-   curl -sSLk https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.09.6~3-0~ubuntu-bionic_amd64.deb > /tmp/docker.deb
+# Install Docker if not installed or version is not 18.06.1
+if [[ ! $(which docker) ]] || [[ ! $(docker --version | grep "18.06.1") ]]; then
+   curl -sSLk https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.06.1~ce~3-0~ubuntu_amd64.deb > /tmp/docker.deb
    sudo apt-get install -y libltdl7
    sudo dpkg -i /tmp/docker.deb
 fi
