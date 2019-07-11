@@ -126,14 +126,17 @@ chmod 644 /etc/netplan/80_gns3vm_default_netcfg.yaml
 # Do not overwrite user static network config
 if [[ ! -f "/etc/netplan/90_gns3vm_static_netcfg.yaml" ]]
 then
-    if [[ $(virt-what) == "hyperv" ]]
-    then
-        cp "gns3vm_hyperv_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
-    else
-        cp "gns3vm_static_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
-    fi
+    cp "gns3vm_static_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
     chown root:root /etc/netplan/90_gns3vm_static_netcfg.yaml
     chmod 644 /etc/netplan/90_gns3vm_static_netcfg.yaml
+fi
+
+# Assign a default static IP address for GNS3 VM running in Hyper-V (if no DHCP IP address is received)
+if [[ $(virt-what) == "hyperv" ]]
+then
+    cp "gns3vm_hyperv_netcfg.yaml" "/etc/netplan/70_gns3vm_hyperv_netcfg.yaml"
+    chown root:root /etc/netplan/70_gns3vm_hyperv_netcfg.yaml
+    chmod 644 /etc/netplan/70_gns3vm_hyperv_netcfg.yaml
 fi
 
 netplan apply
