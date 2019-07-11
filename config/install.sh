@@ -126,7 +126,12 @@ chmod 644 /etc/netplan/80_gns3vm_default_netcfg.yaml
 # Do not overwrite user static network config
 if [[ ! -f "/etc/netplan/90_gns3vm_static_netcfg.yaml" ]]
 then
-    cp "gns3vm_static_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
+    if [[ $(virt-what) == "hyperv" ]]
+    then
+        cp "gns3vm_hyperv_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
+    else
+        cp "gns3vm_static_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
+    fi
     chown root:root /etc/netplan/90_gns3vm_static_netcfg.yaml
     chmod 644 /etc/netplan/90_gns3vm_static_netcfg.yaml
 fi
