@@ -6,8 +6,11 @@ network:
   ethernets:
     eth0:
      dhcp4: yes
+     dhcp-identifier: mac
     eth1:
      dhcp4: yes
+     dhcp-identifier: mac
     eth2:
      dhcp4: yes
      optional: true
+     dhcp-identifier: mac

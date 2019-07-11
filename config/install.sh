@@ -131,14 +131,6 @@ then
     chmod 644 /etc/netplan/90_gns3vm_static_netcfg.yaml
 fi
 
-# Assign a default static IP address for GNS3 VM running in Hyper-V (if no DHCP IP address is received)
-if [[ $(virt-what) == "hyperv" ]]
-then
-    cp "gns3vm_hyperv_netcfg.yaml" "/etc/netplan/70_gns3vm_hyperv_netcfg.yaml"
-    chown root:root /etc/netplan/70_gns3vm_hyperv_netcfg.yaml
-    chmod 644 /etc/netplan/70_gns3vm_hyperv_netcfg.yaml
-fi
-
 netplan apply
 
 # Setup Grub
