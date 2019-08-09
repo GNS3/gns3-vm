@@ -55,10 +55,6 @@ sudo -E add-apt-repository -y ppa:gns3/qemu
 
 apt-get update
 
-# Fix bug https://bugs.launchpad.net/ubuntu/+source/openssl/+bug/1832919
-dpkg-reconfigure libc6
-sudo -E apt-get -q --option Dpkg::Options::=-"-force-confold" --assume-yes install libssl1.1
-
 # Install virt-what
 apt-get install -y virt-what
 
