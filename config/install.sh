@@ -25,6 +25,10 @@ set -e
 
 export DEBIAN_FRONTEND="noninteractive"
 
+# Fix bug https://bugs.launchpad.net/ubuntu/+source/openssl/+bug/1832919
+dpkg-reconfigure libc6
+sudo -E apt-get -q --option Dpkg::Options::=-"-force-confold" --assume-yes install libssl1.1
+
 # Sources.list
 cp sources.list /etc/apt/sources.list
 chmod 644 /etc/apt/sources.list
