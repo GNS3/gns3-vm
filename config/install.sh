@@ -52,7 +52,7 @@ else
 fi
 
 # for Qemu backports
-sudo -E add-apt-repository -y ppa:gns3/qemu
+# sudo -E add-apt-repository -y ppa:gns3/qemu
 
 # Allows to install 32-bit packages
 # dpkg --add-architecture i386
