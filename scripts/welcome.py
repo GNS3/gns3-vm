@@ -362,6 +362,23 @@ def set_security():
     write_config(config)
 
 
+def qemu():
+    """
+    Switch the Qemu version.
+    """
+
+    code, tag = d.menu("Select the Qemu version to install",
+                       choices=[("2.11.1", "Qemu version 2.11.1"),
+                                ("3.1.0", "Qemu version 3.1.0")])
+    d.clear()
+    if code == Dialog.OK:
+        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/qemu.sh"
+        ret = os.system("curl -Lk {url} > /tmp/qemu.sh && bash -x /tmp/qemu.sh {version}".format(url=script_url,
+                                                                                                 version=tag))
+        if ret != 0:
+            print("Could not install Qemu version {version}".format(version=tag))
+
+
 def log():
     """
     Displays the GNS3 server log.
@@ -460,7 +477,6 @@ def qemu_version():
     except (OSError, subprocess.SubprocessError):
         return "Not installed"
 
-
 def kvm_control():
     """
     Checks if KVM is correctly configured for the GNS3 server.
@@ -499,6 +515,7 @@ try:
                             ("Shell", "Open a shell"),
                             ("Log", "Show the GNS3 server log"),
                             ("Test", "Check Internet connection"),
+                            ("Qemu", "Switch Qemu version"),
                             ("Security", "Configure server authentication"),
                             ("Keyboard", "Change keyboard layout"),
                             ("Console", "Change console settings (font size etc.)"),
@@ -528,6 +545,8 @@ try:
                 vm_information()
             elif tag == "Migrate":
                 migrate()
+            elif tag == "Qemu":
+                qemu()
             elif tag == "Log":
                 log()
             elif tag == "Configure":
