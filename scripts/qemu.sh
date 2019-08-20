@@ -27,7 +27,7 @@ else
   TAG=$1
 fi
 
-if [[ $TAG == "3.1.0"]]
+if [[ "$TAG" == "3.1.0"]]
 then
   sudo -E add-apt-repository -y ppa:gns3/qemu
 else
@@ -38,3 +38,5 @@ sudo apt-get remove -y qemu-system-x86 qemu-kvm cpulimit
 apt-get update
 sudo apt-get install -y qemu-system-x86 qemu-kvm cpulimit
 sudo usermod -aG kvm gns3
+echo "Qemu version $TAG has been installed"
+sleep 10
