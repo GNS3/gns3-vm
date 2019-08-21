@@ -377,8 +377,7 @@ def qemu():
                                                                                                  version=version))
         if ret != 0:
             print("Could not install Qemu version {version}".format(version=version))
-
-        if os.path.exists(os.path.expanduser("~/.config/GNS3/qemu_version")):
+        elif not os.path.exists(os.path.expanduser("~/.config/GNS3/qemu_version")):
             os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
             with open(os.path.expanduser("~/.config/GNS3/qemu_version"), "w+") as f:
                 f.write(version)
