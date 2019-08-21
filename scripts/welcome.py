@@ -367,16 +367,21 @@ def qemu():
     Switch the Qemu version.
     """
 
-    code, tag = d.menu("Select the Qemu version to install",
-                       choices=[("2.11.1", "Qemu version 2.11.1"),
-                                ("3.1.0", "Qemu version 3.1.0")])
+    code, version = d.menu("Select the Qemu version to install",
+                            choices=[("2.11.1", "Qemu version 2.11.1"),
+                                     ("3.1.0", "Qemu version 3.1.0")])
     d.clear()
     if code == Dialog.OK:
         script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/qemu.sh"
         ret = os.system("curl -Lk {url} > /tmp/qemu.sh && bash -x /tmp/qemu.sh {version}".format(url=script_url,
-                                                                                                 version=tag))
+                                                                                                 version=version))
         if ret != 0:
-            print("Could not install Qemu version {version}".format(version=tag))
+            print("Could not install Qemu version {version}".format(version=version))
+
+        if os.path.exists(os.path.expanduser("~/.config/GNS3/qemu_version")):
+            os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
+            with open(os.path.expanduser("~/.config/GNS3/qemu_version"), "w+") as f:
+                f.write(version)
 
 
 def log():
@@ -476,6 +481,7 @@ def qemu_version():
             return "N/A"
     except (OSError, subprocess.SubprocessError):
         return "Not installed"
+
 
 def kvm_control():
     """

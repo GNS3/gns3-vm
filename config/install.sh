@@ -51,11 +51,19 @@ else
     add-apt-repository -y --remove ppa:gns3/unstable
 fi
 
-# for Qemu backports
-sudo -E add-apt-repository -y ppa:gns3/qemu
-
-# Allows to install 32-bit packages
-# dpkg --add-architecture i386
+# add Qemu backport PPA for first install
+# or if explicitly requested
+if [[ ! -f ~/.config/GNS3/qemu_version ]]
+then
+  sudo -E add-apt-repository -y ppa:gns3/qemu
+else
+  if [[ `cat ~/.config/GNS3/qemu_version` == "3.1.0" ]]
+  then
+    sudo -E add-apt-repository -y ppa:gns3/qemu
+  else
+    sudo add-apt-repository -y --remove ppa:gns3/qemu
+  fi
+fi
 
 apt-get update
 
