@@ -34,7 +34,7 @@ else
   sudo add-apt-repository -y --remove ppa:gns3/qemu
 fi
 
-sudo apt-get remove -y qemu-system-x86 qemu-kvm cpulimit
+sudo apt-get purge -y "qemu*"
 sudo apt-get update
 sudo apt-get install -y qemu-system-x86 qemu-kvm cpulimit
 sudo usermod -aG kvm gns3
