@@ -23,7 +23,12 @@ fi
 
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo apt-get install -y python3-setuptools python3.6-dev
+sudo apt-get install -y python-dev
+
+# Install pip3 if missing
+if [[ ! $(which pip3) ]]
+  wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && sudo python3 /tmp/get-pip.py
+fi
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
