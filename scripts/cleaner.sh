@@ -71,7 +71,7 @@ sudo apt-get -y install deborphan
 while [[ -n "$(deborphan --guess-all --libdevel)" ]]; do
     deborphan --guess-all --libdevel | xargs sudo apt-get -y purge
 done
-sudo apt-get -y purge deborphan dialog
+sudo apt-get -y purge deborphan
 
 sudo rm -Rf /var/lib/apt/lists/*
 sudo rm -Rf /var/cache/apt/*
