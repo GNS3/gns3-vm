@@ -15,8 +15,11 @@ sudo apt-get install -y curl software-properties-common
 cd /tmp/config
 sudo bash install.sh
 
-# Install & compile psutil because it is a required dependency
-sudo pip3 install psutil
+# Install pip3 if missing
+if [[ ! $(which pip3) ]]
+then
+  wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && sudo python3 /tmp/get-pip.py
+fi
 
 # Install the GNS3 VM menu dependency
 sudo apt-get install -y dialog

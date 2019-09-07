@@ -7,7 +7,6 @@
 
 set -e
 
-export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
 
 if [[ "$GNS3_VERSION" == "" ]]

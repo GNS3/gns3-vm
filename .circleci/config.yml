@@ -164,6 +164,21 @@ jobs:
               fi
             "
       - run:
+          name: Release KVM VM
+          command: |
+            source env_vars
+            ssh root@${DEVICE_IP} "
+              set -e
+
+              cd gns3-vm
+
+              if [ ! -e \"GNS3 VM KVM ${GNS3_NUMBER}.zip\" ];
+              then
+                apt install qemu-utils
+                ./release_kvm.sh ${GNS3_VERSION}
+              fi
+            "
+      - run:
           name: Gather arifacts from device
           command: |
             source env_vars
@@ -188,6 +203,7 @@ jobs:
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ Hyper-V\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ KVM\ *.zip
             echo "Deploying on SourceForge"
             ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
             mkdir -p artifacts/release
@@ -195,6 +211,7 @@ jobs:
             cp artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip artifacts/release/GNS3.VM.VMware.Workstation.${CIRCLE_TAG}.zip
             cp artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip artifacts/release/GNS3.VM.VMware.ESXI.${CIRCLE_TAG}.zip
             cp artifacts/GNS3\ VM\ Hyper-V\ *.zip artifacts/release/GNS3.VM.Hyper-V.${CIRCLE_TAG}.zip
+            cp artifacts/GNS3\ VM\ KVM\ *.zip artifacts/release/GNS3.VM.KVM.${CIRCLE_TAG}.zip
             scp artifacts/release/* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
             rm -rf artifacts/release
 
