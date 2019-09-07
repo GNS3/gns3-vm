@@ -86,7 +86,7 @@ sudo rm -Rf /tmp/*
 sudo truncate -s 0 /etc/machine-id
 
 # Defragment
-sudo e4defrag /
+sudo e4defrag / &>/dev/null
 
 # Setup zerofree for disk compaction
 sudo bash /usr/local/bin/zerofree

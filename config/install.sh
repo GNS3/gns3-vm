@@ -35,7 +35,7 @@ chmod 644 /etc/apt/sources.list
 chown root:root /etc/apt/sources.list
 
 # Add the GNS3 PPA
-if [[ ! -f /usr/bin/add-apt-repository ]]
+if [[ ! $(which add-apt-repository) ]]
 then
     apt-get update
     apt-get install -y software-properties-common

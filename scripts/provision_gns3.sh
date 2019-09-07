@@ -5,7 +5,7 @@
 env
 
 # Add the GNS3 PPA
-if [[ ! -f /usr/bin/add-apt-repository ]]
+if [[ ! $(which add-apt-repository) ]]
 then
     apt-get update
     apt-get install -y software-properties-common
@@ -23,10 +23,11 @@ fi
 
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo apt-get install -y python-dev
+sudo apt-get install -y python3-dev gcc git
 
 # Install pip3 if missing
 if [[ ! $(which pip3) ]]
+then
   wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && sudo python3 /tmp/get-pip.py
 fi
 
@@ -35,7 +36,6 @@ set -e
 
 if [[ "$GNS3_VERSION" == "master" ]]
 then
-  sudo apt-get install -y git
   cd /tmp
   git clone https://github.com/GNS3/gns3-server.git gns3-server
   cd gns3-server
@@ -43,7 +43,6 @@ then
   sudo python3 setup.py install
 elif [[ "$GNS3_VERSION" == "2.1" ]]
 then
-  sudo apt-get install -y git
   cd /tmp
   git clone https://github.com/GNS3/gns3-server.git gns3-server
   cd gns3-server
@@ -51,7 +50,6 @@ then
   sudo python3 setup.py install
 elif [[ "$GNS3_VERSION" == "2.2" ]]
 then
-  sudo apt-get install -y git
   cd /tmp
   git clone https://github.com/GNS3/gns3-server.git gns3-server
   cd gns3-server
@@ -71,7 +69,7 @@ sudo rm -fr /var/cache/apt/*
 sudo rm -fr /var/cache/debconf/*
 
 # Defragment
-sudo e4defrag /
+sudo e4defrag / &>/dev/null
 
 # Setup zerofree for disk compaction
 sudo bash /usr/local/bin/zerofree
