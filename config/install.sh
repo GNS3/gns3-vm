@@ -115,9 +115,6 @@ apt-get install -y tigervnc-standalone-server
 # Prevent tigervnc to be uninstalled by cleaner.sh
 apt-mark hold tigervnc-standalone-server
 
-# Install pip
-apt-get install -y python3-pip
-
 # Install net-tools for ifconfig etc.
 apt-get install -y net-tools
 
