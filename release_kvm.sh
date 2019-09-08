@@ -48,6 +48,6 @@ for vmdk_file in *.vmdk; do
     qemu-img convert -O qcow2 "${vmdk_file}" "${qcow2_file}.qcow2"
 done
 
-zip -9 "GNS3 VM KVM ${GNS3_VERSION}.zip" *.qcow2
+zip -9 "GNS3 VM KVM ${GNS3_VERSION}.zip" *.qcow2 start-gns3vm.sh
 
 rm ${GNS3_SRC}
