@@ -176,7 +176,7 @@ jobs:
 
               if [ ! -e \"GNS3 VM KVM ${GNS3_NUMBER}.zip\" ];
               then
-                apt install qemu-utils
+                apt install -y qemu-utils
                 ./release_kvm.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.18.zip
               fi
             "
