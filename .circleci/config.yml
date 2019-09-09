@@ -17,6 +17,7 @@ jobs:
           command: |
             echo "export GNS3_VERSION=\"${CIRCLE_TAG:-"v2.1.0rc2"}\"" >> env_vars
             echo "export GNS3_NUMBER=\`echo \$GNS3_VERSION | sed \"s/^v//\"\`" >> env_vars
+            mkdir artifacts
       - run:
           name: Install dependencies
           command: |
@@ -120,6 +121,7 @@ jobs:
                 ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.18.zip
               fi
             "
+            scp root@${DEVICE_IP}:"gns3-vm/GNS3 VM VirtualBox*.zip" artifacts
       - run:
           name: Release VMWare VM
           command: |
@@ -135,6 +137,7 @@ jobs:
                 ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.10.18.zip
               fi
             "
+            scp root@${DEVICE_IP}:"gns3-vm/GNS3 VM VMware Workstation*.zip" artifacts
       - run:
           name: Release VMWare ESXI VM
           command: |
@@ -151,6 +154,7 @@ jobs:
                 ./release_vmware_esxi.sh ${GNS3_VERSION}
               fi
             "
+            scp root@${DEVICE_IP}:"gns3-vm/GNS3 VM VMware ESXI*.zip" artifacts
       - run:
           name: Release Hyper-V VM
           command: |
@@ -165,6 +169,7 @@ jobs:
                 ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.18.zip
               fi
             "
+            scp root@${DEVICE_IP}:"gns3-vm/GNS3 VM Hyper-V*.zip" artifacts
       - run:
           name: Release KVM VM
           command: |
@@ -180,12 +185,7 @@ jobs:
                 ./release_kvm.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.18.zip
               fi
             "
-      - run:
-          name: Gather arifacts from device
-          command: |
-            source env_vars
-            mkdir artifacts
-            scp root@${DEVICE_IP}:"gns3-vm/GNS3*.zip" artifacts
+            scp root@${DEVICE_IP}:"gns3-vm/GNS3 VM KVM*.zip" artifacts
       - run:
           name: Destroy device
           when: always
