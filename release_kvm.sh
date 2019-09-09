@@ -8,7 +8,6 @@
 set -e
 
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
-export GNS3_VM_FILE=$2
 
 if [[ "$GNS3_VERSION" == "" ]]
 then
@@ -19,29 +18,20 @@ fi
 #export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 #FIXME: force to 2.2dev
 export GNS3_RELEASE_CHANNEL="2.2dev"
+
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
-export GNS3_SRC="/tmp/GNS3VM.KVM.${GNS3VM_VERSION}.ova"
-
-if [[ "$GNS3_VM_FILE" == "" ]]
+if [[ ! -f "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip" ]]
 then
-    export GNS3VM_VERSION="0.10.18" # `python last_vm_version.py`
-    export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"
+    export GNS3VM_URL="https://github.com/GNS3/gns3-gui/releases/download/v${GNS3_VERSION}/GNS3.VM.VirtualBox.${GNS3_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
-    if [[ ! -f "/tmp/GNS3VM.KVM.${GNS3VM_VERSION}.zip" ]]
-    then
-        echo "Downloading $GNS3VM_URL"
-        curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.KVM.${GNS3VM_VERSION}.zip"
-    fi
-else
-    echo "GNS3 VM file: $GNS3_VM_FILE"
-    export GNS3VM_VERSION=`cat version`
-    cp "$GNS3_VM_FILE" "/tmp/GNS3VM.KVM.${GNS3VM_VERSION}.zip"
+    curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip"
 fi
-unzip -p "/tmp/GNS3VM.KVM.${GNS3VM_VERSION}.zip" "GNS3 VM.ova" > ${GNS3_SRC}
 
-tar -xvf ${GNS3_SRC}
+unzip -p "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip" "GNS3 VM.ova" > "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
+
+tar -xvf "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
 for vmdk_file in *.vmdk; do
     echo "Converting ${vmdk_file} to Qcow2 format..."
     qcow2_file=`basename "${vmdk_file}" .vmdk`
@@ -50,4 +40,4 @@ done
 
 zip -9 "GNS3 VM KVM ${GNS3_VERSION}.zip" *.qcow2 start-gns3vm.sh
 
-rm ${GNS3_SRC}
+rm "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
