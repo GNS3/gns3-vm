@@ -22,11 +22,14 @@ export GNS3_RELEASE_CHANNEL="2.2dev"
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
-if [[ ! -f "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip" ]]
+
+if [[ ! -f "./GNS3 VM VirtualBox ${GNS3_VERSION}.zip" ]]
 then
     export GNS3VM_URL="https://github.com/GNS3/gns3-gui/releases/download/v${GNS3_VERSION}/GNS3.VM.VirtualBox.${GNS3_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
     curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip"
+else
+    cp "./GNS3 VM VirtualBox ${GNS3_VERSION}.zip" "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip"
 fi
 
 unzip -p "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip" "GNS3 VM.ova" > "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
