@@ -104,9 +104,9 @@ def set_release_channel():
     if d.yesno("This feature is for testers only. You may break your GNS3 installation. Are you REALLY sure you want to continue?", yes_label="Exit (Safe option)", no_label="Continue") == d.OK:
         return
     code, tag = d.menu("Select the GNS3 release channel",
-                       choices=[("2.1", "Current stable release (RECOMMENDED)"),
-                                ("2.1dev", "Next stable release, development version"),
-                                ("2.2dev", "Totally unstable version")])
+                       choices=[("2.2", "Current stable release (RECOMMENDED)"),
+                                ("2.2dev", "Next stable release, development version"),
+                                ("2.3dev", "Totally unstable version")])
     d.clear()
     if code == Dialog.OK:
         os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
@@ -125,7 +125,7 @@ def get_release_channel():
             content = f.read()
             return content
     except OSError:
-        return "2.1"
+        return "2.2"
 
 
 def get_all_releases(release_channel, dev=False):
