@@ -20,6 +20,11 @@
         "type": "shell"
       },
       {
+         "destination" : "/tmp/gns3welcome.py",
+         "type" : "file",
+         "source" : "scripts/welcome.py"
+      },
+      {
          "type" : "shell",
          "script" : "scripts/provision_gns3.sh",
           "environment_vars": [

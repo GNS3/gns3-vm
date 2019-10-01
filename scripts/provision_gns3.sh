@@ -61,6 +61,10 @@ fi
 
 set +e
 
+# Make sure we have the latest version of the GNS3 VM menu
+sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
+sudo chmod 755 "/usr/local/bin/gns3welcome.py"
+
 sudo apt-get -y autoremove --purge
 sudo apt-get -y clean
 
