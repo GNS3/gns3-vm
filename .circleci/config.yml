@@ -132,7 +132,7 @@ jobs:
               if [ ! -e \"GNS3 VM VMware Workstation ${GNS3_NUMBER}.zip\" ];
               then
                 ./vmware.sh
-                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.10.18.zip
+                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.10.19.zip
               fi
             "
       - run:
@@ -162,7 +162,7 @@ jobs:
 
               if [ ! -e \"GNS3 VM Hyper-V ${GNS3_NUMBER}.zip\" ];
               then
-                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.18.zip
+                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.19.zip
               fi
             "
       - run:
