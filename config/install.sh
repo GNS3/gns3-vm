@@ -79,6 +79,9 @@ apt-get install -y python3-dev python3-setuptools
 # For the NAT node
 apt-get install -y libvirt-bin
 
+# Prevent libvirt-bin to be uninstalled by cleaner.sh
+apt-mark hold libvirt-bin
+
 # Install Qemu
 apt-get install -y qemu-system-x86 qemu-kvm cpulimit
 sudo usermod -aG kvm gns3

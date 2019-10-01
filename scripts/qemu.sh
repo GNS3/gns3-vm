@@ -19,6 +19,13 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
+# Add the GNS3 PPA
+if [[ ! $(which add-apt-repository) ]]
+then
+    apt-get update
+    apt-get install -y software-properties-common
+fi
+
 if [[ -z "$1" ]]
 then
   # default Qemu version is 3.1.0
