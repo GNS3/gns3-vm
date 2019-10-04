@@ -22,8 +22,8 @@ set -e
 # Add the GNS3 PPA
 if [[ ! $(which add-apt-repository) ]]
 then
-    apt-get update
-    apt-get install -y software-properties-common
+    sudo apt-get update
+    sudo apt-get install -y software-properties-common
 fi
 
 if [[ -z "$1" ]]
