@@ -55,8 +55,9 @@ def get_config():
     Returns the server config.
     """
 
+    major_version = gns3_major_version()
     config = configparser.RawConfigParser()
-    path = os.path.expanduser("~/.config/GNS3/gns3_server.conf")
+    path = os.path.expanduser("~/.config/GNS3/{}/gns3_server.conf".format(major_version))
     config.read([path], encoding="utf-8")
     return config
 
@@ -66,8 +67,21 @@ def write_config(config):
     Writes the server config.
     """
 
-    with open(os.path.expanduser("~/.config/GNS3/gns3_server.conf"), 'w') as f:
+    major_version = gns3_major_version()
+    with open(os.path.expanduser("~/.config/GNS3/{}/gns3_server.conf".format(major_version)), 'w') as f:
         config.write(f)
+
+
+def gns3_major_version():
+    """
+    Returns the GNS3 major server version
+    """
+
+    version = gns3_version()
+    if version:
+        match = re.search(r"\d+.\d+", version)
+        return match.group(0)
+    return ""
 
 
 def gns3_version():
@@ -396,7 +410,9 @@ def edit_config():
     """
     Edits GNS3 server configuration file.
     """
-    os.system("nano ~/.config/GNS3/gns3_server.conf")
+
+    major_version = gns3_major_version()
+    os.system("nano ~/.config/GNS3/{}/gns3_server.conf".format(major_version))
 
 
 def edit_network():
