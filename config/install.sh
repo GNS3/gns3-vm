@@ -203,14 +203,19 @@ cp tty.service /etc/systemd/system/getty@tty2.service.d/override.conf
 chmod -R 755 /etc/systemd/system/getty@tty2.service.d/
 chown -R root:root /etc/systemd/system/getty@tty2.service.d/
 
-# Install systemd service
+# Install GNS3 systemd service
 cp gns3.service /lib/systemd/system/gns3.service
 chmod 755 /lib/systemd/system/gns3.service
 chown root:root /lib/systemd/system/gns3.service
 systemctl enable gns3
 
-# Install GNS3 VM service
+# Install GNS3 VM systemd service
 cp gns3vm.service /lib/systemd/system/gns3vm.service
 chmod 755 /lib/systemd/system/gns3vm.service
 chown root:root /lib/systemd/system/gns3vm.service
 systemctl enable gns3vm
+
+# Restart systemd services
+systemctl daemon-reload
+systemctl restart gns3.service
+systemctl restart gns3vm.service
