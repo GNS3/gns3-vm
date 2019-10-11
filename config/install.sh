@@ -92,7 +92,7 @@ if [[ ! $(cat /etc/modprobe.d/qemu-system-x86.conf | grep "halt_poll_ns") ]]; th
    echo "options kvm halt_poll_ns=0" | sudo tee --append /etc/modprobe.d/qemu-system-x86.conf
 fi
 
-# Install other GNS3 dependencies
+# Install o/qther GNS3 dependencies
 apt-get install -y gns3-iou dynamips vpcs ubridge
 
 # Install Docker if not installed or version is not 18.06.1
@@ -220,11 +220,8 @@ systemctl daemon-reload
 systemctl restart gns3.service
 systemctl restart gns3vm.service
 
-set +e
-
 # Kernel upgrade to v5.2.2 to fix compatibility issue between the Linux kernel and Qemu 3.1+ with AMD processors
-dpkg --compare-versions $(uname -r) "lt" "5.2.2-050202-generic"
-if [[ $? -eq "0" ]]
+if [[ $(dpkg --compare-versions `uname -r` "lt" "5.2.2-050202-generic") -eq "0" ]]
 then
   cd /tmp/
   wget -c https://kernel.ubuntu.com/~kernel-ppa/mainline/v5.2.2/linux-headers-5.2.2-050202_5.2.2-050202.201907231250_all.deb
