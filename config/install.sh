@@ -221,6 +221,7 @@ systemctl restart gns3.service
 systemctl restart gns3vm.service
 
 # Kernel upgrade to v5.2.2 to fix compatibility issue between the Linux kernel and Qemu 3.1+ with AMD processors
+set +e
 dpkg --compare-versions $(uname -r) "lt" "5.2.2-050202-generic"
 if [[ $? -eq "0" ]]
 then
