@@ -105,9 +105,8 @@ def mode():
         return
     code, tag = d.menu("Select the GNS3 version",
                        choices=[("2.1", "Stable release for this GNS3 VM (RECOMMENDED)"),
-                                ("2.1dev", "Development version for 2.1"),
-                                ("2.2", "Latest stable release"),
-                                ("2.2dev", "Development version for 2.2")])
+                                ("2.1dev", "Development version for stable release"),
+                                ("2.2", "Latest stable release")])
     d.clear()
     if code == Dialog.OK:
         os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
