@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import locale
+import re
 import os
 import sys
 import time
@@ -60,6 +61,18 @@ def write_config(config):
 
     with open(os.path.expanduser("~/.config/GNS3/gns3_server.conf"), 'w') as f:
         config.write(f)
+
+
+def gns3_major_version():
+    """
+    Returns the GNS3 major server version
+    """
+
+    version = gns3_version()
+    if version:
+        match = re.search(r"\d+.\d+", version)
+        return match.group(0)
+    return ""
 
 
 def gns3_version():
@@ -283,7 +296,12 @@ def edit_config():
     """
     Edit GNS3 configuration file
     """
-    os.system("nano ~/.config/GNS3/gns3_server.conf")
+
+    major_version = gns3_major_version()
+    if major_version == "2.2":
+        os.system("nano ~/.config/GNS3/{}/gns3_server.conf".format(major_version))
+    else:
+        os.system("nano ~/.config/GNS3/gns3_server.conf")
 
 
 def edit_network():

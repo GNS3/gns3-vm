@@ -47,7 +47,7 @@ if [[ ! $(which python3.6) ]]
 then
     sudo add-apt-repository -y ppa:deadsnakes/ppa
     sudo apt-get update
-    sudo apt-get install python3.6 python3.6-dev python3.6-venv
+    sudo apt-get install -y python3.6 python3.6-dev python3.6-venv
     sudo python3.6 -m ensurepip --upgrade
 fi
 
