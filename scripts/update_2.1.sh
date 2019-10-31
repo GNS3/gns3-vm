@@ -44,9 +44,9 @@ git checkout $TAG
 
 if  [[ -z "$HTTP_PROXY" ]]
 then
-  sudo pip3 install -U -r requirements.txt
+  sudo python3 -m pip install -U -r requirements.txt
 else
-  sudo pip3 --proxy $HTTP_PROXY install -U -r requirements.txt
+  sudo python3 -m pip --proxy $HTTP_PROXY install -U -r requirements.txt
 fi
 
 sudo python3 setup.py install
