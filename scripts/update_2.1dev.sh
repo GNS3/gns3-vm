@@ -47,7 +47,7 @@ else
   sudo python3 -m pip --proxy $HTTP_PROXY install -U -r requirements.txt
 fi
 
-sudo python3 -m pip install -U pip setuptools
+sudo python3 -m pip install -U setuptools
 sudo python3 setup.py install
 
 echo "Reboot in 5s"
