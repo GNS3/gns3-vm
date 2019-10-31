@@ -91,11 +91,10 @@ def mode():
     if d.yesno("This feature is for testers only. You may break your GNS3 installation. Are you REALLY sure you want to continue?", yes_label="Exit (Safe option)", no_label="Continue") == d.OK:
         return
     code, tag = d.menu("Select the GNS3 version",
-                       choices=[("1.5", "Old stable release"),
-                                ("2.0", "Old stable release"),
-                                ("2.1", "Current stable release (RECOMMENDED)"),
-                                ("2.1dev", "Next stable release development version"),
-                                ("2.2", "Totally unstable version")])
+                       choices=[("2.1", "Stable release for this GNS3 VM (RECOMMENDED)"),
+                                ("2.1dev", "Development version for 2.1"),
+                                ("2.2", "Latest stable release"),
+                                ("2.2dev", "Development version for 2.2")])
     d.clear()
     if code == Dialog.OK:
         os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
@@ -129,8 +128,8 @@ def update(force=False):
             return
     release = get_release()
     if release == "2.2":
-        d.msgbox("GNS3 >= version 2.2 requires a new GNS3 VM based on Ubuntu 18.04 LTS, please download this VM from our website")
-        return
+        if d.yesno("It is recommended to run GNS3 version 2.2 with lastest GNS3 VM based on Ubuntu 18.04 LTS, please download this VM from our website or continue at your own risk!") != d.OK:
+            return
     if release.endswith("dev"):
         ret = os.system("curl -Lk https://raw.githubusercontent.com/GNS3/gns3-vm/unstable/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
     else:
