@@ -165,7 +165,7 @@ def update(force=False):
         #code, version = d.menu("Select the GNS3 version", choices=versions)
         #d.clear()
         #if code == Dialog.OK:
-        ret = os.system("curl -Lk https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh {}".format(release, version))
+        ret = os.system("curl -Lk https://raw.githubusercontent.com/GNS3/gns3-vm/master/scripts/update_{}.sh > /tmp/update.sh && bash -x /tmp/update.sh".format(release))
         #else:
         #    return
     if ret != 0:
