@@ -40,10 +40,10 @@
       {
          "type": "shell",
          "inline": "sudo reboot # this is to finish installing the new kernel",
-         "expect_disconnect": true,
-         "pause_after": "10s"
+         "expect_disconnect": true
       },
       {
+         "pause_before": "20s",
          "type": "shell",
          "script": "scripts/splashscreen.sh"
       },
