@@ -41,10 +41,9 @@
          "type": "shell",
          "inline": "sudo reboot # this is to finish installing the new kernel",
          "expect_disconnect": true,
-         "skip_clean": true
+         "pause_after": "20s"
       },
       {
-         "pause_before": "20s",
          "type": "shell",
          "script": "scripts/splashscreen.sh"
       },
@@ -57,7 +56,8 @@
       {
          "type" : "virtualbox-iso",
          "ssh_wait_timeout" : "120m",
-         "boot_wait" : "10s",
+         "ssh_timeout" : "15m",
+         "boot_wait" : "20s",
          "disk_size" : "{{user `disk_size`}}",
          "iso_checksum_type" : "{{user `iso_checksum_type`}}",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
@@ -180,13 +180,14 @@
          "iso_url" : "{{user `iso_url`}}"
       },
       {
-         "boot_wait" : "15s",
+         "boot_wait" : "20s",
          "type" : "vmware-iso",
          "disk_size": "{{user `disk_size`}}",
          "disk_additional_size": ["{{user `data_disk`}}"],
          "disk_type_id" : 0,
          "guest_os_type": "ubuntu-64",
          "ssh_wait_timeout" : "120m",
+         "ssh_timeout" : "15m",
          "vm_name" : "GNS3 VM",
          "vmdk_name": "GNS3 VM",
          "http_directory" : "http",
