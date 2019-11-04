@@ -39,11 +39,11 @@ fi
 
 cd gns3-server
 git reset --hard HEAD
+git fetch origin --tags
 
 if [[ -z "$1" ]]
 then
   # get the latest tag for stable release of 2.1
-  git fetch origin --tags
   TAG=`git tag -l 'v2.1*' | grep -v '[abr]' | sort -V | tail -n 1`
 else
   TAG=$1
