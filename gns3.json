@@ -40,7 +40,8 @@
       {
          "type": "shell",
          "inline": "sudo reboot # this is to finish installing the new kernel",
-         "expect_disconnect": true
+         "expect_disconnect": true,
+         "skip_clean": true
       },
       {
          "pause_before": "20s",
