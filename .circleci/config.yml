@@ -107,6 +107,7 @@ jobs:
             "
       - run:
           name: Release VirtualBox VM
+          no_output_timeout: 20m
           command: |
             source env_vars
             ssh root@${DEVICE_IP} "
@@ -122,6 +123,7 @@ jobs:
             "
       - run:
           name: Release VMWare VM
+          no_output_timeout: 20m
           command: |
             source env_vars
             ssh root@${DEVICE_IP} "
