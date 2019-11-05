@@ -39,11 +39,12 @@
       },
       {
          "type": "shell",
-         "inline": "sudo reboot # this is to finish installing the new kernel",
+         "script" : "scripts/reboot.sh",
          "expect_disconnect": true,
-         "pause_after": "20s"
+         "skip_clean": true
       },
       {
+         "pause_before": "20s",
          "type": "shell",
          "script": "scripts/splashscreen.sh"
       },

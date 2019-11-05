@@ -87,7 +87,7 @@ jobs:
 
               if [ ! -f "/tmp/packer.zip" ]
               then
-                wget https://releases.hashicorp.com/packer/1.4.4/packer_1.4.4_linux_amd64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.0.4/packer_1.0.4_linux_amd64.zip -O /tmp/packer.zip
               fi
 
               unzip -o /tmp/packer.zip -d /usr/local/bin/
@@ -107,7 +107,6 @@ jobs:
             "
       - run:
           name: Release VirtualBox VM
-          no_output_timeout: 20m
           command: |
             source env_vars
             ssh root@${DEVICE_IP} "
@@ -123,7 +122,6 @@ jobs:
             "
       - run:
           name: Release VMWare VM
-          no_output_timeout: 20m
           command: |
             source env_vars
             ssh root@${DEVICE_IP} "
