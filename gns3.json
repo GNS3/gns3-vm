@@ -40,17 +40,16 @@
       {
          "type": "shell",
          "script" : "scripts/reboot.sh",
-         "expect_disconnect": true,
-         "skip_clean": true
+         "only": ["virtualbox-iso"],
+         "expect_disconnect": true
       },
       {
-         "pause_before": "20s",
-         "type": "shell",
-         "script": "scripts/splashscreen.sh"
-      },
-      {
-         "type" : "shell",
-         "script" : "scripts/cleaner.sh"
+         "pause_before": "30s",
+         "scripts": [
+            "scripts/splashscreen.sh",
+            "scripts/cleaner.sh"
+         ],
+         "type": "shell"
       }
    ],
    "builders" : [
