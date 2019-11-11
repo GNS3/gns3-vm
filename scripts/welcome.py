@@ -298,6 +298,9 @@ def migrate():
             d.msgbox("The destination cannot be the same as this VM IP address ({})".format(destination))
             return
         if option == "Send":
+            # first make sure they are no files belonging to root
+            os.system("sudo chown -R gns3:gns3 /opt/gns3")
+            # then rsync the data
             command = r"rsync -az --progress -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/gns3-vm-key' /opt/gns3 gns3@{}:/opt".format(destination)
             ret = os.system('bash -c "{}"'.format(command))
             time.sleep(10)
