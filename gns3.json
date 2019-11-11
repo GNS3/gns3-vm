@@ -44,12 +44,13 @@
          "expect_disconnect": true
       },
       {
+         "type": "shell",
          "pause_before": "30s",
+         "only": ["virtualbox-iso"],
          "scripts": [
             "scripts/splashscreen.sh",
             "scripts/cleaner.sh"
-         ],
-         "type": "shell"
+         ]
       }
    ],
    "builders" : [

@@ -1,0 +1,42 @@
+{
+   "variables" : {
+      "ssh_pass" : "gns3",
+      "ssh_name" : "gns3",
+      "gns3_src": "{{env `GNS3_SRC`}}"
+   },
+   "provisioners" : [
+      {
+          "inline": "sudo rm -rf /tmp/*",
+          "type": "shell"
+      },
+      {
+         "scripts": [
+            "scripts/splashscreen.sh",
+            "scripts/cleaner.sh"
+         ],
+         "type": "shell"
+      }
+   ],
+   "builders" : [
+      {
+          "type": "vmware-vmx",
+          "vm_name" : "GNS3 VM",
+          "headless": true,
+          "source_path": "{{user `gns3_src`}}",
+          "ssh_username": "{{user `ssh_name`}}",
+          "ssh_password": "{{user `ssh_pass`}}",
+          "shutdown_timeout": "60m",
+          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+          "vmx_data" :
+          {
+            "ethernet0.connectionType": "nat",
+            "ethernet1.virtualDev": "e1000"
+          },
+          "vmx_data_post":
+          {
+              "ethernet0.connectionType": "hostonly"
+          },
+         "skip_compaction": true
+      }
+   ]
+}

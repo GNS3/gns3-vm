@@ -14,6 +14,11 @@ echo "Build VM $GNS3VM_VERSION"
 rm -Rf output-vmware-iso
 packer build -only=vmware-iso gns3.json
 
+# workaround to clean the VMware VM due to problems
+# after rebooting in order to install a new kernel
+export GNS3_SRC="output-vmware-iso/GNS3 VM.vmx"
+packer build -only=vmware-vmx gns3_clean.json
+
 rm -Rf output-vmware-ova
 mkdir output-vmware-ova
 
