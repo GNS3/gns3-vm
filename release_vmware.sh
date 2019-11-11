@@ -26,7 +26,7 @@ echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
 if [[ "$GNS3_VM_FILE" == "" ]]
 then
-    export GNS3VM_VERSION="0.10.21" # `python last_vm_version.py`
+    export GNS3VM_VERSION="0.10.22" # `python last_vm_version.py`
     export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
     if [[ ! -f "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" ]]
