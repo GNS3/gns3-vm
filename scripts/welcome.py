@@ -355,6 +355,9 @@ def edit_proxy():
     with open('/tmp/proxy.sh', 'w+') as f:
         f.write('export http_proxy="' + http_proxy + '"\n')
         f.write('export https_proxy="' + https_proxy + '"\n')
+        f.write('export HTTP_PROXY="' + http_proxy + '"\n')
+        f.write('export HTTPS_PROXY="' + https_proxy + '"\n')
+
     os.system("sudo mv /tmp/proxy.sh /etc/profile.d/proxy.sh")
     os.system("sudo chown root /etc/profile.d/proxy.sh")
     os.system("sudo chmod 744 /etc/profile.d/proxy.sh")
