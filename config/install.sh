@@ -77,7 +77,7 @@ apt-get install -y mingetty
 apt-get install -y python3-dev python3-setuptools
 
 # For the NAT node
-apt-get install -y libvirt-bin
+apt-get install -y --allow-change-held-packages libvirt-bin
 
 # Prevent libvirt-bin to be uninstalled by cleaner.sh
 apt-mark hold libvirt-bin
@@ -113,7 +113,7 @@ chown root:root /etc/docker/daemon.json
 chmod 644 /etc/docker/daemon.json
 
 # Install VNC support for Docker
-apt-get install -y tigervnc-standalone-server
+apt-get install -y --allow-change-held-packages tigervnc-standalone-server
 
 # Prevent tigervnc to be uninstalled by cleaner.sh
 apt-mark hold tigervnc-standalone-server
