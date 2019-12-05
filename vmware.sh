@@ -36,7 +36,7 @@ ovftool \
         --extraConfig:ethernet1.pciSlotNumber=33            \
         --allowAllExtraConfig                               \
         --noImageFiles                                      \
-        --overwrite output-vmware-iso/GNS3\ VM.vmx output-vmware-ova/GNS3\ VM.ova
+        --overwrite output-vmware-vmx/GNS3\ VM.vmx output-vmware-ova/GNS3\ VM.ova
 
 cd output-vmware-ova
 
