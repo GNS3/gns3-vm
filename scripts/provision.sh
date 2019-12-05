@@ -11,7 +11,7 @@ sudo apt-get upgrade -y
 sudo apt-get dist-upgrade -y
 
 # use the Ubuntu LTS enablement (also called HWE or Hardware Enablement) stack
-sudo apt-get install --install-recommends linux-generic-hwe-18.04
+sudo apt-get install -y --install-recommends linux-generic-hwe-18.04
 
 sudo apt-get install -y curl software-properties-common
 
