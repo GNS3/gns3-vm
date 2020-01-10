@@ -42,9 +42,9 @@ git pull -u
 
 if  [[ -z "$HTTP_PROXY" ]]
 then
-  sudo python3 -m pip install -U -r requirements.txt
+  sudo python3 -m pip install -r requirements.txt
 else
-  sudo python3 -m pip --proxy $HTTP_PROXY install -U -r requirements.txt
+  sudo python3 -m pip --proxy $HTTP_PROXY install -r requirements.txt
 fi
 
 sudo python3 -m pip install -U setuptools
