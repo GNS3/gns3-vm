@@ -44,12 +44,13 @@ git checkout $TAG
 
 if  [[ -z "$HTTP_PROXY" ]]
 then
-  sudo python3 -m pip install -U -r requirements.txt
+  sudo python3 -m pip install -r requirements.txt
 else
-  sudo python3 -m pip --proxy $HTTP_PROXY install -U -r requirements.txt
+  sudo python3 -m pip --proxy $HTTP_PROXY install -r requirements.txt
 fi
 
-sudo python3 -m pip install -U setuptools
+# setuptools 43.0.0 is the last version to support Python 3.4
+sudo python3 -m pip install setuptools==43.0.0
 sudo python3 setup.py install
 
 echo "Reboot in 5s"
