@@ -31,6 +31,12 @@ curl -Lk "https://github.com/GNS3/gns3-vm/archive/${BRANCH}.tar.gz" > gns3vm.tar
 tar -xzf gns3vm.tar.gz
 rm gns3vm.tar.gz
 
+# wait for dpkg/apt locks to be released
+while sudo fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do
+   echo 'Waiting for the release of dpkg/apt locks...'
+   sleep 5
+done
+
 # install required Ubuntu packages including GNS3 dependencies
 cd gns3-vm-${BRANCH}/config
 sudo -E bash -x install.sh
