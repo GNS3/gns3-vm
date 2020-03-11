@@ -260,14 +260,16 @@ VM version: {gns3vm_version}
 Ubuntu version: {ubuntu_version}
 Qemu version: {qemu_version}
 Virtualization: {virt}
-KVM support available: {kvm}\n\n""".format(
+KVM support available: {kvm}
+Uptime: {uptime}\n\n""".format(
             gns3vm_version=gns3vm_version(),
             release_channel=get_release_channel(),
             gns3_version=version,
             ubuntu_version=ubuntu_version(),
             qemu_version=qemu_version(),
             virt=virt_what(),
-            kvm=kvm_support())
+            kvm=kvm_support(),
+            uptime=uptime())
 
     ip = get_ip()
     if ip:
@@ -485,6 +487,14 @@ def virt_what():
     """
 
     return subprocess.check_output(["sudo", "virt-what"]).strip().decode()
+
+
+def uptime():
+    """
+    Returns the server uptime.
+    """
+
+    return subprocess.check_output(["uptime", "--pretty"]).strip().decode()
 
 
 def qemu_version():
