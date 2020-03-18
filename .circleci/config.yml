@@ -17,12 +17,14 @@ jobs:
           command: |
             echo "export GNS3_VERSION=\"${CIRCLE_TAG:-"v2.1.0rc2"}\"" >> env_vars
             echo "export GNS3_NUMBER=\`echo \$GNS3_VERSION | sed \"s/^v//\"\`" >> env_vars
+
       - run:
           name: Install dependencies
           command: |
             python3 -m venv env
             source env/bin/activate
             pip install packet-python
+
       - run:
           name: Get builder device
           command: |
@@ -31,6 +33,7 @@ jobs:
             echo "export DEVICE_IP=\"$DEVICE_IP\"" >> env_vars
             echo "Obtained device on $DEVICE_IP"
             ssh-keyscan -H ${DEVICE_IP} >> ~/.ssh/known_hosts
+
       - run:
           name: Install VirtualBox
           command: |
@@ -44,6 +47,7 @@ jobs:
               apt update
               apt -y install virtualbox-5.1 dkms
             "
+
       - run:
           name: Install VMWare
           command: |
@@ -92,6 +96,7 @@ jobs:
 
               unzip -o /tmp/packer.zip -d /usr/local/bin/
             "
+
       - run:
           name: Clone repository on device
           command: |
@@ -105,6 +110,7 @@ jobs:
                 git checkout bionic-stable
               fi
             "
+
       - run:
           name: Release VirtualBox VM
           command: |
@@ -120,6 +126,7 @@ jobs:
                 ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.24.zip
               fi
             "
+
       - run:
           name: Release VMWare VM
           command: |
@@ -135,6 +142,7 @@ jobs:
                 ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.10.23.zip
               fi
             "
+
       - run:
           name: Release VMWare ESXI VM
           command: |
@@ -151,6 +159,7 @@ jobs:
                 ./release_vmware_esxi.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.23.zip
               fi
             "
+
       - run:
           name: Release Hyper-V VM
           command: |
@@ -165,6 +174,7 @@ jobs:
                 ./release_hyperv.sh ${GNS3_VERSION}
               fi
             "
+
       - run:
           name: Release KVM VM
           command: |
@@ -180,18 +190,32 @@ jobs:
                 ./release_kvm.sh ${GNS3_VERSION}
               fi
             "
+
       - run:
           name: Gather arifacts from device
           command: |
             source env_vars
             mkdir artifacts
             scp root@${DEVICE_IP}:"gns3-vm/GNS3*.zip" artifacts
+
       - run:
           name: Destroy device
           when: always
           command: |
             source env/bin/activate
             python3 .circleci/device.py ${PACKET_TOKEN} destroy "${PACKET_PROJECT}"
+
+      - run:
+          name: Generate SHA256 checksums
+          command: |
+            cd artifacts
+            for file in *.zip
+            do
+              sha256sum "$file" > "$file.sha256"
+            done
+            ls -l
+            cd -
+
       - deploy:
           name: Deploying on Github and SourceForge
           command: |
@@ -202,18 +226,28 @@ jobs:
             pip3 install -r requirements.txt
             cd ..
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VirtualBox\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VirtualBox\ *.sha256
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ Workstation\ *.sha256
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ ESXI\ *.sha256
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ Hyper-V\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ Hyper-V\ *.sha256
             python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ KVM\ *.zip
+            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ KVM\ *.sha256
             echo "Deploying on SourceForge"
             ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
             mkdir -p artifacts/release
             cp artifacts/GNS3\ VM\ VirtualBox\ *.zip artifacts/release/GNS3.VM.VirtualBox.${CIRCLE_TAG}.zip
+            cp artifacts/GNS3\ VM\ VirtualBox\ *.sha256 artifacts/release/GNS3.VM.VirtualBox.${CIRCLE_TAG}.sha256
             cp artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip artifacts/release/GNS3.VM.VMware.Workstation.${CIRCLE_TAG}.zip
+            cp artifacts/GNS3\ VM\ VMware\ Workstation\ *.sha256 artifacts/release/GNS3.VM.VMware.Workstation.${CIRCLE_TAG}.sha256
             cp artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip artifacts/release/GNS3.VM.VMware.ESXI.${CIRCLE_TAG}.zip
+            cp artifacts/GNS3\ VM\ VMware\ ESXI\ *.sha256 artifacts/release/GNS3.VM.VMware.ESXI.${CIRCLE_TAG}.sha256
             cp artifacts/GNS3\ VM\ Hyper-V\ *.zip artifacts/release/GNS3.VM.Hyper-V.${CIRCLE_TAG}.zip
+            cp artifacts/GNS3\ VM\ Hyper-V\ *.sha256 artifacts/release/GNS3.VM.Hyper-V.${CIRCLE_TAG}.sha256
             cp artifacts/GNS3\ VM\ KVM\ *.zip artifacts/release/GNS3.VM.KVM.${CIRCLE_TAG}.zip
+            cp artifacts/GNS3\ VM\ KVM\ *.sha256 artifacts/release/GNS3.VM.KVM.${CIRCLE_TAG}.sha256
             scp artifacts/release/* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
             rm -rf artifacts/release
 
