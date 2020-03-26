@@ -139,7 +139,7 @@ jobs:
               if [ ! -e \"GNS3 VM VMware Workstation ${GNS3_NUMBER}.zip\" ];
               then
                 ./vmware.sh
-                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.10.23.zip
+                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.10.24.zip
               fi
             "
 
@@ -156,7 +156,7 @@ jobs:
 
               if [ ! -e \"GNS3 VM VMware ESXI ${GNS3_NUMBER}.zip\" ];
               then
-                ./release_vmware_esxi.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.23.zip
+                ./release_vmware_esxi.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.24.zip
               fi
             "
 
