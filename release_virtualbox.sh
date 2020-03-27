@@ -45,7 +45,7 @@ packer build -only=virtualbox-ovf gns3_release.json
 
 cd output-virtualbox-ovf
 
-zip -9 "../GNS3 VM VirtualBox ${GNS3_VERSION}.zip" "GNS3 VM.ova"
+zip -9 "../GNS3.VM.VirtualBox.${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 cd ..
 rm -Rf output-*

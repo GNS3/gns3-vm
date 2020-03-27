@@ -75,7 +75,7 @@ ovftool --extraConfig:vhv.enable=true                       \
 echo "Fix OVA network"
 mv "GNS3 VM.ova" "GNS3 VM.tmp.ova"
 python3 ../fix_vmware_ova_network.py "GNS3 VM.tmp.ova" "GNS3 VM.ova"
-zip -9 "../GNS3 VM VMware Workstation ${GNS3_VERSION}.zip" "GNS3 VM.ova"
+zip -9 "../GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 cd ..
 rm -Rf output-*

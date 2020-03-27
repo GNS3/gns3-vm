@@ -120,7 +120,7 @@ jobs:
 
               cd gns3-vm
 
-              if [ ! -e \"GNS3 VM VirtualBox ${GNS3_NUMBER}.zip\" ];
+              if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
               then
                 ./release_virtualbox.sh ${GNS3_VERSION}
               fi
@@ -135,7 +135,7 @@ jobs:
 
               cd gns3-vm
 
-              if [ ! -e \"GNS3 VM VMware Workstation ${GNS3_NUMBER}.zip\" ];
+              if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
               then
                 ./release_vmware.sh ${GNS3_VERSION}
               fi
@@ -150,9 +150,9 @@ jobs:
 
               cd gns3-vm
 
-              cp \"GNS3 VM VMware Workstation ${GNS3_NUMBER}.zip\" /tmp/GNS3VM.VMware.${GNS3_NUMBER}.zip
+              cp \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" /tmp/GNS3VM.VMware.${GNS3_NUMBER}.zip
 
-              if [ ! -e \"GNS3 VM VMware ESXI ${GNS3_NUMBER}.zip\" ];
+              if [ ! -e \"GNS3.VM.VMware.ESXI.${GNS3_NUMBER}.zip\" ];
               then
                 ./release_vmware_esxi.sh ${GNS3_VERSION}
               fi
@@ -167,7 +167,7 @@ jobs:
 
               cd gns3-vm
 
-              if [ ! -e \"GNS3 VM Hyper-V ${GNS3_NUMBER}.zip\" ];
+              if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
               then
                 ./release_hyperv.sh ${GNS3_VERSION}
               fi
@@ -182,7 +182,7 @@ jobs:
 
               cd gns3-vm
 
-              if [ ! -e \"GNS3 VM KVM ${GNS3_NUMBER}.zip\" ];
+              if [ ! -e \"GNS3.VM.KVM.${GNS3_NUMBER}.zip\" ];
               then
                 apt install -y qemu-utils
                 ./release_kvm.sh ${GNS3_VERSION}
@@ -204,6 +204,17 @@ jobs:
             source env/bin/activate
             python3 .circleci/device.py ${PACKET_TOKEN} destroy "${PACKET_PROJECT}"
 
+      - run:
+          name: Generate SHA256 checksums
+          command: |
+            cd artifacts
+            for file in *.zip
+            do
+              sha256sum "$file" > "$file.sha256"
+            done
+            ls -l
+            cd -
+
       - deploy:
           name: Deploying on Github and SourceForge
           when: always
@@ -213,40 +224,6 @@ jobs:
             cd gns3-build
             pip3 install -r requirements.txt
             cd ..
-
-            if [ -e "artifacts/GNS3\ VM\ VirtualBox\ *.zip" ]
-            then
-              mv artifacts/GNS3\ VM\ VirtualBox\ *.zip artifacts/GNS3.VM.VirtualBox.${CIRCLE_TAG}.zip
-            fi
-
-            if [ -e "artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip" ]
-            then
-              mv artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip artifacts/GNS3.VM.VMware.Workstation.${CIRCLE_TAG}.zip
-            fi
-
-            if [ -e "artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip" ]
-            then
-              mv artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip artifacts/GNS3.VM.VMware.ESXI.${CIRCLE_TAG}.zip
-            fi
-
-            if [ -e "artifacts/GNS3\ VM\ Hyper-V\ *.zip" ]
-            then
-              mv artifacts/GNS3\ VM\ Hyper-V\ *.zip artifacts/GNS3.VM.Hyper-V.${CIRCLE_TAG}.zip
-            fi
-
-            if [ -e "artifacts/GNS3\ VM\ KVM\ *.zip" ]
-            then
-              mv artifacts/GNS3\ VM\ KVM\ *.zip artifacts/GNS3.VM.KVM.${CIRCLE_TAG}.zip
-            fi
-
-            echo "Generating SHA256 checksums"
-            cd artifacts
-            for file in *.zip
-            do
-              sha256sum "$file" > "$file.sha256"
-            done
-            ls -l
-            cd -
 
             echo "Deploying version ${CIRCLE_TAG} on GitHub"
             for file in artifacts/*.{zip,sha256}

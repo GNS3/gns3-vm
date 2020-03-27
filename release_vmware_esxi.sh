@@ -37,7 +37,7 @@ mkdir output-esxi
 cd output-esxi
 python3 ../workstation_to_esxi.py "/tmp/GNS3VM.VMWare.${GNS3_VERSION}.ova" "GNS3 VM.ova"
 
-zip -9 "../GNS3 VM VMware ESXI ${GNS3_VERSION}.zip" "GNS3 VM.ova"
+zip -9 "../GNS3.VM.VMware.ESXI.${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 cd ..
 rm -Rf output-*
