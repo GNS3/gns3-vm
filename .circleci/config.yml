@@ -206,6 +206,7 @@ jobs:
 
       - run:
           name: Generate SHA256 checksums
+          when: always
           command: |
             cd artifacts
             for file in *.zip
