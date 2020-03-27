@@ -4,6 +4,12 @@
 
 env
 
+# wait for dpkg/apt locks to be released
+while sudo fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 2>&1; do
+   echo 'Waiting for the release of dpkg/apt locks...'
+   sleep 5
+done
+
 # Add the GNS3 PPA
 if [[ ! $(which add-apt-repository) ]]
 then
