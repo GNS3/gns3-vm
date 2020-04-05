@@ -212,6 +212,8 @@ jobs:
             for file in *.zip
             do
               sha256sum "$file" > "$file.sha256"
+              cat "$file.sha256"
+              sha256sum -c "$file.sha256"
             done
             ls -l
             cd -
