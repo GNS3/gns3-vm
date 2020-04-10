@@ -56,13 +56,14 @@
       }
    ],
    "builders" : [
-      {
+       {
          "type" : "virtualbox-iso",
-         "ssh_timeout" : "10m",
+         "ssh_wait_timeout" : "120m",
+         "ssh_timeout" : "15m",
          "boot_wait" : "20s",
          "disk_size" : "{{user `disk_size`}}",
          "iso_checksum_type" : "{{user `iso_checksum_type`}}",
-         "shutdown_command" : "sudo /sbin/shutdown -h now",
+         "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
          "shutdown_timeout": "60m",
          "format": "ova",
          "headless": true,
@@ -157,10 +158,9 @@
          ],
          "http_directory" : "http",
          "vm_name" : "GNS3 VM",
-         "iso_checksum" : "{{user `iso_checksum`}}",
          "ssh_username" : "{{user `ssh_name`}}",
+         "iso_checksum" : "{{user `iso_checksum`}}",
          "ssh_password" : "{{user `ssh_pass`}}",
-         "ssh_port": 22,
          "boot_command": [
             "{{ user `boot_command_prefix` }}",
             "/install/vmlinuz noapic ",
@@ -172,6 +172,10 @@
             "fb=false debconf/frontend=noninteractive ",
             "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
             "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+            "passwd/user-fullname={{ user `ssh_fullname` }} ",
+            "passwd/user-password={{ user `ssh_password` }} ",
+            "passwd/user-password-again={{ user `ssh_password` }} ",
+            "passwd/username={{ user `ssh_username` }} ",
             "-- <enter>"
          ],
          "guest_additions_mode" : "disable",
