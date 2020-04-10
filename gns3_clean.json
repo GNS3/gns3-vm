@@ -25,18 +25,10 @@
           "source_path": "{{user `gns3_src`}}",
           "ssh_username": "{{user `ssh_name`}}",
           "ssh_password": "{{user `ssh_pass`}}",
+          "ssh_port": 22,
           "shutdown_timeout": "60m",
-          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
-          "vmx_data" :
-          {
-            "ethernet0.connectionType": "nat",
-            "ethernet1.virtualDev": "e1000"
-          },
-          "vmx_data_post":
-          {
-              "ethernet0.connectionType": "hostonly"
-          },
-         "skip_compaction": true
+          "shutdown_command" : "sudo /sbin/shutdown -h now",
+          "skip_compaction": true
       }
    ]
 }

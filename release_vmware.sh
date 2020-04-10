@@ -26,7 +26,7 @@ echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
 if [[ "$GNS3_VM_FILE" == "" ]]
 then
-    export GNS3VM_VERSION="0.10.24" # `python last_vm_version.py`
+    export GNS3VM_VERSION="0.10.25" # `python last_vm_version.py`
     export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
     if [[ ! -f "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" ]]
@@ -45,7 +45,7 @@ unzip -p "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" "GNS3 VM.ova" > "/tmp/GNS3VM
 echo "Convert to VMX file format"
 rm -Rf output-vmx
 mkdir output-vmx
-ovftool --allowAllExtraConfig "/tmp/GNS3VM.VMWare.${GNS3VM_VERSION}.ova" output-vmx/gns3.vmx
+ovftool "/tmp/GNS3VM.VMWare.${GNS3VM_VERSION}.ova" output-vmx/gns3.vmx
 
 echo "Upgrade with packer"
 rm "/tmp/GNS3VM.VMWare.${GNS3VM_VERSION}.ova"
@@ -56,28 +56,12 @@ packer build -only=vmware-vmx gns3_release.json
 cd output-vmware-vmx
 
 echo "Export to OVA"
-ovftool --extraConfig:vhv.enable=true                       \
-        --extraConfig:ethernet0.virtualDev=e1000            \
-        --extraConfig:ethernet0.pciSlotNumber=32            \
-        --extraConfig:ethernet0.connectionType=hostonly     \
-        --extraConfig:ethernet1.present=true                \
-        --extraConfig:ethernet1.startConnected=true         \
-        --extraConfig:ethernet1.connectionType=nat          \
-        --extraConfig:ethernet1.addressType=generated       \
-        --extraConfig:ethernet1.generatedAddressOffset=10   \
-        --extraConfig:ethernet1.wakeOnPcktRcv=false         \
-        --extraConfig:ethernet1.pciSlotNumber=33            \
-        --extraConfig:ethernet1.virtualDev=e1000            \
-        --allowAllExtraConfig                               \
-        "GNS3 VM.vmx" "GNS3 VM.ova"
+ovftool --noImageFiles --noNvramFile "GNS3 VM.vmx" "GNS3 VM.ova"
 
-
-echo "Fix OVA network"
-mv "GNS3 VM.ova" "GNS3 VM.tmp.ova"
-python3 ../fix_vmware_ova_network.py "GNS3 VM.tmp.ova" "GNS3 VM.ova"
+#echo "Fix OVA network"
+#mv "GNS3 VM.ova" "GNS3 VM.tmp.ova"
+#python3 ../fix_vmware_ova_network.py "GNS3 VM.tmp.ova" "GNS3 VM.ova"
 zip -9 "../GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 cd ..
 rm -Rf output-*
-#rm  "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
-

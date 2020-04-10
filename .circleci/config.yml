@@ -6,7 +6,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/python:3.6.1
+      - image: circleci/python:3.6.9
 
     working_directory: ~/repo
 
@@ -45,7 +45,7 @@ jobs:
               apt-add-repository \"deb http://download.virtualbox.org/virtualbox/debian \$(lsb_release -sc) contrib\"
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
               apt update
-              apt -y install virtualbox-5.1 dkms
+              apt -y install virtualbox-5.6 dkms
             "
 
       - run:
@@ -60,27 +60,20 @@ jobs:
               apt-get -y install gcc-6 g++-6
               update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60
 
-              if [ ! -f "/tmp/VMware-Workstation-12.5.8-7098237.x86_64.bundle" ]
+              if [ ! -f "/tmp/VMware-Workstation-15.5.2-15785246.x86_64.bundle" ]
               then
-                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/12.5.8/7098237/linux/core/VMware-Workstation-12.5.8-7098237.x86_64.bundle.tar -O /tmp/VMWare.bundle.tar
+                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/15.5.2/15785246/linux/core/VMware-Workstation-15.5.2-15785246.x86_64.bundle.tar
                 tar xvvf /tmp/VMWare.bundle.tar -C /tmp/
               fi
 
-              chmod a+x /tmp/VMware-Workstation-12.5.8-7098237.x86_64.bundle
+              chmod a+x /tmp/VMware-Workstation-15.5.2-15785246.x86_64.bundle
 
-              /tmp/VMware-Workstation-12.5.8-7098237.x86_64.bundle --eulas-agreed --required --console
-              /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_SERIAL}
+              /tmp/VMware-Workstation-15.5.2-15785246.x86_64.bundle --eulas-agreed --required --console
+              /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_15_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
             scp script.sh root@${DEVICE_IP}:
             ssh root@${DEVICE_IP} "bash script.sh"
-
-      - run:
-          name: Fix VMware 12.5.8 and kernel 4.13
-          command: |
-            source env_vars
-            scp .circleci/fix_vmware_12.5.8_and_kernel_4.13/* root@${DEVICE_IP}:
-            ssh root@${DEVICE_IP} "bash fix-me.sh"
 
       - run:
           name: Install Packer
@@ -91,7 +84,7 @@ jobs:
 
               if [ ! -f "/tmp/packer.zip" ]
               then
-                wget https://releases.hashicorp.com/packer/1.0.4/packer_1.0.4_linux_amd64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.5.5/packer_1.5.5_linux_amd64.zip -O /tmp/packer.zip
               fi
 
               unzip -o /tmp/packer.zip -d /usr/local/bin/
@@ -122,7 +115,8 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_virtualbox.sh ${GNS3_VERSION}
+                ./virtualbox.sh
+                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.25.zip
               fi
             "
 
@@ -137,7 +131,7 @@ jobs:
 
               if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_hyperv.sh ${GNS3_VERSION}
+                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.25.zip
               fi
             "
 
@@ -168,7 +162,8 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_vmware.sh ${GNS3_VERSION}
+                ./vmware.sh
+                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.10.25.zip
               fi
             "
 
