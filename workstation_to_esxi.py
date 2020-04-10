@@ -25,6 +25,7 @@ import os
 import sys
 import tempfile
 import subprocess
+import hashlib
 from xml.etree import ElementTree as ET
 
 
@@ -51,9 +52,14 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     subprocess.call(["tar", "-xvf", sys.argv[1], "-C", tmp_dir])
 
     ovf_path = os.path.join(tmp_dir, 'GNS3 VM.ovf')
+    mf_path = os.path.join(tmp_dir, 'GNS3 VM.mf')
     print("=> Content of GNS3 VM.ovf")
+
     with open(ovf_path) as f:
-        print(f.read())
+        ovf_content = f.read()
+        print(ovf_content)
+        ovf_original_checksum = hashlib.sha256(ovf_content.encode()).hexdigest()
+        print("Original OVF checksum:", ovf_original_checksum)
 
     tree = ET.parse(ovf_path)
     root = tree.getroot()
@@ -104,9 +110,23 @@ with tempfile.TemporaryDirectory() as tmp_dir:
 
     #tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'), default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
     tree.write(ovf_path)
+
+    print("=> Patched GNS3 VM.ovf")
+    with open(ovf_path) as f:
+        ovf_content = f.read()
+        print(ovf_content)
+        ovf_new_checksum = hashlib.sha256(ovf_content.encode()).hexdigest()
+        print("New OVF checksum:", ovf_new_checksum)
+
+    with open(mf_path, "r+") as f:
+        mf_content = f.read()
+        mf_content = mf_content.replace(ovf_original_checksum, ovf_new_checksum)
+        f.seek(0)
+        f.truncate()
+        f.write(mf_content)
+
     subprocess.call(["ovftool",
                      "--overwrite",
-                     "--skipManifestCheck",
                      os.path.join(tmp_dir, 'GNS3 VM.ovf'),
                      sys.argv[2]])
 
