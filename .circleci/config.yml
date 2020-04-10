@@ -45,7 +45,7 @@ jobs:
               apt-add-repository \"deb http://download.virtualbox.org/virtualbox/debian \$(lsb_release -sc) contrib\"
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
               apt update
-              apt -y install virtualbox-5.6 dkms
+              apt -y install virtualbox-6.1 dkms
             "
 
       - run:

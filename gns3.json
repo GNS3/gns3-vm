@@ -4,7 +4,7 @@
       "ssh_name" : "gns3",
       "hostname" : "gns3vm",
       "memory": "2048",
-      "cpus": "1",
+      "cpus": "2",
       "cores": "1",
       "disk_size": "20000",
       "data_disk": "500000",
