@@ -40,8 +40,11 @@ jobs:
             source env_vars
             ssh root@${DEVICE_IP} "
               set -e
+              # Fix bug https://bugs.launchpad.net/ubuntu/+source/openssl/+bug/1832919
+              dpkg-reconfigure libc6
+              apt-get -q --option Dpkg::Options::=-"-force-confold" --allow-change-held-packages --assume-yes install libssl1.1
               apt update
-              apt -y install software-properties-common linux-headers-\$(uname -r) zip unzip git
+              apt -y install software-properties-common linux-headers-\$(uname -r) zip unzip git wget
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
               apt-add-repository \"deb http://download.virtualbox.org/virtualbox/debian \$(lsb_release -sc) contrib\"
               apt update
