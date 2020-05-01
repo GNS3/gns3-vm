@@ -7,8 +7,8 @@ env
 # Add the GNS3 PPA
 if [[ ! $(which add-apt-repository) ]]
 then
-    apt-get update
-    apt-get install -y software-properties-common
+    sudo apt-get update
+    sudo apt-get install -y software-properties-common
 fi
 
 echo "${GNS3_VERSION}" | grep -E  "(dev|a|rc|b|unstable|master)"
@@ -28,8 +28,11 @@ sudo apt-get install -y python3-dev gcc git
 # Install pip3 if missing
 if [[ ! $(which pip3) ]]
 then
-  wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && sudo python3 /tmp/get-pip.py
+  wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && sudo -H python3 /tmp/get-pip.py
 fi
+
+# upgrade pip to the latest version
+sudo -H python3 -m pip install --upgrade pip
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
@@ -56,10 +59,22 @@ then
   git checkout -b 2.2
   sudo python3 setup.py install
 else
-  sudo pip3 install gns3-server==${GNS3_VERSION}
+  sudo -H pip3 install gns3-server==${GNS3_VERSION}
 fi
 
 set +e
+
+# Configure the GNS3 server
+export GNS3_MAJOR_VERSION=$(echo ${GNS3_VERSION} | egrep -o '^[0-9]+.[0-9]+')
+mkdir -p ~/.config/GNS3/${GNS3_MAJOR_VERSION}
+cat > ~/.config/GNS3/${GNS3_MAJOR_VERSION}/gns3_server.conf << EOF
+[Server]
+host = 0.0.0.0
+port = 80
+images_path = /opt/gns3/images
+projects_path = /opt/gns3/projects
+report_errors = True
+EOF
 
 # Make sure we have the latest version of the GNS3 VM menu
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
