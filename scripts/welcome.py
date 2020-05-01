@@ -271,9 +271,18 @@ Uptime: {uptime}\n\n""".format(
             kvm=kvm_support(),
             uptime=uptime())
 
+    config = get_config()
+    port_string = ":3080"
+    if config.has_section("Server"):
+        server_port = config.get("Server", "port")
+        if server_port == "80":
+            port_string = ""
+        else:
+            port_string = ":" + server_port
+
     ip = get_ip()
     if ip:
-        content += "IP: {ip}\n\nTo log in using SSH:\nssh gns3@{ip}\nPassword: gns3\n\nTo launch the Web-Ui:\nhttp://{ip}:3080\n\nImages and projects are stored in '/opt/gns3'""".format(ip=ip)
+        content += "IP: {ip}\n\nTo log in using SSH:\nssh gns3@{ip}\nPassword: gns3\n\nTo launch the Web-Ui:\nhttp://{ip}{port}\n\nImages and projects are stored in '/opt/gns3'""".format(ip=ip, port=port_string)
     else:
         content += "eth0 is not configured. Please manually configure by selecting the 'Network' entry in the menu."
 

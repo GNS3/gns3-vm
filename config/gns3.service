@@ -8,6 +8,7 @@ Conflicts=shutdown.target
 User=gns3
 Group=gns3
 PermissionsStartOnly=true
+AmbientCapabilities=CAP_NET_BIND_SERVICE
 Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 ExecStartPre=/bin/mkdir -p /var/log/gns3 /var/run/gns3
 ExecStartPre=/bin/chown -R gns3:gns3 /var/log/gns3 /var/run/gns3
