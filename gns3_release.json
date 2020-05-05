@@ -96,8 +96,20 @@
                 "{{.Name}}",
                 "--hostonlyadapter1",
                 "vboxnet0"
+             ],
+             [
+                "modifyvm",
+                "{{.Name}}",
+                "--nic2",
+                "nat"
+             ],
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--nictype2",
+               "82540EM"
              ]
-         ]
+          ]
       }
    ]
 }
