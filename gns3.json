@@ -189,9 +189,6 @@
       {
          "type" : "vmware-iso",
          "boot_wait" : "20s",
-         "memory": "{{user `memory`}}",
-         "cpus": "{{user `cpus`}}",
-         "cores": "{{user `cores`}}",
          "disk_size": "{{user `disk_size`}}",
          "disk_additional_size": ["{{user `data_disk`}}"],
          "disk_type_id" : 0,
@@ -202,6 +199,9 @@
          "http_directory" : "http",
          "iso_checksum" : "{{user `iso_checksum`}}",
          "vmx_data" : {
+            "memsize" : "{{user `memory`}}",
+            "cpuid.coresPerSocket" : "{{user `cores`}}",
+            "numvcpus": "{{user `cpus`}}",
             "vhv.enable": "TRUE",
             "hints.hideAll": "TRUE",
             "msg.noOk": "TRUE"
