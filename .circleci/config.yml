@@ -104,52 +104,52 @@ jobs:
               fi
             "
 
-#      - run:
-#          name: Release VirtualBox VM
-#          command: |
-#            source env_vars
-#            ssh root@${DEVICE_IP} "
-#              set -e
-#
-#              cd gns3-vm
-#
-#              if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
-#              then
-#                ./virtualbox.sh
-#                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.26.zip
-#              fi
-#            "
-#
-#      - run:
-#          name: Release Hyper-V VM
-#          command: |
-#            source env_vars
-#            ssh root@${DEVICE_IP} "
-#              set -e
-#
-#              cd gns3-vm
-#
-#              if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
-#              then
-#                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.26.zip
-#              fi
-#            "
-#
-#      - run:
-#          name: Release KVM VM
-#          command: |
-#            source env_vars
-#            ssh root@${DEVICE_IP} "
-#              set -e
-#
-#              cd gns3-vm
-#
-#              if [ ! -e \"GNS3.VM.KVM.${GNS3_NUMBER}.zip\" ];
-#              then
-#                apt install -y qemu-utils
-#                ./release_kvm.sh ${GNS3_VERSION}
-#              fi
-#            "
+      - run:
+          name: Release VirtualBox VM
+          command: |
+            source env_vars
+            ssh root@${DEVICE_IP} "
+              set -e
+
+              cd gns3-vm
+
+              if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
+              then
+                ./virtualbox.sh
+                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.26.zip
+              fi
+            "
+
+      - run:
+          name: Release Hyper-V VM
+          command: |
+            source env_vars
+            ssh root@${DEVICE_IP} "
+              set -e
+
+              cd gns3-vm
+
+              if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
+              then
+                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.10.26.zip
+              fi
+            "
+
+      - run:
+          name: Release KVM VM
+          command: |
+            source env_vars
+            ssh root@${DEVICE_IP} "
+              set -e
+
+              cd gns3-vm
+
+              if [ ! -e \"GNS3.VM.KVM.${GNS3_NUMBER}.zip\" ];
+              then
+                apt install -y qemu-utils
+                ./release_kvm.sh ${GNS3_VERSION}
+              fi
+            "
 
       - run:
           name: Release VMWare VM
