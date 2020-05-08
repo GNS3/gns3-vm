@@ -222,14 +222,14 @@ jobs:
             cd ..
 
             echo "Deploying version ${CIRCLE_TAG} on GitHub"
-            for file in artifacts/*.{zip,sha256}
+            for file in artifacts/GNS3.VM.*.{zip,sha256}
             do
               python3 gns3-build/upload.py ${CIRCLE_TAG} $file
             done
 
             echo "Deploying version ${CIRCLE_TAG} on SourceForge"
             ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
-            scp artifacts/* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
+            scp artifacts/GNS3.VM.* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
 
       - store_artifacts:
           path: artifacts
