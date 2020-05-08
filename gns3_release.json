@@ -38,15 +38,25 @@
           "ssh_password": "{{user `ssh_pass`}}",
           "shutdown_timeout": "60m",
           "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
-          "vmx_data" :
-          {
-            "ethernet0.connectionType": "nat",
-            "ethernet1.virtualDev": "e1000"
-          },
           "vmx_data_post":
           {
-              "ethernet0.connectionType": "hostonly"
-          },
+            "vhv.enable": "TRUE",
+            "ethernet0.present": "TRUE",
+            "ethernet0.startConnected": "TRUE",
+            "ethernet0.connectionType": "hostonly",
+            "ethernet0.addressType": "generated",
+            "ethernet0.generatedAddressOffset": "0",
+            "ethernet0.wakeOnPcktRcv": "FALSE",
+            "ethernet0.pciSlotNumber": "32",
+            "ethernet1.present": "TRUE",
+            "ethernet1.startConnected": "TRUE",
+            "ethernet1.connectionType": "nat",
+            "ethernet1.addressType": "generated",
+            "ethernet1.generatedAddressOffset": "10",
+            "ethernet1.wakeOnPcktRcv": "FALSE",
+            "ethernet1.pciSlotNumber": "33",
+            "ethernet1.virtualDev": "e1000"
+         },
          "skip_compaction": false
       },
       {
@@ -86,8 +96,20 @@
                 "{{.Name}}",
                 "--hostonlyadapter1",
                 "vboxnet0"
+             ],
+             [
+                "modifyvm",
+                "{{.Name}}",
+                "--nic2",
+                "nat"
+             ],
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--nictype2",
+               "82540EM"
              ]
-         ]
+          ]
       }
    ]
 }

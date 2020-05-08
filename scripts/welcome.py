@@ -274,11 +274,14 @@ Uptime: {uptime}\n\n""".format(
     config = get_config()
     port_string = ":3080"
     if config.has_section("Server"):
-        server_port = config.get("Server", "port")
-        if server_port == "80":
-            port_string = ""
-        else:
-            port_string = ":" + server_port
+        try:
+            server_port = config.get("Server", "port")
+            if server_port == "80":
+                port_string = ""
+            else:
+                port_string = ":" + server_port
+        except configparser.NoOptionError:
+            pass
 
     ip = get_ip()
     if ip:

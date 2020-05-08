@@ -1,12 +1,12 @@
-# Python CircleCI 2.0 configuration file
+# Python CircleCI 2.1 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-python/ for more details
 #
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/python:3.6.1
+      - image: circleci/python:3.6.9
 
     working_directory: ~/repo
 
@@ -17,12 +17,14 @@ jobs:
           command: |
             echo "export GNS3_VERSION=\"${CIRCLE_TAG:-"v2.1.0rc2"}\"" >> env_vars
             echo "export GNS3_NUMBER=\`echo \$GNS3_VERSION | sed \"s/^v//\"\`" >> env_vars
+
       - run:
           name: Install dependencies
           command: |
             python3 -m venv env
             source env/bin/activate
             pip install packet-python
+
       - run:
           name: Get builder device
           command: |
@@ -31,6 +33,7 @@ jobs:
             echo "export DEVICE_IP=\"$DEVICE_IP\"" >> env_vars
             echo "Obtained device on $DEVICE_IP"
             ssh-keyscan -H ${DEVICE_IP} >> ~/.ssh/known_hosts
+
       - run:
           name: Install VirtualBox
           command: |
@@ -39,11 +42,12 @@ jobs:
               set -e
               apt update
               apt -y install linux-headers-\$(uname -r) zip unzip git
-              apt-add-repository \"deb http://download.virtualbox.org/virtualbox/debian \$(lsb_release -sc) contrib\"
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
+              apt-add-repository \"deb http://download.virtualbox.org/virtualbox/debian \$(lsb_release -sc) contrib\"
               apt update
               apt -y install virtualbox-5.1 dkms
             "
+
       - run:
           name: Install VMWare
           command: |
@@ -56,27 +60,20 @@ jobs:
               apt-get -y install gcc-6 g++-6
               update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60
 
-              if [ ! -f "/tmp/VMware-Workstation-12.5.8-7098237.x86_64.bundle" ]
+              if [ ! -f "/tmp/VMware-Workstation-15.5.2-15785246.x86_64.bundle" ]
               then
-                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/12.5.8/7098237/linux/core/VMware-Workstation-12.5.8-7098237.x86_64.bundle.tar -O /tmp/VMWare.bundle.tar
+                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/15.5.2/15785246/linux/core/VMware-Workstation-15.5.2-15785246.x86_64.bundle.tar -O /tmp/VMWare.bundle.tar
                 tar xvvf /tmp/VMWare.bundle.tar -C /tmp/
               fi
 
-              chmod a+x /tmp/VMware-Workstation-12.5.8-7098237.x86_64.bundle
+              chmod a+x /tmp/VMware-Workstation-15.5.2-15785246.x86_64.bundle
 
-              /tmp/VMware-Workstation-12.5.8-7098237.x86_64.bundle --eulas-agreed --required --console
-              /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_SERIAL}
+              /tmp/VMware-Workstation-15.5.2-15785246.x86_64.bundle --eulas-agreed --required --console
+              /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_15_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
             scp script.sh root@${DEVICE_IP}:
             ssh root@${DEVICE_IP} "bash script.sh"
-
-      - run:
-          name: Fix VMware 12.5.8 and kernel 4.13
-          command: |
-            source env_vars
-            scp .circleci/fix_vmware_12.5.8_and_kernel_4.13/* root@${DEVICE_IP}:
-            ssh root@${DEVICE_IP} "bash fix-me.sh"
 
       - run:
           name: Install Packer
@@ -92,6 +89,7 @@ jobs:
 
               unzip -o /tmp/packer.zip -d /usr/local/bin/
             "
+
       - run:
           name: Clone repository on device
           command: |
@@ -105,6 +103,7 @@ jobs:
                 git checkout bionic-stable
               fi
             "
+
       - run:
           name: Release VirtualBox VM
           command: |
@@ -114,41 +113,12 @@ jobs:
 
               cd gns3-vm
 
-              if [ ! -e \"GNS3 VM VirtualBox ${GNS3_NUMBER}.zip\" ];
+              if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
               then
                 ./release_virtualbox.sh ${GNS3_VERSION}
               fi
             "
-      - run:
-          name: Release VMWare VM
-          command: |
-            source env_vars
-            ssh root@${DEVICE_IP} "
-              set -e
 
-              cd gns3-vm
-
-              if [ ! -e \"GNS3 VM VMware Workstation ${GNS3_NUMBER}.zip\" ];
-              then
-                ./release_vmware.sh ${GNS3_VERSION}
-              fi
-            "
-      - run:
-          name: Release VMWare ESXI VM
-          command: |
-            source env_vars
-            ssh root@${DEVICE_IP} "
-              set -e
-
-              cd gns3-vm
-
-              cp \"GNS3 VM VMware Workstation ${GNS3_NUMBER}.zip\" /tmp/GNS3VM.VMware.${GNS3_NUMBER}.zip
-
-              if [ ! -e \"GNS3 VM VMware ESXI ${GNS3_NUMBER}.zip\" ];
-              then
-                ./release_vmware_esxi.sh ${GNS3_VERSION}
-              fi
-            "
       - run:
           name: Release Hyper-V VM
           command: |
@@ -158,11 +128,12 @@ jobs:
 
               cd gns3-vm
 
-              if [ ! -e \"GNS3 VM Hyper-V ${GNS3_NUMBER}.zip\" ];
+              if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
               then
                 ./release_hyperv.sh ${GNS3_VERSION}
               fi
             "
+
       - run:
           name: Release KVM VM
           command: |
@@ -172,48 +143,93 @@ jobs:
 
               cd gns3-vm
 
-              if [ ! -e \"GNS3 VM KVM ${GNS3_NUMBER}.zip\" ];
+              if [ ! -e \"GNS3.VM.KVM.${GNS3_NUMBER}.zip\" ];
               then
                 apt install -y qemu-utils
                 ./release_kvm.sh ${GNS3_VERSION}
               fi
             "
+
+      - run:
+          name: Release VMWare VM
+          command: |
+            source env_vars
+            ssh root@${DEVICE_IP} "
+              set -e
+
+              cd gns3-vm
+
+              if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
+              then
+                ./release_vmware.sh ${GNS3_VERSION}
+              fi
+            "
+
+      - run:
+          name: Release VMWare ESXI VM
+          command: |
+            source env_vars
+            ssh root@${DEVICE_IP} "
+              set -e
+
+              cd gns3-vm
+
+              cp \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" /tmp/GNS3VM.VMware.${GNS3_NUMBER}.zip
+
+              if [ ! -e \"GNS3.VM.VMware.ESXI.${GNS3_NUMBER}.zip\" ];
+              then
+                ./release_vmware_esxi.sh ${GNS3_VERSION}
+              fi
+            "
+
       - run:
           name: Gather arifacts from device
+          when: always
           command: |
             source env_vars
             mkdir artifacts
             scp root@${DEVICE_IP}:"gns3-vm/GNS3*.zip" artifacts
+
       - run:
           name: Destroy device
           when: always
           command: |
             source env/bin/activate
             python3 .circleci/device.py ${PACKET_TOKEN} destroy "${PACKET_PROJECT}"
+
+      - run:
+          name: Generate SHA256 checksums
+          when: always
+          command: |
+            cd artifacts
+            for file in *.zip
+            do
+              sha256sum "$file" > "$file.sha256"
+              cat "$file.sha256"
+              sha256sum -c "$file.sha256"
+            done
+            ls -l
+            cd -
+
       - deploy:
           name: Deploying on Github and SourceForge
+          when: always
           command: |
             source env/bin/activate
-            echo "Deploying version: ${CIRCLE_TAG}"
             git clone git@github.com:GNS3/gns3-build.git
             cd gns3-build
             pip3 install -r requirements.txt
             cd ..
-            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VirtualBox\ *.zip
-            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip
-            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip
-            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ Hyper-V\ *.zip
-            python3 gns3-build/upload.py ${CIRCLE_TAG} artifacts/GNS3\ VM\ KVM\ *.zip
-            echo "Deploying on SourceForge"
+
+            echo "Deploying version ${CIRCLE_TAG} on GitHub"
+            for file in artifacts/GNS3.VM.*.{zip,sha256}
+            do
+              python3 gns3-build/upload.py ${CIRCLE_TAG} $file
+            done
+
+            echo "Deploying version ${CIRCLE_TAG} on SourceForge"
             ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
-            mkdir -p artifacts/release
-            cp artifacts/GNS3\ VM\ VirtualBox\ *.zip artifacts/release/GNS3.VM.VirtualBox.${CIRCLE_TAG}.zip
-            cp artifacts/GNS3\ VM\ VMware\ Workstation\ *.zip artifacts/release/GNS3.VM.VMware.Workstation.${CIRCLE_TAG}.zip
-            cp artifacts/GNS3\ VM\ VMware\ ESXI\ *.zip artifacts/release/GNS3.VM.VMware.ESXI.${CIRCLE_TAG}.zip
-            cp artifacts/GNS3\ VM\ Hyper-V\ *.zip artifacts/release/GNS3.VM.Hyper-V.${CIRCLE_TAG}.zip
-            cp artifacts/GNS3\ VM\ KVM\ *.zip artifacts/release/GNS3.VM.KVM.${CIRCLE_TAG}.zip
-            scp artifacts/release/* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
-            rm -rf artifacts/release
+            scp artifacts/GNS3.VM.* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
 
       - store_artifacts:
           path: artifacts
