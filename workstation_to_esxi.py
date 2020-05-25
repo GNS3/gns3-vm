@@ -100,6 +100,14 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     for node in nodes_to_remove:
         virtual_hardware.remove(node)
 
+    # Set the Virtual Machine compatibility to version 11 (ESXi 6.0 and later)
+    # in order to fix this issue: https://github.com/GNS3/gns3-vm/issues/143
+    for item in root.iter('{http://schemas.dmtf.org/ovf/envelope/1}System'):
+        virtual_system_type = item.find('{http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData}VirtualSystemType')
+        if virtual_system_type is not None:
+            print("Set Virtual Machine compatibility to version 11")
+            virtual_system_type.text = "vmx-11"
+
     # Add product information required by VMware ESXi 6.5
     virtual_system = root.find("{http://schemas.dmtf.org/ovf/envelope/1}VirtualSystem")
     product_section = ET.SubElement(virtual_system, '{http://schemas.dmtf.org/ovf/envelope/1}ProductSection')
