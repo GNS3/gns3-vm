@@ -281,11 +281,11 @@ Uptime: {uptime}\n\n""".format(
             else:
                 port_string = ":" + server_port
         except configparser.NoOptionError:
-            pass
+            server_port = "3080"
 
     ip = get_ip()
     if ip:
-        content += "IP: {ip} PORT: {port}\n\nTo log in using SSH: ssh gns3@{ip}\nPassword: gns3\n\nTo launch the Web-Ui: http://{ip}{port}\n\nImages and projects are stored in '/opt/gns3'""".format(ip=ip, port=port_string)
+        content += "IP: {ip} PORT: {server_port}\n\nTo log in using SSH: ssh gns3@{ip}\nPassword: gns3\n\nTo launch the Web-Ui: http://{ip}{url_port}\n\nImages and projects are stored in '/opt/gns3'""".format(ip=ip, server_port=server_port, url_port=port_string)
     else:
         content += "eth0 is not configured. Please manually configure by selecting the 'Network' entry in the menu."
 
