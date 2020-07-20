@@ -54,7 +54,7 @@ def get():
         device = manager.create_device(
             project_id=gns3_project.id,
             hostname=GNS3_HOSTNAME,
-            plan='c1.small.x86',
+            plan='c3.small.x86',
             facility='any',
             operating_system="ubuntu_16_04")
 
