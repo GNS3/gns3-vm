@@ -273,6 +273,7 @@ Uptime: {uptime}\n\n""".format(
 
     config = get_config()
     port_string = ":3080"
+    server_port = "3080"
     if config.has_section("Server"):
         try:
             server_port = config.get("Server", "port")
