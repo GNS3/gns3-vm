@@ -50,11 +50,14 @@ else
 fi
 git checkout $TAG
 
+# upgrade pip to latest version
+sudo -H pip3 install --upgrade pip
+
 if  [[ -z "$HTTP_PROXY" ]]
 then
-  sudo -H pip3 install -U -r requirements.txt
+  sudo -H pip3 install --ignore-installed --upgrade -r requirements.txt
 else
-  sudo -H pip3 --proxy $HTTP_PROXY install -U -r requirements.txt
+  sudo -H pip3 --proxy $HTTP_PROXY install --ignore-installed --upgrade -r requirements.txt
 fi
 
 sudo python3 setup.py install
