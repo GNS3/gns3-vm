@@ -97,6 +97,7 @@ apt-get install -y gns3-iou dynamips vpcs ubridge
 
 # Install Docker if not installed or version is not 19.03.13
 if [[ ! $(which docker) ]] || [[ ! $(docker --version | grep "19.03.13") ]]; then
+   sudo apt-get purge docker-ce
    curl -sSLk https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_19.03.13~3-0~ubuntu-bionic_amd64.deb > /tmp/docker.deb
    sudo apt-get install -y libltdl7
    sudo dpkg -i /tmp/docker.deb
