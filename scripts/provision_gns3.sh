@@ -28,8 +28,8 @@ else
 fi
 
 sudo apt-get update
-sudo DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
-sudo apt-get install -y python3-dev gcc git
+sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
+sudo DEBIAN_FRONTEND=noninteractive apt install -y python3-dev gcc git ntp
 
 # Install pip3 if missing
 if [[ ! $(which pip3) ]]
