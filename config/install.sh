@@ -34,6 +34,11 @@ cp sources.list /etc/apt/sources.list
 chmod 644 /etc/apt/sources.list
 chown root:root /etc/apt/sources.list
 
+# Never upgrade to Ubuntu 20.04LTS
+cp release-upgrades /etc/update-manager/release-upgrades
+chmod 644 /etc/update-manager/release-upgrades
+chown root:root /etc/update-manager/release-upgrades
+
 # Add the GNS3 PPA
 if [[ ! $(which add-apt-repository) ]]
 then
