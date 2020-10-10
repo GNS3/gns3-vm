@@ -404,7 +404,7 @@ def qemu():
                                      ("3.1.0", "Qemu version 3.1.0")])
     d.clear()
     if code == Dialog.OK:
-        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-stable/scripts/qemu.sh"
+        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/bionic-unstable/scripts/qemu.sh"
         ret = os.system("curl -Lk {url} > /tmp/qemu.sh && bash -x /tmp/qemu.sh {version}".format(url=script_url,
                                                                                                  version=version))
         if ret != 0:
