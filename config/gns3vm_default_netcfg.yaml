@@ -14,3 +14,27 @@ network:
      dhcp4: yes
      optional: true
      dhcp-identifier: mac
+    eth3:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
+    eth4:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
+    eth5:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
+    eth6:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
+    eth7:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
+    eth8:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
