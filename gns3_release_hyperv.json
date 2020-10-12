@@ -16,7 +16,7 @@
         "type": "shell"
       },
       {
-        "inline": "sudo apt update && sudo apt install --yes linux-virtual linux-cloud-tools-virtual linux-tools-virtual",
+        "inline": "sudo apt update && sudo apt install --yes linux-virtual-hwe-18.04 linux-cloud-tools-virtual-hwe-18.04 linux-tools-virtual-hwe-18.04",
         "type": "shell"
       },
       {
