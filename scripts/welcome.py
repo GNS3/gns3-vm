@@ -120,7 +120,7 @@ def set_release_channel():
     code, tag = d.menu("Select the GNS3 release channel",
                        choices=[("2.2", "Current stable release (RECOMMENDED)"),
                                 ("2.2dev", "Next stable release, development version"),
-                                ("2.3dev", "Totally unstable version")])
+                                ("3.0dev", "Totally unstable version")])
     d.clear()
     if code == Dialog.OK:
         os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)

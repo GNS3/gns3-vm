@@ -41,9 +41,9 @@ cd gns3-server
 git reset --hard HEAD
 git fetch origin
 
-if [[ -z "$1" ]] || [[ "$1" == "2.3" ]]
+if [[ -z "$1" ]] || [[ "$1" == "3.0" ]]
 then
-  git checkout "2.3" # latest dev version on this branch
+  git checkout "3.0" # latest dev version on this branch
   git pull
 else
   git checkout $1
@@ -58,6 +58,6 @@ fi
 
 sudo python3 setup.py install
 
-echo "Update to 2.3dev completed, rebooting in 10 seconds..."
+echo "Update to 3.0dev completed, rebooting in 10 seconds..."
 sleep 10
 sudo reboot
