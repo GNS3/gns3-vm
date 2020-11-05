@@ -1,13 +1,5 @@
 #!/bin/bash
-#
-# This command allows to fix a broken installation
-#
 
-if [[ $(id -u) -ne 0 ]]
-then
-    echo "Please run this script as root or using sudo"
-    exit 1
-fi
-
+# Used by the GNS3 restore command
 export BRANCH="bionic-unstable"
-curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/restore.sh" | bash
+curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade_2.2dev.sh" | bash
