@@ -115,7 +115,8 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_virtualbox.sh ${GNS3_VERSION}
+                ./virtualbox.sh
+                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.11.0.zip
               fi
             "
 
@@ -130,7 +131,7 @@ jobs:
 
               if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_hyperv.sh ${GNS3_VERSION}
+                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.11.0.zip
               fi
             "
 
@@ -161,7 +162,8 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_vmware.sh ${GNS3_VERSION}
+                ./vmware.sh
+                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.11.0.zip
               fi
             "
 
