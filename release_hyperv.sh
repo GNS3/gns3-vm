@@ -26,7 +26,7 @@ export GNS3_SRC="/tmp/GNS3VM.Hyper-V.${GNS3VM_VERSION}.ova"
 
 if [[ "$GNS3_VM_FILE" == "" ]]
 then
-    export GNS3VM_VERSION="0.10.28" # `python last_vm_version.py`
+    export GNS3VM_VERSION="0.11.0" # `python last_vm_version.py`
     export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
     if [[ ! -f "/tmp/GNS3VM.Hyper-V.${GNS3VM_VERSION}.zip" ]]
@@ -55,7 +55,8 @@ for vmdk_file in *.vmdk; do
 done
 
 cp ../create-vm.ps1 create-vm.ps1
-zip -9 "../GNS3.VM.Hyper-V.${GNS3_VERSION}.zip" *.vhd create-vm.ps1
+cp ../install-vm.bat
+zip -9 "../GNS3.VM.Hyper-V.${GNS3_VERSION}.zip" *.vhd create-vm.ps1 install-vm.bat
 
 cd ..
 rm -Rf output-*
