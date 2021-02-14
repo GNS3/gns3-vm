@@ -16,7 +16,7 @@
         "type": "shell"
       },
       {
-        "inline": "sudo apt update && sudo apt install --yes --install-recommends linux-generic-hwe-18.04 && sudo apt install --yes linux-virtual-hwe-18.04 linux-cloud-tools-virtual-hwe-18.04 linux-tools-virtual-hwe-18.04 linux-cloud-tools-common && sudo update-initramfs -u",
+        "inline": "sudo apt update && sudo apt install --yes --install-recommends linux-generic-hwe-20.04 && sudo apt install --yes linux-virtual-hwe-20.04 linux-cloud-tools-virtual-hwe-20.04 linux-tools-virtual-hwe-20.04 linux-cloud-tools-common && sudo update-initramfs -u",
         "type": "shell"
       },
       {

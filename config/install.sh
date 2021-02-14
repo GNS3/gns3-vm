@@ -56,19 +56,18 @@ else
     add-apt-repository -y --remove ppa:gns3/unstable
 fi
 
-# add Qemu backport PPA for first install
-# or if explicitly requested
-if [[ ! -f ~/.config/GNS3/qemu_version ]]
-then
-  sudo -E add-apt-repository -y ppa:gns3/qemu
-else
-  if [[ `cat ~/.config/GNS3/qemu_version` == "3.1.0" ]]
-  then
-    sudo -E add-apt-repository -y ppa:gns3/qemu
-  else
-    sudo add-apt-repository -y --remove ppa:gns3/qemu
-  fi
-fi
+# add Qemu 3.1.0 if explicitly requested
+#if [[ ! -f ~/.config/GNS3/qemu_version ]]
+#then
+#  sudo -E add-apt-repository -y ppa:gns3/qemu
+#else
+#  if [[ -f ~/.config/GNS3/qemu_version && `cat ~/.config/GNS3/qemu_version` == "3.1.0" ]]
+#  then
+#    sudo -E add-apt-repository -y ppa:gns3/qemu
+#  else
+#    sudo add-apt-repository -y --remove ppa:gns3/qemu
+#  fi
+#fi
 
 # Set up the Docker repository
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -89,10 +88,10 @@ apt-get install -y mingetty
 apt-get install -y python3-dev python3-setuptools
 
 # For the NAT node
-apt-get install -y --allow-change-held-packages libvirt-bin
+apt-get install -y --allow-change-held-packages libvirt-daemon-system
 
-# Prevent libvirt-bin to be uninstalled by cleaner.sh
-apt-mark hold libvirt-bin
+# Prevent libvirt-daemon-system to be uninstalled by cleaner.sh
+apt-mark hold libvirt-daemon-system
 
 # Install Qemu
 apt-get install -y qemu-system-x86 qemu-kvm cpulimit
@@ -176,9 +175,9 @@ chmod 644 /etc/sysctl.conf
 chown root:root /etc/sysctl.conf
 
 # IPtables
-cp iptables /etc/network/if-pre-up.d/iptables
-chmod 755 /etc/network/if-pre-up.d/iptables
-chown root:root /etc/network/if-pre-up.d/iptables
+#cp iptables /etc/network/if-pre-up.d/iptables
+#chmod 755 /etc/network/if-pre-up.d/iptables
+#chown root:root /etc/network/if-pre-up.d/iptables
 
 # GNS3 Restore
 cp gns3-restore.sh /usr/local/bin/gns3restore

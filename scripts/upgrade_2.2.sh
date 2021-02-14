@@ -19,7 +19,7 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-export BRANCH="bionic-stable"
+export BRANCH="focal-stable"
 export UNSTABLE_APT="0"
 
 # upgrade the GNS3 VM first

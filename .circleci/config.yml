@@ -100,7 +100,7 @@ jobs:
               then
                 git clone https://github.com/GNS3/gns3-vm.git
                 cd gns3-vm
-                git checkout bionic-stable
+                git checkout focal-stable
               fi
             "
 
