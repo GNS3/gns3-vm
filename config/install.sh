@@ -104,7 +104,7 @@ if [[ ! $(cat /etc/modprobe.d/qemu-system-x86.conf | grep "halt_poll_ns") ]]; th
 fi
 
 # Install other GNS3 dependencies
-apt-get install -y gns3-iou dynamips vpcs ubridge
+apt-get install -y gns3-iou dynamips vpcs ubridge mtools
 
 # Install Docker
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io
