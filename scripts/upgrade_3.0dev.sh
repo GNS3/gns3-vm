@@ -31,13 +31,11 @@ then
     sudo apt-get update
     sudo apt-get install -y git
     git clone https://github.com/GNS3/gns3-server.git gns3-server
-
-    # Make sure GCC is installed because psutil requires to be compiled
-    # Maybe a wheel will be provided someday: https://github.com/giampaolo/psutil/issues/824
-    sudo apt-get install -y gcc
 fi
 
 cd gns3-server
+sudo chown -R gns3:gns3 .git
+sudo chmod -R 775 .git
 git reset --hard HEAD
 git fetch origin
 
