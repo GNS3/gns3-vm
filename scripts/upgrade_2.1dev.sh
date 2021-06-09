@@ -38,6 +38,8 @@ then
 fi
 
 cd gns3-server
+sudo chown -R gns3:gns3 .git
+sudo chmod -R 775 .git
 git reset --hard HEAD
 git fetch origin
 
