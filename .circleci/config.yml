@@ -41,6 +41,7 @@ jobs:
             ssh root@${DEVICE_IP} "
               set -e
               apt update
+              apt -y upgrade
               apt -y install linux-headers-\$(uname -r) zip unzip git
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
               apt-add-repository \"deb http://download.virtualbox.org/virtualbox/debian \$(lsb_release -sc) contrib\"
