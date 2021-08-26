@@ -56,7 +56,7 @@ def get():
             hostname=GNS3_HOSTNAME,
             plan='c3.small.x86',
             facility='any',
-            operating_system="ubuntu_18_04")
+            operating_system="ubuntu_20_04")
 
     # wait max 20 min for being active
     check_every = 5  # seconds
