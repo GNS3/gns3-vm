@@ -43,9 +43,10 @@ jobs:
               apt update
               apt -y install linux-headers-\$(uname -r) zip unzip git
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
-              apt-add-repository \"deb http://download.virtualbox.org/virtualbox/debian \$(lsb_release -sc) contrib\"
+              wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc | apt-key add -
+              apt-add-repository \"deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian \$(lsb_release -cs) contrib\"
               apt update
-              apt -y install virtualbox-5.1 dkms
+              apt -y install virtualbox-6.1
             "
 
       - run:
@@ -54,11 +55,6 @@ jobs:
             source env_vars
             echo "
               set -e
-
-              add-apt-repository -y ppa:ubuntu-toolchain-r/test
-              apt-get update
-              apt-get -y install gcc-6 g++-6
-              update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 60
 
               if [ ! -f "/tmp/VMware-Workstation-15.5.2-15785246.x86_64.bundle" ]
               then
