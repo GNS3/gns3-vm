@@ -55,6 +55,7 @@ else
   sudo -H pip3 --proxy $HTTP_PROXY install -U -r requirements.txt
 fi
 
+sudo -H pip3 uninstall -y gns3-server
 sudo python3 -m pip install .
 
 echo "Upgrade to $TAG completed, rebooting in 10 seconds..."
