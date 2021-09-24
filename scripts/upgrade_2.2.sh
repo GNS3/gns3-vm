@@ -21,43 +21,27 @@ set -e
 
 export BRANCH="focal-stable"
 export UNSTABLE_APT="0"
+export PYPI_GNS3SERVER_JSON_URL="https://pypi.org/pypi/gns3-server/json"
 
 # upgrade the GNS3 VM first
 curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade_vm.sh" > /tmp/upgrade_vm.sh && bash -x /tmp/upgrade_vm.sh
 
 # install the GNS3 server
-if [[ ! -d "gns3-server" ]]
-then
-    sudo apt-get update
-    sudo apt-get install -y git
-    git clone https://github.com/GNS3/gns3-server.git gns3-server
-fi
-
-cd gns3-server
-sudo chown -R gns3:gns3 .git
-sudo chmod -R 775 .git
-git reset --hard HEAD
-git fetch origin --tags
-
 if [[ -z "$1" ]]
 then
-  # get the latest tag for stable release of 2.2
-  TAG=`git tag -l 'v2.2*' | grep -v '[abr]' | sort -V | tail -n 1`
+  # get the latest stable release of channel 2.2
+  RELEASE=`curl -Lk "$PYPI_GNS3SERVER_JSON_URL" | jq  -r '.releases | keys | .[]' | grep -E '^2.2' | grep -v '[abrd]' | sort -V | tail -n 1`
 else
-  TAG=$1
+  RELEASE=$1
 fi
-git checkout $TAG
 
 if  [[ -z "$HTTP_PROXY" ]]
 then
-  sudo -H pip3 install -U -r requirements.txt
+  sudo -H python3 -m pip install gns3-server==$RELEASE
 else
-  sudo -H pip3 --proxy $HTTP_PROXY install -U -r requirements.txt
+  sudo -H python3 -m pip --proxy $HTTP_PROXY install gns3-server==$RELEASE
 fi
 
-sudo -H pip3 uninstall -y gns3-server
-sudo python3 -m pip install .
-
-echo "Upgrade to $TAG completed, rebooting in 10 seconds..."
+echo "Upgrade to $RELEASE completed, rebooting in 10 seconds..."
 sleep 10
 sudo reboot
