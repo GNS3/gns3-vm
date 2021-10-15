@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Copyright (C) 2015 GNS3 Technologies Inc.
 #
@@ -78,6 +78,9 @@ sudo -E add-apt-repository -y \
    stable"
 
 apt-get update
+
+# Install jq for upgrades
+apt-get install -y jq
 
 # Install virt-what
 apt-get install -y virt-what
