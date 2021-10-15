@@ -41,8 +41,8 @@ done
 cd gns3-vm-${BRANCH}/config
 sudo -E bash -x install.sh
 
-# sudo dpkg --configure -a
-# sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
+sudo dpkg --configure -a
+sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
 
 # upgrade the GNS3 welcome script
 curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/welcome.py" > /tmp/gns3welcome.py
