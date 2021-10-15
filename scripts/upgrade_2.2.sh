@@ -37,8 +37,10 @@ fi
 
 if  [[ -z "$HTTP_PROXY" ]]
 then
+  sudo -H python3 -m pip install -U pip
   sudo -H python3 -m pip install gns3-server==$RELEASE
 else
+  sudo -H python3 -m pip --proxy $HTTP_PROXY install -U pip
   sudo -H python3 -m pip --proxy $HTTP_PROXY install gns3-server==$RELEASE
 fi
 
