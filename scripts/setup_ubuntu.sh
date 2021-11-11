@@ -3,10 +3,6 @@
 # Setup Ubuntu
 # This script should be run as root
 
-
-# Enable sudo without password
-echo "gns3 ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/gns3
-
 # Auto login
 apt-get update
 
