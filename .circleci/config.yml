@@ -29,7 +29,7 @@ jobs:
           name: Get builder device
           command: |
             source env/bin/activate
-            DEVICE_IP=`python3 .circleci/device.py ${PACKET_TOKEN} get "${PACKET_PROJECT}"`
+            DEVICE_IP=`python3 .circleci/device.py ${EQUINIX_TOKEN} get "${EQUINIX_PROJECT}"`
             echo "export DEVICE_IP=\"$DEVICE_IP\"" >> env_vars
             echo "Obtained device on $DEVICE_IP"
             ssh-keyscan -H ${DEVICE_IP} >> ~/.ssh/known_hosts
@@ -193,7 +193,7 @@ jobs:
           when: always
           command: |
             source env/bin/activate
-            python3 .circleci/device.py ${PACKET_TOKEN} destroy "${PACKET_PROJECT}"
+            python3 .circleci/device.py ${EQUINIX_TOKEN} destroy "${EQUINIX_PROJECT}"
 
       - run:
           name: Generate SHA256 checksums
