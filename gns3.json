@@ -62,9 +62,9 @@
    "builders" : [
        {
          "type" : "virtualbox-iso",
-         "ssh_wait_timeout" : "120m",
-         "ssh_timeout" : "15m",
-         "boot_wait" : "20s",
+         "ssh_timeout": "10m",
+         "ssh_handshake_attempts": "20",
+         "boot_wait" : "10s",
          "disk_size" : "{{user `disk_size`}}",
          "iso_checksum_type" : "{{user `iso_checksum_type`}}",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
@@ -167,8 +167,8 @@
          "ssh_password" : "{{user `ssh_pass`}}",
          "boot_command": [
             "<enter><enter><f6><esc><wait> ",
-            "autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
-            "<enter><wait>"
+            "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+            "<enter>"
          ],
          "guest_additions_mode" : "disable",
          "guest_os_type": "Ubuntu_64",
