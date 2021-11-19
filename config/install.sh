@@ -72,7 +72,7 @@ fi
 # Set up the Docker repository
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo -E add-apt-repository -y \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
    stable"
 
@@ -107,15 +107,17 @@ if [[ ! $(cat /etc/modprobe.d/qemu-system-x86.conf | grep "halt_poll_ns") ]]; th
 fi
 
 # Install other GNS3 dependencies
-apt-get install -y dynamips vpcs ubridge mtools
+apt-get install -y gns3-iou dynamips vpcs ubridge mtools
 
 # Install Docker
+set +e  # avoid service error on arm64
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 sudo usermod -aG docker gns3
 sudo service docker stop
 sudo rm -rf /var/lib/docker/aufs
 # Necessary to prevent Docker from being blocked
 systemctl mask systemd-networkd-wait-online.service
+set -e
 
 # Configure Docker to store its data in /opt/docker
 cp "daemon.json" "/etc/docker/daemon.json"
