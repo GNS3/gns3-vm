@@ -29,10 +29,37 @@ export DEBIAN_FRONTEND="noninteractive"
 dpkg-reconfigure libc6
 sudo -E apt-get -q --option Dpkg::Options::=-"-force-confold" --allow-change-held-packages --assume-yes install libssl1.1
 
-# Sources.list
-cp sources.list /etc/apt/sources.list
-chmod 644 /etc/apt/sources.list
-chown root:root /etc/apt/sources.list
+if [[ "$(dpkg --print-architecture)" == "arm64" ]]
+then
+
+cat > /etc/apt/sources.list << EOF
+# For arm64 architecture
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-updates main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-backports main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-security main restricted universe multiverse
+
+# For i386 architecture (IOU support)
+deb [arch=i386] http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+deb [arch=i386] http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+deb [arch=i386] http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+deb [arch=i386] http://security.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+EOF
+
+else
+
+cat > /etc/apt/sources.list << EOF
+# For i386 and amd64 architectures
+deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+EOF
+
+fi
+
+# Activate i386 for IOU support
+dpkg --add-architecture i386
 
 # Never upgrade to Ubuntu 20.04LTS
 cp release-upgrades /etc/update-manager/release-upgrades
@@ -99,6 +126,12 @@ apt-mark hold libvirt-daemon-system
 # Install Qemu
 apt-get install -y qemu-system-x86 qemu-kvm cpulimit
 sudo usermod -aG kvm gns3
+
+if [[ "$(dpkg --print-architecture)" == "arm64" ]]
+then
+  # Install Qemu user emulation with binfmt_misc on arm64 (for IOU support)
+  apt-get install binfmt-support qemu-user qemu-user-binfmt
+fi
 
 # Fix the KVM high CPU usage with some appliances
 # See https://github.com/GNS3/gns3-vm/issues/128
