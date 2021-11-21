@@ -250,14 +250,33 @@ jobs:
           path: artifacts
           destination: artifacts
 
+  arm-build:
+    machine:
+      image: ubuntu-2004:202101-01
+
+    resource_class: arm.medium
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - run:
+          name: Set ENV
+          command: |
+            echo "export GNS3_VERSION=\"${CIRCLE_TAG:-"v2.1.0rc2"}\"" >> env_vars
+            echo "export GNS3_NUMBER=\`echo \$GNS3_VERSION | sed \"s/^v//\"\`" >> env_vars
+
+      - run: uname -a
+      - run: ls /dev/kvm
+      - run: bash release_qemu_arm64.sh v2.2.27
 
 workflows:
   version: 2
   build_only_on_tag:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: /v.*/
-            branches:
-              ignore: /.*/
+       - arm-build
+#      - build:
+#          filters:
+#            tags:
+#              only: /v.*/
+#            branches:
+#              ignore: /.*/
