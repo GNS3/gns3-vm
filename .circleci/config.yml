@@ -266,7 +266,12 @@ jobs:
             echo "export GNS3_NUMBER=\`echo \$GNS3_VERSION | sed \"s/^v//\"\`" >> env_vars
 
       - run: uname -a
-      - run: bash release_qemu_arm64.sh v2.2.27
+
+      - run:
+          name: Build GNS3 VM for ARM64
+          command: |
+            source env_vars
+            bash release_qemu_arm64.sh v2.2.27
 
 workflows:
   version: 2
