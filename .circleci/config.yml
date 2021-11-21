@@ -266,7 +266,8 @@ jobs:
             echo "export GNS3_NUMBER=\`echo \$GNS3_VERSION | sed \"s/^v//\"\`" >> env_vars
 
       - run: uname -a
-      - run: ls /dev/kvm
+      - run: dmesg | grep HYP
+      - run: dmesg | grep EL1
       - run: bash release_qemu_arm64.sh v2.2.27
 
 workflows:
