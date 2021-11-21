@@ -28,13 +28,13 @@ then
     export GNS3VM_VERSION="0.12.1" # `python last_vm_version.py`
     export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3.VM.ARM64.${GNS3VM_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
-    curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.ARM64.${GNS3_VERSION}.zip"
+    curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
 else
     echo "GNS3 VM file: $GNS3_VM_FILE"
     cp "$GNS3_VM_FILE" "/tmp/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
 fi
 
-unzip "/tmp/GNS3VM.ARM64.${GNS3_VERSION}.zip"
+unzip "/tmp/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
 
 packer build -only=qemu gns3_release.json
 
