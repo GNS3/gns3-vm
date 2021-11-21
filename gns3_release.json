@@ -133,8 +133,8 @@
                 ["-serial", "file:serial.out"],
                 ["-machine", "virt"],
                 ["-cpu", "max"],
-                ["-smp", "2048"],
-                ["-m", "{{user `memory`}}"],
+                ["-smp", "4"],
+                ["-m", "2048"],
                 ["-bios", "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd"],
                 ["-boot", "strict=off"]
          ],
