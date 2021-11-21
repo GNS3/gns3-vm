@@ -271,7 +271,7 @@ jobs:
           name: Build GNS3 VM for ARM64
           command: |
             source env_vars
-            bash release_qemu_arm64.sh v2.2.27
+            ./release_qemu_arm64.sh v2.2.27
 
 workflows:
   version: 2
