@@ -117,19 +117,19 @@ jobs:
       - checkout
       - setup
 
-#      - run:
-#          name: Install VirtualBox
-#          command: |
-#            ssh root@${DEVICE_IP} "
-#              set -e
-#              apt update
-#              apt -y install linux-headers-\$(uname -r) zip unzip git
-#              wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
-#              wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc | apt-key add -
-#              apt-add-repository \"deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian \$(lsb_release -cs) contrib\"
-#              apt update
-#              apt -y install virtualbox-6.1
-#            "
+      - run:
+          name: Install VirtualBox
+          command: |
+            ssh root@${DEVICE_IP} "
+              set -e
+              apt update
+              apt -y install linux-headers-\$(uname -r) zip unzip git
+              wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
+              wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc | apt-key add -
+              apt-add-repository \"deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian \$(lsb_release -cs) contrib\"
+              apt update
+              apt -y install virtualbox-6.1
+            "
 
       - run:
           name: Install VMWare
