@@ -131,7 +131,7 @@
                 ["-drive", "file=gns3vm-disk1.qcow2,if=virtio,format=qcow2,cache=none"],
                 ["-drive", "file=gns3vm-disk2.qcow2,if=virtio,format=qcow2,cache=none"],
                 ["-serial", "file:serial.out"],
-                ["-machine", "virt"],
+                ["-machine", "virt,gic-version=3,accel=kvm"],
                 ["-cpu", "max"],
                 ["-smp", "4"],
                 ["-m", "2048"],
