@@ -23,11 +23,12 @@ import sys
 import time
 import packet
 
-GNS3_HOSTNAME = 'gns3-vm-builder'
-
 token = sys.argv[1]
 action = sys.argv[2]
 packet_project = sys.argv[3]
+server_type = sys.argv[4]
+
+GNS3_HOSTNAME = 'gns3-vm-builder-{}'.format(server_type)
 
 
 def get_device(project, hostname):
@@ -54,7 +55,7 @@ def get():
         device = manager.create_device(
             project_id=gns3_project.id,
             hostname=GNS3_HOSTNAME,
-            plan='c3.small.x86',
+            plan=server_type,
             facility='any',
             operating_system="ubuntu_20_04")
 

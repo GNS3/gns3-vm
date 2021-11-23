@@ -29,10 +29,37 @@ export DEBIAN_FRONTEND="noninteractive"
 dpkg-reconfigure libc6
 sudo -E apt-get -q --option Dpkg::Options::=-"-force-confold" --allow-change-held-packages --assume-yes install libssl1.1
 
-# Sources.list
-cp sources.list /etc/apt/sources.list
-chmod 644 /etc/apt/sources.list
-chown root:root /etc/apt/sources.list
+if [[ "$(dpkg --print-architecture)" == "arm64" ]]
+then
+
+cat > /etc/apt/sources.list << EOF
+# For arm64 architecture
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-updates main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-backports main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-security main restricted universe multiverse
+
+# For i386 architecture (IOU support)
+deb [arch=i386] http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+deb [arch=i386] http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+deb [arch=i386] http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+deb [arch=i386] http://security.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+EOF
+
+else
+
+cat > /etc/apt/sources.list << EOF
+# For i386 and amd64 architectures
+deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+EOF
+
+fi
+
+# Activate i386 for IOU support
+dpkg --add-architecture i386
 
 # Never upgrade to Ubuntu 20.04LTS
 cp release-upgrades /etc/update-manager/release-upgrades
@@ -72,7 +99,7 @@ fi
 # Set up the Docker repository
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo -E add-apt-repository -y \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
    stable"
 
@@ -100,6 +127,12 @@ apt-mark hold libvirt-daemon-system
 apt-get install -y qemu-system-x86 qemu-kvm cpulimit
 sudo usermod -aG kvm gns3
 
+if [[ "$(dpkg --print-architecture)" == "arm64" ]]
+then
+  # Install Qemu user emulation with binfmt_misc on arm64 (for IOU support)
+  apt-get install binfmt-support qemu-user qemu-user-binfmt
+fi
+
 # Fix the KVM high CPU usage with some appliances
 # See https://github.com/GNS3/gns3-vm/issues/128
 if [[ ! $(cat /etc/modprobe.d/qemu-system-x86.conf | grep "halt_poll_ns") ]]; then
@@ -107,15 +140,17 @@ if [[ ! $(cat /etc/modprobe.d/qemu-system-x86.conf | grep "halt_poll_ns") ]]; th
 fi
 
 # Install other GNS3 dependencies
-apt-get install -y dynamips vpcs ubridge mtools
+apt-get install -y gns3-iou dynamips vpcs ubridge mtools
 
 # Install Docker
+set +e  # avoid service error on arm64
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 sudo usermod -aG docker gns3
 sudo service docker stop
 sudo rm -rf /var/lib/docker/aufs
 # Necessary to prevent Docker from being blocked
 systemctl mask systemd-networkd-wait-online.service
+set -e
 
 # Configure Docker to store its data in /opt/docker
 cp "daemon.json" "/etc/docker/daemon.json"
