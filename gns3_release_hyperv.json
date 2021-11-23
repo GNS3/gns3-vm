@@ -35,6 +35,8 @@
    "builders" : [
       {
           "type": "vmware-vmx",
+          "ssh_timeout": "10m",
+          "ssh_handshake_attempts": "20",
           "vm_name" : "GNS3 VM",
           "headless": true,
           "source_path": "{{user `gns3_src`}}",
@@ -55,6 +57,8 @@
       },
       {
           "type": "virtualbox-ovf",
+          "ssh_timeout": "10m",
+          "ssh_handshake_attempts": "20",
           "vm_name" : "GNS3 VM",
           "headless": true,
           "source_path": "{{user `gns3_src`}}",
