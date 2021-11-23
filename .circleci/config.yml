@@ -285,13 +285,13 @@ jobs:
 workflows:
   build_only_on_tag:
     jobs:
-      - x86_build:
+      - x86-build:
           filters:
             tags:
               only: /v.*/
             branches:
               ignore: /.*/
-      #- arm64_build:
+      #- arm64-build:
       #    filters:
       #      tags:
       #        only: /v.*/
