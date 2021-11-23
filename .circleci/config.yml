@@ -79,28 +79,28 @@ commands:
             ls -l
             cd -
 
-      - run:
-          name: Deploying on Github and SourceForge
-          when: always
-          command: |
-            source env/bin/activate
-
-            python3 -m pip install -U pip
-
-            git clone git@github.com:GNS3/gns3-build.git
-            cd gns3-build
-            pip3 install -r requirements.txt
-            cd ..
-
-            echo "Deploying version ${CIRCLE_TAG} on GitHub"
-            for file in artifacts/GNS3.VM.*.{zip,sha256}
-            do
-              python3 gns3-build/upload.py ${CIRCLE_TAG} $file
-            done
-
-            echo "Deploying version ${CIRCLE_TAG} on SourceForge"
-            ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
-            scp artifacts/GNS3.VM.* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
+#      - run:
+#          name: Deploying on Github and SourceForge
+#          when: always
+#          command: |
+#            source env/bin/activate
+#
+#            python3 -m pip install -U pip
+#
+#            git clone git@github.com:GNS3/gns3-build.git
+#            cd gns3-build
+#            pip3 install -r requirements.txt
+#            cd ..
+#
+#            echo "Deploying version ${CIRCLE_TAG} on GitHub"
+#            for file in artifacts/GNS3.VM.*.{zip,sha256}
+#            do
+#              python3 gns3-build/upload.py ${CIRCLE_TAG} $file
+#            done
+#
+#            echo "Deploying version ${CIRCLE_TAG} on SourceForge"
+#            ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
+#            scp artifacts/GNS3.VM.* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
 
       - store_artifacts:
           path: artifacts
@@ -176,7 +176,8 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_virtualbox.sh ${GNS3_VERSION}
+                ./virtualbox.sh
+                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.12.1.zip
               fi
             "
 
@@ -190,7 +191,7 @@ jobs:
 
               if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_hyperv.sh ${GNS3_VERSION}
+                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.12.1.zip
               fi
             "
 
@@ -219,7 +220,8 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_vmware.sh ${GNS3_VERSION}
+                ./vmware.sh
+                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.12.1.zip
               fi
             "
 
@@ -285,15 +287,15 @@ jobs:
 workflows:
   build_only_on_tag:
     jobs:
-      - x86-build:
-          filters:
-            tags:
-              only: /v.*/
-            branches:
-              ignore: /.*/
-      #- arm64-build:
-      #    filters:
-      #      tags:
-      #        only: /v.*/
-      #      branches:
-      #        ignore: /.*/
+      - x86-build
+#          filters:
+#            tags:
+#              only: /v.*/
+#            branches:
+#              ignore: /.*/
+#      - arm64-build:
+#          filters:
+#            tags:
+#              only: /v.*/
+#            branches:
+#              ignore: /.*/
