@@ -277,6 +277,7 @@ jobs:
 
               if [ ! -e \"GNS3.VM.ARM64.${GNS3_NUMBER}.zip\" ];
               then
+                apt update && apt install -y zip qemu-utils qemu-system-arm qemu-efi-aarch64
                 ./release_qemu_arm64.sh ${GNS3_VERSION}
               fi
             "

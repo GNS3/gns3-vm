@@ -12,8 +12,6 @@ fi
 mkdir -p ubuntu-arm64-iso
 mount -r ubuntu-20.04.3-live-server-arm64.iso ubuntu-arm64-iso
 
-apt update && sudo apt install -y zip qemu-utils qemu-system-arm qemu-efi-aarch64
-
 qemu-img create -f qcow2 gns3vm-disk1.qcow2 20G
 qemu-img create -f qcow2 gns3vm-disk2.qcow2 500G
 
