@@ -261,6 +261,7 @@ jobs:
 
               if [ ! -f "/tmp/packer.zip" ]
               then
+                apt update && apt install -y zip
                 wget https://releases.hashicorp.com/packer/1.0.4/packer_1.0.4_linux_arm64.zip -O /tmp/packer.zip
               fi
 
@@ -277,7 +278,7 @@ jobs:
 
               if [ ! -e \"GNS3.VM.ARM64.${GNS3_NUMBER}.zip\" ];
               then
-                apt update && apt install -y zip qemu-utils qemu-system-arm qemu-efi-aarch64
+                apt install -y qemu-utils qemu-system-arm qemu-efi-aarch64
                 ./release_qemu_arm64.sh ${GNS3_VERSION}
               fi
             "
