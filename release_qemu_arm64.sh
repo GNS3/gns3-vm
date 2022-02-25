@@ -34,7 +34,7 @@ else
     cp "$GNS3_VM_FILE" "/tmp/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
 fi
 
-unzip "/tmp/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
+unzip -o "/tmp/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
 
 packer build -only=qemu gns3_release.json
 
