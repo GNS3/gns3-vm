@@ -148,7 +148,7 @@ jobs:
               chmod a+x /tmp/VMware-Workstation-16.2.3-19376536.x86_64.bundle
 
               /tmp/VMware-Workstation-16.2.3-19376536.x86_64.bundle --eulas-agreed --required --console
-              /usr/lib/vmware/bin/vmware-vmx --new-sn 4M60M-0GK12-H83J3-0T92H-899Q0
+              /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_16_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
             scp script.sh root@${DEVICE_IP}:
