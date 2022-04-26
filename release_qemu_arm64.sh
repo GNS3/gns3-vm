@@ -36,9 +36,9 @@ fi
 
 unzip -o "/tmp/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
 
-packer build -only=qemu gns3_release.json
+packer build -only=qemu-arm64 gns3_release.json
 
-rm -Rf output-qemu
+rm -Rf output-qemu-arm64
 
 for qcow2_file in *.qcow2
 do

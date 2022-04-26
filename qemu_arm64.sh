@@ -29,9 +29,9 @@ qemu-system-aarch64 -name "GNS3 VM" -nographic -m 4096 -cpu max -smp 8 \
 -append "autoinstall ds=nocloud-net;s=http://10.0.2.2:4242/ console=ttyAMA0" \
 -cdrom ubuntu-20.04.4-live-server-arm64.iso -no-reboot -boot strict=off
 
-packer build -only=qemu $* gns3.json
+packer build -only=qemu-arm64 $* gns3.json
 
-rm -Rf output-qemu
+rm -Rf output-qemu-arm64
 
 cp gns3vm-disk1.qcow2 gns3vm-disk1.qcow2.bak
 qemu-img convert -O qcow2 gns3vm-disk1.qcow2.bak gns3vm-disk1.qcow2

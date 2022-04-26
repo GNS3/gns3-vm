@@ -2,11 +2,14 @@
    "variables" : {
       "ssh_pass" : "gns3",
       "ssh_name" : "gns3",
-      "gns3_src": "{{env `GNS3_SRC`}}"
+      "gns3_src": "{{env `GNS3_SRC`}}",
+      "memory": "2048",
+      "cpus": "1",
+      "cores": "1"
    },
    "provisioners" : [
-      {
-        "inline": "sudo apt update && sudo apt install -y linux-virtual linux-cloud-tools-virtual linux-tools-virtual linux-cloud-tools-common && sudo update-initramfs -u",
+     {
+        "inline": "sudo apt purge -y open-vm-tools",
         "type": "shell"
       }
    ],
@@ -50,8 +53,20 @@
                 "{{.Name}}",
                 "--hostonlyadapter1",
                 "vboxnet0"
+             ],
+             [
+                "modifyvm",
+                "{{.Name}}",
+                "--nic2",
+                "nat"
+             ],
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--nictype2",
+               "82540EM"
              ]
-         ]
+          ]
       }
    ]
 }

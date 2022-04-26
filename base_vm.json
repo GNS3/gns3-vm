@@ -1,0 +1,119 @@
+{
+   "variables" : {
+      "ssh_pass" : "gns3",
+      "ssh_name" : "gns3",
+      "hostname" : "gns3vm",
+      "memory": "2048",
+      "cpus": "1",
+      "cores": "1"
+   },
+   "provisioners" : [
+      {
+        "inline": "/usr/bin/cloud-init status --wait",
+         "type": "shell"
+      },
+      {
+         "destination" : "/tmp/config",
+         "type" : "file",
+         "source" : "config"
+      },
+      {
+         "destination" : "/tmp/gns3welcome.py",
+         "type" : "file",
+         "source" : "scripts/welcome.py"
+      },
+      {
+         "type" : "shell",
+         "script" : "scripts/setup_data_disk.sh",
+         "execute_command" : "echo  {{user `ssh_name`}} | {{ .Vars }} sudo -E -S bash '{{ .Path }}'"
+      },
+      {
+         "type" : "shell",
+         "script" : "scripts/provision.sh"
+      },
+      {
+        "inline": "sudo -u gns3 mkdir -p ~/.config/GNS3/",
+        "type": "shell"
+      },
+      {
+         "destination" : "/home/gns3/.config/GNS3/gns3vm_version",
+         "type" : "file",
+         "source" : "version"
+      },
+      {
+         "type": "shell",
+         "script" : "scripts/reboot.sh",
+         "expect_disconnect": true
+      },
+      {
+         "type": "shell",
+         "pause_before": "30s",
+         "scripts": [
+            "scripts/splashscreen.sh",
+            "scripts/cleaner.sh"
+         ]
+      }
+   ],
+   "builders" : [
+      {
+         "type": "qemu",
+         "name": "qemu-amd64",
+         "vm_name" : "gns3vm-disk",
+         "qemu_binary": "qemu-system-x86_64",
+         "disk_compression": true,
+         "disk_image": true,
+         "format": "qcow2",
+         "disk_size": "5G",
+         "disk_cache": "none",
+         "use_backing_file": false,
+         "disk_additional_size": ["500G"],
+         "headless": true,
+         "accelerator": "kvm",
+         "net_device": "virtio-net-pci",
+         "iso_url" : "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img",
+         "iso_checksum" : "sha256:6780aeeeb65d57b9f794b54c8b5a6f15066f4c5a03ac868af0dacf49c6bd5f2c",
+         "cpus": "{{user `cpus`}}",
+         "memory": "{{user `memory`}}",
+         "cd_files": ["./cloud-init/meta-data", "./cloud-init/user-data"],
+         "cd_label": "cidata",
+         "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+         "shutdown_timeout": "20m",
+         "ssh_username" : "{{user `ssh_name`}}",
+         "ssh_password" : "{{user `ssh_pass`}}",
+         "ssh_timeout": "20m",
+         "ssh_handshake_attempts": "20"
+      },
+      {
+         "type": "qemu",
+         "name": "qemu-arm64",
+         "vm_name" : "GNS3 VM",
+         "qemu_binary": "qemu-system-aarch64",
+         "disk_compression": true,
+         "disk_image": true,
+         "headless": true,
+         "net_device": "virtio-net-pci",
+         "iso_url" : "{{user `iso_url`}}",
+         "iso_checksum" : "{{user `iso_checksum`}}",
+         "iso_checksum_type": "{{user `iso_checksum_type`}}",
+         "use_default_display": true,
+         "http_directory": "http",
+         "qemuargs": [
+                ["-drive", "file=gns3vm-disk1.qcow2,if=virtio,format=qcow2,cache=none"],
+                ["-drive", "file=gns3vm-disk2.qcow2,if=virtio,format=qcow2,cache=none"],
+                ["-serial", "file:serial.out"],
+                ["-machine", "virt,gic-version=3,accel=kvm"],
+                ["-cpu", "max"],
+                ["-smp", "8"],
+                ["-m", "4096"],
+                ["-bios", "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd"],
+                ["-boot", "strict=off"]
+         ],
+         "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+         "shutdown_timeout": "20m",
+         "ssh_username" : "{{user `ssh_name`}}",
+         "ssh_password" : "{{user `ssh_pass`}}",
+         "ssh_timeout": "20m",
+         "ssh_handshake_attempts": "20"
+      }
+   ]
+}

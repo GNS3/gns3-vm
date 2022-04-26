@@ -6,14 +6,12 @@ export DEBIAN_FRONTEND="noninteractive"
 set -e
 
 # Update the system
-sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get dist-upgrade -y
+#sudo apt-get update
+#sudo apt-get upgrade -y
+#sudo apt-get dist-upgrade -y
 
 # use the Ubuntu LTS enablement (also called HWE or Hardware Enablement) stack
-sudo apt-get install -y --install-recommends linux-generic-hwe-20.04
-
-sudo apt-get install -y curl software-properties-common
+# sudo apt-get install -y --install-recommends linux-generic-hwe-22.04
 
 cd /tmp/config
 sudo bash install.sh
@@ -33,12 +31,6 @@ echo "127.0.0.254 xml.cisco.com" | sudo tee --append /etc/hosts
 
 # Force the hostid for IOU license check
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
-
-if [[ $PACKER_BUILDER_TYPE == "vmware-iso" ]]
-then
-   # VMware open-vm-tools
-   sudo apt-get install --yes open-vm-tools
-fi
 
 # Create the GNS3 folders
 sudo mkdir -p /opt/gns3

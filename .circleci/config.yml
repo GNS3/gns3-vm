@@ -7,7 +7,7 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: cimg/python:3.6
+      - image: cimg/python:3.7
     resource_class: small
     working_directory: ~/repo
 
@@ -47,7 +47,7 @@ commands:
               then
                 git clone https://github.com/GNS3/gns3-vm.git
                 cd gns3-vm
-                git checkout focal-stable
+                git checkout $CIRCLE_BRANCH
               fi
             "
 
@@ -148,67 +148,25 @@ jobs:
               chmod a+x /tmp/VMware-Workstation-16.2.3-19376536.x86_64.bundle
 
               /tmp/VMware-Workstation-16.2.3-19376536.x86_64.bundle --eulas-agreed --required --console
-              /usr/lib/vmware/bin/vmware-vmx --new-sn 4M60M-0GK12-H83J3-0T92H-899Q0
+              /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_16_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
             scp script.sh root@${DEVICE_IP}:
             ssh root@${DEVICE_IP} "bash script.sh"
 
       - run:
-          name: Install Packer for amd64
+          name: Install Packer for amd64 & Qemu utils
           command: |
             ssh root@${DEVICE_IP} "
               set -e
 
               if [ ! -f "/tmp/packer.zip" ]
               then
-                wget https://releases.hashicorp.com/packer/1.0.4/packer_1.0.4_linux_amd64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.8.0/packer_1.8.0_linux_amd64.zip -O /tmp/packer.zip
               fi
 
               unzip -o /tmp/packer.zip -d /usr/local/bin/
-            "
-
-      - run:
-          name: Release VirtualBox VM
-          command: |
-            ssh root@${DEVICE_IP} "
-              set -e
-
-              cd gns3-vm
-
-              if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
-              then
-                ./release_virtualbox.sh ${GNS3_VERSION}
-              fi
-            "
-
-      - run:
-          name: Release Hyper-V VM
-          command: |
-            ssh root@${DEVICE_IP} "
-              set -e
-
-              cd gns3-vm
-
-              if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
-              then
-                ./release_hyperv.sh ${GNS3_VERSION}
-              fi
-            "
-
-      - run:
-          name: Release KVM VM
-          command: |
-            ssh root@${DEVICE_IP} "
-              set -e
-
-              cd gns3-vm
-
-              if [ ! -e \"GNS3.VM.KVM.${GNS3_NUMBER}.zip\" ];
-              then
-                apt install -y qemu-utils
-                ./release_kvm.sh ${GNS3_VERSION}
-              fi
+              apt install -y qemu-utils
             "
 
       - run:
@@ -224,6 +182,48 @@ jobs:
                 ./release_vmware.sh ${GNS3_VERSION}
               fi
             "
+
+      - run:
+          name: Release VirtualBox VM
+          command: |
+            ssh root@${DEVICE_IP} "
+              set -e
+
+              cd gns3-vm
+
+              if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
+              then
+                ./release_virtualbox.sh ${GNS3_VERSION} GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip
+              fi
+            "
+
+      - run:
+          name: Release Hyper-V VM
+          command: |
+            ssh root@${DEVICE_IP} "
+              set -e
+
+              cd gns3-vm
+
+              if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
+              then
+                ./release_hyperv.sh ${GNS3_VERSION} GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip
+              fi
+            "
+
+#      - run:
+#          name: Release KVM VM
+#          command: |
+#            ssh root@${DEVICE_IP} "
+#              set -e
+#
+#              cd gns3-vm
+#
+#              if [ ! -e \"GNS3.VM.KVM.${GNS3_NUMBER}.zip\" ];
+#              then
+#                ./release_kvm.sh ${GNS3_VERSION}
+#              fi
+#            "
 
       - run:
           name: Release VMWare ESXI VM
@@ -294,9 +294,9 @@ workflows:
               only: /v.*/
             branches:
               ignore: /.*/
-      - arm64-build:
-          filters:
-            tags:
-              only: /v.*/
-            branches:
-              ignore: /.*/
+#      - arm64-build:
+#          filters:
+#            tags:
+#              only: /v.*/
+#            branches:
+#              ignore: /.*/

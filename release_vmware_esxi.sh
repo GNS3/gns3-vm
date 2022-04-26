@@ -16,17 +16,16 @@ then
 fi
 
 #export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
-#FIXME: force to 2.2
-export GNS3_RELEASE_CHANNEL="2.2"
+#FIXME: force to 3.0
+export GNS3_RELEASE_CHANNEL="3.0"
 
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
 if [[ ! -f "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" ]]
 then
-    export GNS3VM_URL="https://github.com/GNS3/gns3-gui/releases/download/v${GNS3_VERSION}/GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip"
-    echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
-    curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip"
+    echo "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip does not exist"
+    exit 1
 fi
 
 unzip -p "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" "GNS3 VM.ova" > "/tmp/GNS3VM.VMWare.${GNS3_VERSION}.ova"
@@ -39,4 +38,4 @@ python3 ../workstation_to_esxi.py "/tmp/GNS3VM.VMWare.${GNS3_VERSION}.ova" "GNS3
 zip -9 "../GNS3.VM.VMware.ESXI.${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 cd ..
-rm -Rf output-*
+rm -Rf output-esxi

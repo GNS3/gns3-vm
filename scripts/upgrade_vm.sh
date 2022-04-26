@@ -50,9 +50,3 @@ sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 755 "/usr/local/bin/gns3welcome.py"
 
 set +e
-
-#if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.14' ]
-#then
-#    # upgrade the VM
-#    echo -n '0.10.14' > /home/gns3/.config/GNS3/gns3vm_version
-#fi

@@ -19,7 +19,7 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-export BRANCH="focal-stable"
+export BRANCH="jammy-stable"
 export UNSTABLE_APT="0"
 export PYPI_GNS3SERVER_JSON_URL="https://pypi.org/pypi/gns3-server/json"
 

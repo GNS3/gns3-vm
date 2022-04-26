@@ -1,0 +1,31 @@
+#cloud-config
+hostname: gns3vm
+package_upgrade: true
+users:
+  - name: gns3
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    home: /home/gns3
+    shell: /bin/bash
+    lock_passwd: false
+ssh_pwauth: true
+disable_root: false
+chpasswd:
+  list: |
+    gns3:gns3
+  expire: false
+
+packages:
+  - nano
+  - curl
+  - software-properties-common
+
+runcmd:
+  # never upgrade to the next Ubuntu version
+  - sed -ie 's/Prompt=lts/Prompt=never/' /etc/update-manager/release-upgrades
+  # use the old network device names (eth0, eth1 etc.)
+  - [ sh, -c, "echo 'network: {config: disabled}' > /etc/cloud/cloud.cfg.d/99-custom-networking.cfg" ]
+  - rm /etc/netplan/50-cloud-init.yaml
+  - sed -ie 's/GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"/' /etc/default/grub
+  - update-grub
+

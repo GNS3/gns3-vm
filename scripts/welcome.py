@@ -194,12 +194,12 @@ def upgrade(force=False):
     if match:
         # development release (unstable)
         releases = get_all_releases(match.group(1), dev=True)
-        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/focal-unstable/scripts/upgrade_{}.sh".format(release_channel)
+        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/jammy-unstable/scripts/upgrade_{}.sh".format(release_channel)
         choices.append((match.group(1), "Latest development version on {} branch".format(match.group(1))))
     else:
         # current release (stable)
         releases = get_all_releases(release_channel)
-        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/focal-stable/scripts/upgrade_{}.sh".format(release_channel)
+        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/jammy-stable/scripts/upgrade_{}.sh".format(release_channel)
 
     if releases is None:
         return
@@ -400,10 +400,10 @@ def qemu():
     """
 
     code, version = d.menu("Select the Qemu version to install",
-                            choices=[("4.2.1", "Qemu version 4.2.1")])
+                            choices=[("6.2.0", "Qemu version 6.2.0")])
     d.clear()
     if code == Dialog.OK:
-        d.infobox("Qemu version 4.2.1 is already installed and there is currently no backported version available")
+        d.infobox("Qemu version 6.2.0 is already installed and there is currently no backported version available")
         # script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/focal-stable/scripts/qemu.sh"
         # ret = os.system("curl -Lk {url} > /tmp/qemu.sh && bash -x /tmp/qemu.sh {version}".format(url=script_url,
         #                                                                                          version=version))
@@ -483,7 +483,13 @@ def kvm_support():
     Returns true if KVM is supported.
     """
 
-    return subprocess.call("kvm-ok") == 0
+    if os.path.exists("/tmp/kvm-detected"):
+        return True
+    result = subprocess.call("kvm-ok") == 0
+    if result is True:
+        with open("/tmp/kvm-detected", "w+") as f:
+            f.write("1")
+    return result
 
 
 def ubuntu_version():
@@ -549,6 +555,8 @@ def kvm_control():
                     os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
     except configparser.NoSectionError:
         return
+
+
 
 
 vm_information()
