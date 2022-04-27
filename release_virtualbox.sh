@@ -22,9 +22,7 @@ then
     exit 1
 fi
 
-export GNS3_RELEASE_CHANNEL="3.0"
-echo "Build VM for GNS3 $GNS3_VERSION"
-echo "Release channel: $GNS3_RELEASE_CHANNEL"
+echo "Building VirtualBox VM for GNS3 $GNS3_VERSION"
 
 # Build the VM based on the VMware OVA
 unzip -o $GNS3_VM_FILE
