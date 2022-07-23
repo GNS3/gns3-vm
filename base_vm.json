@@ -71,7 +71,7 @@
          "accelerator": "kvm",
          "net_device": "virtio-net-pci",
          "iso_url" : "https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img",
-         "iso_checksum" : "sha256:6780aeeeb65d57b9f794b54c8b5a6f15066f4c5a03ac868af0dacf49c6bd5f2c",
+         "iso_checksum" : "file:http://cloud-images.ubuntu.com/jammy/current/SHA256SUMS",
          "cpus": "{{user `cpus`}}",
          "memory": "{{user `memory`}}",
          "cd_files": ["./cloud-init/meta-data", "./cloud-init/user-data"],
