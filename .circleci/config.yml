@@ -155,7 +155,7 @@ jobs:
             ssh root@${DEVICE_IP} "bash script.sh"
 
       - run:
-          name: Install Packer for amd64 & Qemu utils
+          name: Install Packer for amd64 & Qemu
           command: |
             ssh root@${DEVICE_IP} "
               set -e
@@ -166,7 +166,7 @@ jobs:
               fi
 
               unzip -o /tmp/packer.zip -d /usr/local/bin/
-              apt install -y qemu-utils
+              apt install -y qemu-utils qemu-system-x86 qemu-kvm
             "
 
       - run:
