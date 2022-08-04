@@ -179,7 +179,8 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_vmware.sh ${GNS3_VERSION}
+                ./build_base_vm.sh
+                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.Base.$(cat version).zip
               fi
             "
 
