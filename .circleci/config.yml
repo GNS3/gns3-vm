@@ -166,7 +166,7 @@ jobs:
               fi
 
               unzip -o /tmp/packer.zip -d /usr/local/bin/
-              apt install -y qemu-utils qemu-system-x86 qemu-kvm
+              apt install -y genisoimage qemu-utils qemu-system-x86 qemu-kvm
             "
 
       - run:
