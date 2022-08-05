@@ -162,7 +162,7 @@ jobs:
 
               if [ ! -f "/tmp/packer.zip" ]
               then
-                wget https://releases.hashicorp.com/packer/1.8.0/packer_1.8.0_linux_amd64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.8.3/packer_1.8.3_linux_amd64.zip -O /tmp/packer.zip
               fi
 
               unzip -o /tmp/packer.zip -d /usr/local/bin/
