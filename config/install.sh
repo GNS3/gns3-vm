@@ -241,7 +241,7 @@ chown root:root /lib/systemd/system/gns3vm.service
 systemctl enable gns3vm
 
 # Install SNMP agent but disable on boot
-apt install snmpd
+apt install -y snmpd
 systemctl disable snmpd
 
 # Restart systemd services
