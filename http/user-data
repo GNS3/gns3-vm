@@ -1,0 +1,39 @@
+#cloud-config
+autoinstall:
+    version: 1
+    early-commands:
+        # workaround to stop ssh for packer as it thinks it timed out
+        - sudo systemctl stop ssh
+    locale: en_US
+    keyboard:
+        layout: en
+        variant: us
+    network:
+        version: 2
+        ethernets:
+            eth0:
+              dhcp4: true
+              dhcp-identifier: mac
+    identity:
+        hostname: gns3vm
+        password: '$6$rounds=4096$FPXWkTjzs1F9$OpKJGjeLdWtX9Ke3QfAOTD07RwquxVlwNHHvn0gAAtr7Uo9IwK23BJt/mN27EFT4IAxSJxSXLmK7TDs93NlhE.'
+        username: gns3
+    ssh:
+        install-server: yes
+    storage:
+        swap:
+            size: 0
+        layout:
+            name: direct
+            match:
+                size: smallest
+    debconf-selections: |
+        base-installer/kernel/override-image    string    linux-virtual
+        base-installer/kernel/headers    boolean    false
+        tasksel    tasksel/first    multiselect    standard
+    user-data:
+        disable_root: false
+    late-commands:
+        - echo 'gns3 ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/gns3
+        - sed -ie 's/GRUB_CMDLINE_LINUX=.*/GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"/' /target/etc/default/grub
+        - curtin in-target --target /target update-grub2

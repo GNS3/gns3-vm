@@ -9,10 +9,9 @@
       "disk_size": "20000",
       "data_disk": "500000",
       "iso_checksum_type": "sha256",
-      "iso_checksum": "f11bda2f2caed8f420802b59f382c25160b114ccc665dbac9c5046e7fceaced2",
-      "iso_url": "http://cdimage.ubuntu.com/ubuntu-legacy-server/releases/20.04/release/ubuntu-20.04.1-legacy-server-amd64.iso",
-      "gns3_version": "{{env `GNS3_VERSION`}}",
-      "boot_command_prefix": "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>"
+      "iso_checksum": "28ccdb56450e643bad03bb7bcf7507ce3d8d90e8bf09e38f6bd9ac298a98eaad",
+      "iso_url": "https://releases.ubuntu.com/20.04/ubuntu-20.04.4-live-server-amd64.iso",
+      "gns3_version": "{{env `GNS3_VERSION`}}"
    },
    "provisioners" : [
       {
@@ -28,7 +27,7 @@
       {
          "type" : "shell",
          "script" : "scripts/setup_ubuntu.sh",
-         "execute_command" : "echo  {{user `ssh_name`}} | {{ .Vars }} sudo -E -S sh '{{ .Path }}'"
+         "execute_command" : "echo  {{user `ssh_name`}} | {{ .Vars }} sudo -E -S bash '{{ .Path }}'"
       },
       {
          "type" : "shell",
@@ -46,13 +45,13 @@
       {
          "type": "shell",
          "script" : "scripts/reboot.sh",
-         "only": ["virtualbox-iso"],
+         "only": ["virtualbox-iso", "qemu"],
          "expect_disconnect": true
       },
       {
          "type": "shell",
          "pause_before": "30s",
-         "only": ["virtualbox-iso"],
+         "only": ["virtualbox-iso", "qemu"],
          "scripts": [
             "scripts/splashscreen.sh",
             "scripts/cleaner.sh"
@@ -62,9 +61,9 @@
    "builders" : [
        {
          "type" : "virtualbox-iso",
-         "ssh_wait_timeout" : "120m",
-         "ssh_timeout" : "15m",
-         "boot_wait" : "20s",
+         "ssh_timeout": "10m",
+         "ssh_handshake_attempts": "20",
+         "boot_wait" : "10s",
          "disk_size" : "{{user `disk_size`}}",
          "iso_checksum_type" : "{{user `iso_checksum_type`}}",
          "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
@@ -166,21 +165,9 @@
          "iso_checksum" : "{{user `iso_checksum`}}",
          "ssh_password" : "{{user `ssh_pass`}}",
          "boot_command": [
-            "{{ user `boot_command_prefix` }}",
-            "/install/vmlinuz noapic ",
-            "initrd=/install/initrd.gz ",
-            "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-            "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-            "hostname={{ user `hostname` }} ",
-            "grub-installer/bootdev=/dev/sda<wait> ",
-            "fb=false debconf/frontend=noninteractive ",
-            "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-            "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
-            "passwd/user-fullname={{ user `ssh_fullname` }} ",
-            "passwd/user-password={{ user `ssh_password` }} ",
-            "passwd/user-password-again={{ user `ssh_password` }} ",
-            "passwd/username={{ user `ssh_username` }} ",
-            "-- <enter>"
+            "<enter><enter><f6><esc><wait> ",
+            "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+            "<enter>"
          ],
          "guest_additions_mode" : "disable",
          "guest_os_type": "Ubuntu_64",
@@ -188,12 +175,13 @@
       },
       {
          "type" : "vmware-iso",
-         "boot_wait" : "20s",
+         "boot_wait" : "5s",
          "disk_size": "{{user `disk_size`}}",
          "disk_additional_size": ["{{user `data_disk`}}"],
          "disk_type_id" : 0,
          "guest_os_type": "ubuntu-64",
-         "ssh_timeout" : "10m",
+         "ssh_timeout": "10m",
+         "ssh_handshake_attempts": "20",
          "vm_name" : "GNS3 VM",
          "vmdk_name": "GNS3 VM",
          "http_directory" : "http",
@@ -212,26 +200,44 @@
          "shutdown_timeout": "60m",
          "ssh_username" : "{{user `ssh_name`}}",
          "ssh_password" : "{{user `ssh_pass`}}",
-         "ssh_port": 22,
          "boot_command": [
-            "{{ user `boot_command_prefix` }}",
-            "/install/vmlinuz noapic ",
-            "initrd=/install/initrd.gz ",
-            "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-            "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-            "hostname={{ user `hostname` }} ",
-            "grub-installer/bootdev=/dev/sda<wait> ",
-            "fb=false debconf/frontend=noninteractive ",
-            "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-            "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
-            "passwd/user-fullname={{ user `ssh_fullname` }} ",
-            "passwd/user-password={{ user `ssh_password` }} ",
-            "passwd/user-password-again={{ user `ssh_password` }} ",
-            "passwd/username={{ user `ssh_username` }} ",
-            "-- <enter>"
+            "<enter><enter><f6><esc><wait> ",
+            "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+            "<enter>"
          ],
          "skip_compaction": true,
          "iso_url" : "{{user `iso_url`}}"
+      },
+      {
+         "type": "qemu",
+         "vm_name" : "GNS3 VM",
+         "qemu_binary": "qemu-system-aarch64",
+         "disk_compression": true,
+         "disk_image": true,
+         "headless": true,
+         "net_device": "virtio-net-pci",
+         "iso_url" : "{{user `iso_url`}}",
+         "iso_checksum" : "{{user `iso_checksum`}}",
+         "iso_checksum_type": "{{user `iso_checksum_type`}}",
+         "use_default_display": true,
+         "http_directory": "http",
+         "qemuargs": [
+                ["-drive", "file=gns3vm-disk1.qcow2,if=virtio,format=qcow2,cache=none"],
+                ["-drive", "file=gns3vm-disk2.qcow2,if=virtio,format=qcow2,cache=none"],
+                ["-serial", "file:serial.out"],
+                ["-machine", "virt,gic-version=3,accel=kvm"],
+                ["-cpu", "max"],
+                ["-smp", "8"],
+                ["-m", "4096"],
+                ["-bios", "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd"],
+                ["-boot", "strict=off"]
+         ],
+         "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+         "shutdown_timeout": "20m",
+         "ssh_username" : "{{user `ssh_name`}}",
+         "ssh_password" : "{{user `ssh_pass`}}",
+         "ssh_timeout": "20m",
+         "ssh_handshake_attempts": "20"
       }
    ]
 }
