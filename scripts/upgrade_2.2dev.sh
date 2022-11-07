@@ -49,9 +49,9 @@ fi
 
 if  [[ -z "$HTTP_PROXY" ]]
 then
-  sudo -H pip3 install -U -r requirements.txt
+  sudo -H python3 -m pip install -U -r requirements.txt
 else
-  sudo -H pip3 --proxy $HTTP_PROXY install -U -r requirements.txt
+  sudo -H python3 -m pip --proxy $HTTP_PROXY install -U -r requirements.txt
 fi
 
 sudo python3 -m pip install .

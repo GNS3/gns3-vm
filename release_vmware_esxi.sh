@@ -15,11 +15,7 @@ then
     exit 1
 fi
 
-#export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
-#FIXME: force to 3.0
-export GNS3_RELEASE_CHANNEL="3.0"
-
-echo "Build VM for GNS3 $GNS3_VERSION"
+echo "Building ESXi VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
 if [[ ! -f "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" ]]

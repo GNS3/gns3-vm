@@ -47,7 +47,7 @@ commands:
               then
                 git clone https://github.com/GNS3/gns3-vm.git
                 cd gns3-vm
-                git checkout $CIRCLE_BRANCH
+                git checkout jammy-stable
               fi
             "
 
@@ -155,18 +155,18 @@ jobs:
             ssh root@${DEVICE_IP} "bash script.sh"
 
       - run:
-          name: Install Packer for amd64 & Qemu utils
+          name: Install Packer for amd64 & Qemu
           command: |
             ssh root@${DEVICE_IP} "
               set -e
 
               if [ ! -f "/tmp/packer.zip" ]
               then
-                wget https://releases.hashicorp.com/packer/1.8.0/packer_1.8.0_linux_amd64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.8.3/packer_1.8.3_linux_amd64.zip -O /tmp/packer.zip
               fi
 
               unzip -o /tmp/packer.zip -d /usr/local/bin/
-              apt install -y qemu-utils
+              apt install -y genisoimage qemu-utils qemu-system-x86 qemu-kvm
             "
 
       - run:
@@ -179,7 +179,8 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_vmware.sh ${GNS3_VERSION}
+                ./build_base_vm.sh
+                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.Base.$(cat version).zip
               fi
             "
 
