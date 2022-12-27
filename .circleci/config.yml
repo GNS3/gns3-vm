@@ -147,7 +147,7 @@ jobs:
 
               chmod a+x /tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle
 
-              /tmp/VMware-Workstation-16.2.5-20904516.x86_64 --eulas-agreed --required --console
+              /tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle --eulas-agreed --required --console
               /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_16_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
