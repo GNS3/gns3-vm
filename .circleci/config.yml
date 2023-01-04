@@ -113,7 +113,7 @@ jobs:
     executor: docker-executor
 
     environment:
-        DEVICE_TYPE: c3.small.x86
+        DEVICE_TYPE: m3.small.x86
 
     steps:
       - checkout
@@ -271,6 +271,7 @@ jobs:
 
       - run:
           name: Release QEMU ARM64 VM
+          no_output_timeout: 15m
           command: |
             ssh root@${DEVICE_IP} "
               set -e
