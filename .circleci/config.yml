@@ -295,12 +295,12 @@ workflows:
       - x86-build:
           filters:
             tags:
-              only: /v.*/
+              only: /v2.*/
             branches:
               ignore: /.*/
       - arm64-build:
           filters:
             tags:
-              only: /v.*/
+              only: /v2.*/
             branches:
               ignore: /.*/
