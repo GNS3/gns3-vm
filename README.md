@@ -40,7 +40,7 @@ If you want to install GNS3 you need to unzip the OVA and run:
 ./release_virtualbox.sh 1.4.0 GNS3\ VM.ova
 ```
 
-### VMware
+### VMware
 
 Run:
 ```
