@@ -57,6 +57,7 @@
             "scsi0:1.present": "TRUE",
             "scsi0:1.fileName": "{{pwd}}/gns3vm-disk2.vmdk",
             "vhv.enable": "TRUE",
+            "disk.enableUUID": "TRUE",
             "hints.hideAll": "TRUE",
             "msg.noOk": "TRUE"
          },
