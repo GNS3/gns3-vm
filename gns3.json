@@ -191,6 +191,7 @@
             "cpuid.coresPerSocket" : "{{user `cores`}}",
             "numvcpus": "{{user `cpus`}}",
             "vhv.enable": "TRUE",
+            "disk.enableUUID": "TRUE",
             "hints.hideAll": "TRUE",
             "msg.noOk": "TRUE"
          },
