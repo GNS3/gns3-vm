@@ -56,7 +56,7 @@ def get():
             project_id=gns3_project.id,
             hostname=GNS3_HOSTNAME,
             plan=server_type,
-            facility='any',
+            metro='any',
             operating_system="ubuntu_22_04")
 
     # wait max 20 min for being active
