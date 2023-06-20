@@ -54,9 +54,8 @@ fi
 set +e
 
 # Configure the GNS3 server
-export GNS3_MAJOR_VERSION=$(echo ${GNS3_VERSION} | egrep -o '^[0-9]+.[0-9]+')
-mkdir -p ~/.config/GNS3/${GNS3_MAJOR_VERSION}
-cat > ~/.config/GNS3/${GNS3_MAJOR_VERSION}/gns3_server.conf << EOF
+mkdir -p "/opt/gns3/server"
+cat > "/opt/gns3/server/gns3_server.conf" << EOF
 [Server]
 host = 0.0.0.0
 port = 80
