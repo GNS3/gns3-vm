@@ -63,6 +63,8 @@
          },
         "vmx_data_post":
           {
+            "vhv.enable": "TRUE",
+            "disk.enableUUID": "TRUE",
             "ethernet0.present": "TRUE",
             "ethernet0.startConnected": "TRUE",
             "ethernet0.connectionType": "hostonly",
