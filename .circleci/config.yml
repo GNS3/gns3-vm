@@ -113,7 +113,7 @@ jobs:
     executor: docker-executor
 
     environment:
-        DEVICE_TYPE: c3.small.x86
+        DEVICE_TYPE: m3.small.x86
 
     steps:
       - checkout
@@ -139,15 +139,15 @@ jobs:
             echo "
               set -e
 
-              if [ ! -f "/tmp/VMware-Workstation-16.2.3-19376536.x86_64.bundle" ]
+              if [ ! -f "/tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle.tar" ]
               then
-                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/16.2.3/19376536/linux/core/VMware-Workstation-16.2.3-19376536.x86_64.bundle.tar -O /tmp/VMWare.bundle.tar
+                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/16.2.5/20904516/linux/core/VMware-Workstation-16.2.5-20904516.x86_64.bundle.tar -O /tmp/VMWare.bundle.tar
                 tar xvvf /tmp/VMWare.bundle.tar -C /tmp/
               fi
 
-              chmod a+x /tmp/VMware-Workstation-16.2.3-19376536.x86_64.bundle
+              chmod a+x /tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle
 
-              /tmp/VMware-Workstation-16.2.3-19376536.x86_64.bundle --eulas-agreed --required --console
+              /tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle --eulas-agreed --required --console
               /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_16_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
@@ -271,6 +271,7 @@ jobs:
 
       - run:
           name: Release QEMU ARM64 VM
+          no_output_timeout: 15m
           command: |
             ssh root@${DEVICE_IP} "
               set -e
@@ -292,12 +293,12 @@ workflows:
       - x86-build:
           filters:
             tags:
-              only: /v.*/
+              only: /v3.*/
             branches:
               ignore: /.*/
 #      - arm64-build:
 #          filters:
 #            tags:
-#              only: /v.*/
+#              only: /v3.*/
 #            branches:
 #              ignore: /.*/
