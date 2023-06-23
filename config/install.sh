@@ -80,6 +80,9 @@ echo \
 
 apt update
 
+# Python
+apt install -y python3-dev python3-setuptools
+
 # Install jq for upgrades
 apt install -y jq
 
@@ -88,9 +91,6 @@ apt install -y virt-what
 
 # Autologin
 apt install -y mingetty
-
-# Python
-apt install -y python3-dev python3-setuptools
 
 # For the NAT node
 apt install -y libvirt-daemon-system
