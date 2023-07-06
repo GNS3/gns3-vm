@@ -41,6 +41,7 @@ else
   sudo add-apt-repository -y --remove ppa:canonical-server/server-backports
 fi
 
+sudo apt-mark unhold libvirt-daemon-system
 sudo apt-get purge -y "qemu*"
 sudo apt-get update
 sudo apt-get install -y qemu-system-x86 qemu-kvm

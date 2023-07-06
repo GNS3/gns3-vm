@@ -90,3 +90,7 @@ sudo e4defrag / &>/dev/null
 
 # Setup zerofree for disk compaction
 sudo bash /usr/local/bin/zerofree
+
+# Unhold previously held packages
+sudo apt-mark unhold libvirt-daemon-system
+sudo apt-mark unhold tigervnc-standalone-server
