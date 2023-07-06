@@ -28,22 +28,22 @@ fi
 
 if [[ -z "$1" ]]
 then
-  # default Qemu version is 3.1.0
-  TAG="3.1.0"
+  # default Qemu version is 4.2.1
+  TAG="4.2.1"
 else
   TAG=$1
 fi
 
-if [[ "$TAG" == "3.1.0" ]]
+if [[ "$TAG" != "4.2.1" ]]
 then
-  sudo -E add-apt-repository -y ppa:gns3/qemu
+  sudo -E add-apt-repository -y ppa:canonical-server/server-backports
 else
-  sudo add-apt-repository -y --remove ppa:gns3/qemu
+  sudo add-apt-repository -y --remove ppa:canonical-server/server-backports
 fi
 
 sudo apt-get purge -y "qemu*"
 sudo apt-get update
-sudo apt-get install -y qemu-system-x86 qemu-kvm cpulimit
+sudo apt-get install -y qemu-system-x86 qemu-kvm
 sudo usermod -aG kvm gns3
 echo "Qemu version $TAG has been installed"
 sleep 10

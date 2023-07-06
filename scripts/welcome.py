@@ -400,19 +400,20 @@ def qemu():
     """
 
     code, version = d.menu("Select the Qemu version to install",
-                            choices=[("4.2.1", "Qemu version 4.2.1")])
+                            choices=[("4.2.1", "Qemu version 4.2.1"),
+                                     ("7.0", "Qemu version 7.0")])
     d.clear()
     if code == Dialog.OK:
         d.infobox("Qemu version 4.2.1 is already installed and there is currently no backported version available")
-        # script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/focal-stable/scripts/qemu.sh"
-        # ret = os.system("curl -Lk {url} > /tmp/qemu.sh && bash -x /tmp/qemu.sh {version}".format(url=script_url,
-        #                                                                                          version=version))
-        # if ret != 0:
-        #     print("Could not install Qemu version {version}".format(version=version))
-        # elif not os.path.exists(os.path.expanduser("~/.config/GNS3/qemu_version")):
-        #     os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
-        #     with open(os.path.expanduser("~/.config/GNS3/qemu_version"), "w+") as f:
-        #         f.write(version)
+        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/focal-stable/scripts/qemu.sh"
+        ret = os.system("curl -Lk {url} > /tmp/qemu.sh && bash -x /tmp/qemu.sh {version}".format(url=script_url,
+                                                                                                 version=version))
+        if ret != 0:
+            print("Could not install Qemu version {version}".format(version=version))
+        elif not os.path.exists(os.path.expanduser("~/.config/GNS3/qemu_version")):
+            os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
+            with open(os.path.expanduser("~/.config/GNS3/qemu_version"), "w+") as f:
+                f.write(version)
 
 
 def log():
