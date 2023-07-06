@@ -26,7 +26,7 @@ if [[ ! -f "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" ]]
 then
     export GNS3VM_URL="https://github.com/GNS3/gns3-gui/releases/download/v${GNS3_VERSION}/GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
-    curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip"
+    curl -Lk --http1.1 "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip"
 fi
 
 unzip -p "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" "GNS3 VM.ova" > "/tmp/GNS3VM.VMWare.${GNS3_VERSION}.ova"

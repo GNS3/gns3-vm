@@ -7,7 +7,7 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: cimg/python:3.6
+      - image: cimg/python:3.7
     resource_class: small
     working_directory: ~/repo
 
@@ -113,7 +113,7 @@ jobs:
     executor: docker-executor
 
     environment:
-        DEVICE_TYPE: c3.small.x86
+        DEVICE_TYPE: m3.small.x86
 
     steps:
       - checkout
@@ -139,15 +139,15 @@ jobs:
             echo "
               set -e
 
-              if [ ! -f "/tmp/VMware-Workstation-16.2.3-19376536.x86_64.bundle" ]
+              if [ ! -f "/tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle.tar" ]
               then
-                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/16.2.3/19376536/linux/core/VMware-Workstation-16.2.3-19376536.x86_64.bundle.tar -O /tmp/VMWare.bundle.tar
+                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/16.2.5/20904516/linux/core/VMware-Workstation-16.2.5-20904516.x86_64.bundle.tar -O /tmp/VMWare.bundle.tar
                 tar xvvf /tmp/VMWare.bundle.tar -C /tmp/
               fi
 
-              chmod a+x /tmp/VMware-Workstation-16.2.3-19376536.x86_64.bundle
+              chmod a+x /tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle
 
-              /tmp/VMware-Workstation-16.2.3-19376536.x86_64.bundle --eulas-agreed --required --console
+              /tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle --eulas-agreed --required --console
               /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_16_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
@@ -178,7 +178,8 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_virtualbox.sh ${GNS3_VERSION}
+                ./virtualbox.sh
+                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.15.0.zip
               fi
             "
 
@@ -192,7 +193,7 @@ jobs:
 
               if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_hyperv.sh ${GNS3_VERSION}
+                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.15.0.zip
               fi
             "
 
@@ -221,7 +222,8 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_vmware.sh ${GNS3_VERSION}
+                ./vmware.sh
+                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.15.0.zip
               fi
             "
 
@@ -270,6 +272,7 @@ jobs:
 
       - run:
           name: Release QEMU ARM64 VM
+          no_output_timeout: 15m
           command: |
             ssh root@${DEVICE_IP} "
               set -e
@@ -279,7 +282,8 @@ jobs:
               if [ ! -e \"GNS3.VM.ARM64.${GNS3_NUMBER}.zip\" ];
               then
                 apt install -y qemu-utils qemu-system-arm qemu-efi-aarch64
-                ./release_qemu_arm64.sh ${GNS3_VERSION}
+                ./qemu_arm64.sh
+                ./release_qemu_arm64.sh ${GNS3_VERSION} GNS3VM.ARM64.0.15.0.zip
               fi
             "
 
@@ -291,12 +295,12 @@ workflows:
       - x86-build:
           filters:
             tags:
-              only: /v.*/
+              only: /v2.*/
             branches:
               ignore: /.*/
       - arm64-build:
           filters:
             tags:
-              only: /v.*/
+              only: /v2.*/
             branches:
               ignore: /.*/

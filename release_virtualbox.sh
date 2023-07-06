@@ -27,13 +27,13 @@ export GNS3_SRC="/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.ova"
 
 if [[ "$GNS3_VM_FILE" == "" ]]
 then
-    export GNS3VM_VERSION="0.13.0" # `python last_vm_version.py`
+    export GNS3VM_VERSION="0.15.0" # `python last_vm_version.py`
     export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
     if [[ ! -f "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip" ]]
     then
         echo "Downloading $GNS3VM_URL"
-        curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"
+        curl -Lk --http1.1 "$GNS3VM_URL" > "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"
     fi
 else
     echo "GNS3 VM file: $GNS3_VM_FILE"
