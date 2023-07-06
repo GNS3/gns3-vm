@@ -44,7 +44,7 @@ fi
 sudo apt-mark unhold libvirt-daemon-system
 sudo apt-get purge -y "qemu*"
 sudo apt-get update
-sudo apt-get install -y qemu-system-x86 qemu-kvm
+sudo apt-get install -y qemu-system-x86
 sudo usermod -aG kvm gns3
 echo "Qemu version $TAG has been installed"
 sleep 10
