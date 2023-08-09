@@ -38,6 +38,7 @@ if [[ "$TAG" != "4.2.1" ]]
 then
   sudo -E add-apt-repository -y ppa:canonical-server/server-backports
 else
+  # Get backports from https://launchpad.net/~canonical-server/+archive/ubuntu/server-backports/
   sudo add-apt-repository -y --remove ppa:canonical-server/server-backports
 fi
 
