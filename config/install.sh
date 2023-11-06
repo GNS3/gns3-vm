@@ -164,14 +164,14 @@ chown root:root /etc/sysctl.d/50-qlen_gns3.conf
 # Setup netplan
 cp "gns3vm_default_netcfg.yaml" "/etc/netplan/80_gns3vm_default_netcfg.yaml"
 chown root:root /etc/netplan/80_gns3vm_default_netcfg.yaml
-chmod 644 /etc/netplan/80_gns3vm_default_netcfg.yaml
+chmod 600 /etc/netplan/80_gns3vm_default_netcfg.yaml
 
 # Do not overwrite user static network config
 if [[ ! -f "/etc/netplan/90_gns3vm_static_netcfg.yaml" ]]
 then
     cp "gns3vm_static_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
     chown root:root /etc/netplan/90_gns3vm_static_netcfg.yaml
-    chmod 644 /etc/netplan/90_gns3vm_static_netcfg.yaml
+    chmod 600 /etc/netplan/90_gns3vm_static_netcfg.yaml
 fi
 
 #netplan apply
@@ -246,6 +246,9 @@ systemctl enable gns3vm
 # Install SNMP agent but disable on boot
 apt install -y snmpd
 systemctl disable snmpd
+
+# Disable cloud-init
+touch /etc/cloud/cloud-init.disabled
 
 # Restart systemd services
 #systemctl daemon-reload
