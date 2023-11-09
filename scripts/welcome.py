@@ -389,7 +389,6 @@ def set_security():
         if ret != 0:
             d.msgbox("Could not set up SSL encryption")
         else:
-            d.infobox("SSL self-signed certificate created in '/opt/gns3/server/ssl'")
             if not config.has_section("Server"):
                 config.add_section("Server")
             config.set("Server", "protocol", "https")
@@ -397,6 +396,8 @@ def set_security():
             config.set("Server", "port", 443)
             config.set("Server", "certfile", certfile)
             config.set("Server", "certkey", certkey)
+            os.system("sudo service gns3 stop")
+            d.infobox("SSL configured with self-signed certificate created in '/opt/gns3/server/ssl'")
     write_config(config)
 
 def reset_password():
@@ -406,8 +407,9 @@ def reset_password():
 
     if d.yesno("Do you want to reset the admin password for the GNS3 controller?") == d.OK:
         # sqlite3 gns3_controller.db "UPDATE users SET hashed_password = null WHERE username = 'admin';"
-        hashed_password = pwd_context.hash(password)
+        hashed_password = pwd_context.hash("admin")
         os.system('sqlite3 /opt/gns3/server/gns3_controller.db "UPDATE users SET hashed_password = {} WHERE username = admin;"'.format(hashed_password))
+        d.infobox("Admin password has been reset to 'admin'")
 
 def qemu():
     """
