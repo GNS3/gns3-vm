@@ -98,6 +98,9 @@ apt install -y mingetty
 # For the NAT node
 apt install -y libvirt-daemon-system
 
+# For admin password reset in the controller database
+apt install -y sqlite3
+
 ##################
 ## Qemu support ##
 ##################
