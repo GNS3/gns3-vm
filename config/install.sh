@@ -59,6 +59,10 @@ EOF
 
 fi
 
+# Select the best APT mirror
+python3 -m pip install -U apt-smart
+apt-smart -a
+
 # Activate i386 for IOU support
 dpkg --add-architecture i386
 
@@ -78,9 +82,6 @@ echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-# Select the best APT mirror
-python3 -m pip install -U apt-smart
-apt-smart -a
 
 # Fix upgrade error "ModuleNotFoundError: No module named 'debian'"
 apt install --reinstall python3-debian
