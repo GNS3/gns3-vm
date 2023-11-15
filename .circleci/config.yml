@@ -30,7 +30,7 @@ commands:
 
       - run:
           name: Get builder device
-          no_output_timeout: 15m
+          no_output_timeout: 20m
           command: |
             source env/bin/activate
             DEVICE_IP=`python3 .circleci/device.py ${EQUINIX_TOKEN} get "${EQUINIX_PROJECT}" ${DEVICE_TYPE}`
