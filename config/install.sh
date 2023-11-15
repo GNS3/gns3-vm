@@ -62,12 +62,12 @@ fi
 # Activate i386 for IOU support
 dpkg --add-architecture i386
 
-# Python
-apt install -y python3-dev python3-setuptools
-
 # Select the best APT mirror
-python3 -m pip install -U apt-smart
-apt-smart -a
+if [[ $(which pip3) ]]
+then
+  sudo -H python3 -m pip install -U apt-smart
+  apt-smart -a
+fi
 
 # use sudo -E to preserve proxy config
 if [[ "$UNSTABLE_APT" == "1" ]]
@@ -85,10 +85,11 @@ echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-
 # Fix upgrade error "ModuleNotFoundError: No module named 'debian'"
 apt install --reinstall python3-debian
 
+# Python
+apt install -y python3-dev python3-setuptools
 
 # Install jq for upgrades
 apt install -y jq
