@@ -59,12 +59,15 @@ EOF
 
 fi
 
+# Activate i386 for IOU support
+dpkg --add-architecture i386
+
+# Python
+apt install -y python3-dev python3-setuptools
+
 # Select the best APT mirror
 python3 -m pip install -U apt-smart
 apt-smart -a
-
-# Activate i386 for IOU support
-dpkg --add-architecture i386
 
 # use sudo -E to preserve proxy config
 if [[ "$UNSTABLE_APT" == "1" ]]
@@ -86,8 +89,6 @@ echo \
 # Fix upgrade error "ModuleNotFoundError: No module named 'debian'"
 apt install --reinstall python3-debian
 
-# Python
-apt install -y python3-dev python3-setuptools
 
 # Install jq for upgrades
 apt install -y jq
