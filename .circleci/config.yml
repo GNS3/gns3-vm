@@ -33,7 +33,7 @@ commands:
           no_output_timeout: 20m
           command: |
             source env/bin/activate
-            DEVICE_IP=`python3 .circleci/device.py ${EQUINIX_TOKEN} get "${EQUINIX_PROJECT}" ${DEVICE_TYPE}`
+            DEVICE_IP=`python3 .circleci/device.py ${EQUINIX_TOKEN} get "${EQUINIX_PROJECT}" ${DEVICE_TYPE} ${METRO}`
             echo "export DEVICE_IP=\"$DEVICE_IP\"" >> $BASH_ENV
             echo "Obtained device on $DEVICE_IP"
             ssh-keyscan -H ${DEVICE_IP} >> ~/.ssh/known_hosts
@@ -65,7 +65,7 @@ commands:
           when: always
           command: |
             source env/bin/activate
-            python3 .circleci/device.py ${EQUINIX_TOKEN} destroy "${EQUINIX_PROJECT}" ${DEVICE_TYPE}
+            python3 .circleci/device.py ${EQUINIX_TOKEN} destroy "${EQUINIX_PROJECT}" ${DEVICE_TYPE} ${METRO}
 
       - run:
           name: Generate SHA256 checksums
@@ -113,7 +113,8 @@ jobs:
     executor: docker-executor
 
     environment:
-        DEVICE_TYPE: m3.small.x86
+        DEVICE_TYPE: c3.small.x86 # m3.small.x86
+        METRO: sv # Silicon Valley
 
     steps:
       - checkout
@@ -249,6 +250,7 @@ jobs:
 
     environment:
         DEVICE_TYPE: c3.large.arm
+        METRO: da # Dallas
 
     steps:
       - checkout
