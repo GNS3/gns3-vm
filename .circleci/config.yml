@@ -113,7 +113,7 @@ jobs:
     executor: docker-executor
 
     environment:
-        DEVICE_TYPE: c3.small.x86 # m3.small.x86
+        DEVICE_TYPE: m3.small.x86
         METRO: sv # Silicon Valley
 
     steps:
