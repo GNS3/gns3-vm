@@ -27,6 +27,7 @@ token = sys.argv[1]
 action = sys.argv[2]
 packet_project = sys.argv[3]
 server_type = sys.argv[4]
+metro = sys.argv[5]
 
 GNS3_HOSTNAME = 'gns3-vm-builder-{}'.format(server_type)
 
@@ -56,7 +57,7 @@ def get():
             project_id=gns3_project.id,
             hostname=GNS3_HOSTNAME,
             plan=server_type,
-            metro="da",
+            metro=metro,
             operating_system="ubuntu_22_04")
 
     # wait max 20 min for being active
