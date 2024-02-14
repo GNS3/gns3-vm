@@ -270,7 +270,7 @@ jobs:
 
       - run:
           name: Release QEMU ARM64 VM
-          no_output_timeout: 30m
+          no_output_timeout: 20m
           command: |
             ssh root@${DEVICE_IP} "
               set -e
@@ -280,8 +280,7 @@ jobs:
               if [ ! -e \"GNS3.VM.ARM64.${GNS3_NUMBER}.zip\" ];
               then
                 apt install -y qemu-utils qemu-system-arm qemu-efi-aarch64
-                ./qemu_arm64.sh
-                ./release_qemu_arm64.sh ${GNS3_VERSION} GNS3VM.ARM64.0.15.0.zip
+                ./release_qemu_arm64.sh ${GNS3_VERSION}
               fi
             "
 

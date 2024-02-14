@@ -47,4 +47,6 @@ do
     qemu-img convert -O vmdk "${qcow2_file}" "${vmdk_file}.vmdk"
 done
 
+echo "Compressing VMDK files to GNS3.VM.ARM64.${GNS3_VERSION}.zip..."
 zip -9 "GNS3.VM.ARM64.${GNS3_VERSION}.zip" *.vmdk
+exit 0
