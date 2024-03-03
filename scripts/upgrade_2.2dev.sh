@@ -49,14 +49,30 @@ else
   git checkout $1
 fi
 
-if  [[ -z "$HTTP_PROXY" ]]
+# switch to the gns3server virtualenv if it exists
+if [[ -d "/home/gns3/.venv/gns3server-venv" ]]
 then
-  sudo -H pip3 install -U -r requirements.txt
+  source /home/gns3/.venv/gns3server-venv/bin/activate
+  if  [[ -z "$HTTP_PROXY" ]]
+  then
+    python3 -m pip install -U pip
+    python3 -m pip install -U -r requirements.txt
+  else
+    python3 -m pip install -U pip
+    python3 -m pip install --proxy $HTTP_PROXY -U -r requirements.txt
+  fi
+  python3 setup.py install
 else
-  sudo -H pip3 --proxy $HTTP_PROXY install -U -r requirements.txt
+  if  [[ -z "$HTTP_PROXY" ]]
+  then
+    sudo -H pip3 install -U pip
+    sudo -H pip3 install -U -r requirements.txt
+  else
+    sudo -H pip3 --proxy $HTTP_PROXY install -U pip
+    sudo -H pip3 --proxy $HTTP_PROXY install -U -r requirements.txt
+  fi
+  sudo python3 setup.py install
 fi
-
-sudo python3 setup.py install
 
 echo "Update to 2.2dev completed, rebooting in 10 seconds..."
 sleep 10
