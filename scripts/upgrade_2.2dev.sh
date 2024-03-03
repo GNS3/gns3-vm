@@ -49,6 +49,9 @@ else
   git checkout $1
 fi
 
+# switch to the gns3server virtualenv
+source /home/gns3/.venv/gns3server-venv/bin/activate
+
 if  [[ -z "$HTTP_PROXY" ]]
 then
   sudo -H pip3 install -U -r requirements.txt
