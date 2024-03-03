@@ -55,16 +55,20 @@ then
   source /home/gns3/.venv/gns3server-venv/bin/activate
   if  [[ -z "$HTTP_PROXY" ]]
   then
+    python3 -m pip install -U pip
     python3 -m pip install -U -r requirements.txt
   else
+    python3 -m pip install -U pip
     python3 -m pip install --proxy $HTTP_PROXY -U -r requirements.txt
   fi
   python3 setup.py install
 else
   if  [[ -z "$HTTP_PROXY" ]]
   then
+    sudo -H pip3 install -U pip
     sudo -H pip3 install -U -r requirements.txt
   else
+    sudo -H pip3 --proxy $HTTP_PROXY install -U pip
     sudo -H pip3 --proxy $HTTP_PROXY install -U -r requirements.txt
   fi
   sudo python3 setup.py install
