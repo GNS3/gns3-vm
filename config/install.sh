@@ -92,12 +92,12 @@ apt-get install -y mingetty
 apt-get install -y python3-dev python3-setuptools python3-pip
 
 # Python 3.8 virtualenv for gns3server
-if [[ ! -x "/home/gns3/.venv/gns3server-venv/bin/gns3server" ]]
+if [[ ! -d "/home/gns3/.venv/gns3server-venv" ]]
 then
   sudo add-apt-repository -y ppa:deadsnakes/ppa
   sudo apt install -y python3.8 python3.8-venv python3.8-dev
   sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
-  python3.8 -m venv .venv/gns3server-venv
+  python3.8 -m venv /home/gns3/.venv/gns3server-venv
 fi
 
 # For the NAT node
