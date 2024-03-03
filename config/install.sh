@@ -96,6 +96,7 @@ if [[ ! -x "/home/gns3/.venv/gns3server-venv/bin/gns3server" ]]
 then
   sudo add-apt-repository -y ppa:deadsnakes/ppa
   sudo apt install -y python3.8 python3.8-venv python3.8-dev
+  sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
   python3.8 -m venv .venv/gns3server-venv
 fi
 
