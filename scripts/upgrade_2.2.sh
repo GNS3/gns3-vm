@@ -35,16 +35,27 @@ else
   RELEASE=$1
 fi
 
-# switch to the gns3server virtualenv
-source /home/gns3/.venv/gns3server-venv/bin/activate
-
-if  [[ -z "$HTTP_PROXY" ]]
+# switch to the gns3server virtualenv if it exists
+if [[ -d "/home/gns3/.venv/gns3server-venv" ]]
 then
-  sudo -H python3 -m pip install -U pip
-  sudo -H python3 -m pip install gns3-server==$RELEASE
+  source /home/gns3/.venv/gns3server-venv/bin/activate
+  if  [[ -z "$HTTP_PROXY" ]]
+  then
+    python3 -m pip install -U pip
+    python3 -m pip install gns3-server==$RELEASE
+  else
+    python3 -m pip install --proxy $HTTP_PROXY -U pip
+    python3 -m pip install --proxy $HTTP_PROXY gns3-server==$RELEASE
+  fi
 else
-  sudo -H python3 -m pip --proxy $HTTP_PROXY install -U pip
-  sudo -H python3 -m pip --proxy $HTTP_PROXY install gns3-server==$RELEASE
+  if  [[ -z "$HTTP_PROXY" ]]
+  then
+    sudo -H python3 -m pip install -U pip
+    sudo -H python3 -m pip install gns3-server==$RELEASE
+  else
+    sudo -H python3 -m pip --proxy $HTTP_PROXY install -U pip
+    sudo -H python3 -m pip --proxy $HTTP_PROXY install gns3-server==$RELEASE
+  fi
 fi
 
 echo "Upgrade to $RELEASE completed, rebooting in 10 seconds..."

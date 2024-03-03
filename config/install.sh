@@ -98,6 +98,7 @@ then
   sudo apt install -y python3.8 python3.8-venv python3.8-dev
   sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
   python3.8 -m venv /home/gns3/.venv/gns3server-venv
+  sudo chown -R gns3:gns3 /home/gns3/.venv
 fi
 
 # For the NAT node
