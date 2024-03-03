@@ -35,6 +35,9 @@ else
   RELEASE=$1
 fi
 
+# switch to the gns3server virtualenv
+source /home/gns3/.venv/gns3server-venv/bin/activate
+
 if  [[ -z "$HTTP_PROXY" ]]
 then
   sudo -H python3 -m pip install -U pip

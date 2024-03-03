@@ -37,6 +37,9 @@ then
   wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && sudo -H python3 /tmp/get-pip.py
 fi
 
+# switch to the gns3server virtualenv
+source /home/gns3/.venv/gns3server-venv/bin/activate
+
 # upgrade pip to the latest version
 sudo -H python3 -m pip install --upgrade pip
 
