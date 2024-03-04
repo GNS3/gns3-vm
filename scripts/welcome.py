@@ -139,7 +139,7 @@ def get_release_channel():
             content = f.read()
             return content
     except OSError:
-        return "2.2"
+        return "3.0"
 
 
 def get_all_releases(release_channel, dev=False):

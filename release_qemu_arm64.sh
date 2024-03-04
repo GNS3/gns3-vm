@@ -17,8 +17,8 @@ then
 fi
 
 #export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
-#FIXME: force to 2.2
-export GNS3_RELEASE_CHANNEL="2.2"
+#FIXME: force to 3.0
+export GNS3_RELEASE_CHANNEL="3.0"
 
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
