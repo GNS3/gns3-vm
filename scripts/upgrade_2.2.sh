@@ -35,11 +35,14 @@ else
   RELEASE=$1
 fi
 
+# use the GNS3 server virtual environment
+source /home/gns3/.venv/gns3server-venv/bin/activate
+
 if  [[ -z "$HTTP_PROXY" ]]
 then
-  sudo -H python3 -m pip install gns3-server==$RELEASE
+  python3 -m pip install gns3-server==$RELEASE
 else
-  sudo -H python3 -m pip --proxy $HTTP_PROXY install gns3-server==$RELEASE
+  python3 -m pip install --proxy $HTTP_PROXY gns3-server==$RELEASE
 fi
 
 echo "Upgrade to $RELEASE completed, rebooting in 10 seconds..."
