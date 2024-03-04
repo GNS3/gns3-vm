@@ -46,7 +46,7 @@ python3 -m pip install --upgrade pip wheel
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-if [[ "$GNS3_VERSION" == "master" || "$GNS3_VERSION" == "2.2" || "$GNS3_VERSION" == "3.0" ]]
+if [[ "$GNS3_VERSION" == "master" || "$GNS3_VERSION" == "3.0" ]]
 then
   # Install from a branch on GitHub
   python3 -m pip install "https://github.com/GNS3/gns3-server/archive/refs/heads/$GNS3_VERSION.zip"
