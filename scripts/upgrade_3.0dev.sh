@@ -33,8 +33,8 @@ then
     git clone https://github.com/GNS3/gns3-server.git gns3-server
 fi
 
+sudo chown -R gns3:gns3 gns3server
 cd gns3-server
-sudo chown -R gns3:gns3 .git
 sudo chmod -R 775 .git
 git reset --hard HEAD
 git fetch origin
@@ -69,8 +69,8 @@ then
   then
     git clone https://github.com/GNS3/gns3-web-ui.git gns3-web-ui
   fi
+  sudo chown -R gns3:gns3 gns3-web-ui
   cd gns3-web-ui
-  sudo chown -R gns3:gns3 .git
   sudo chmod -R 775 .git
   git reset --hard HEAD
   git fetch origin
