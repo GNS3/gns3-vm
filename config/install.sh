@@ -115,11 +115,12 @@ apt-get install -y virt-what
 apt-get install -y mingetty
 
 # Python
-apt-get install -y python3-dev python3-setuptools
+apt-get install -y python3-dev python3-venv python3-setuptools
 
 # Create virtualenv for gns3server
 if [[ ! -d "/home/gns3/.venv/gns3server-venv" ]]
 then
+  python3 -m pip install --upgrade pip
   python3 -m venv /home/gns3/.venv/gns3server-venv
   sudo chown -R gns3:gns3 /home/gns3/.venv
 fi
