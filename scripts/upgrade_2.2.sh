@@ -40,8 +40,10 @@ source /home/gns3/.venv/gns3server-venv/bin/activate
 
 if  [[ -z "$HTTP_PROXY" ]]
 then
+  python3 -m pip install --upgrade pip
   python3 -m pip install gns3-server==$RELEASE
 else
+  python3 -m pip install --proxy $HTTP_PROXY --upgrade pip
   python3 -m pip install --proxy $HTTP_PROXY gns3-server==$RELEASE
 fi
 

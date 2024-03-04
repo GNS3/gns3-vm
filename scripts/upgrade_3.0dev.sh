@@ -52,8 +52,10 @@ source /home/gns3/.venv/gns3server-venv/bin/activate
 
 if  [[ -z "$HTTP_PROXY" ]]
 then
+  python3 -m pip install --upgrade pip
   python3 -m pip install -U -r requirements.txt
 else
+  python3 -m pip install --proxy $HTTP_PROXY --upgrade pip
   python3 -m pip install --proxy $HTTP_PROXY -U -r requirements.txt
 fi
 
