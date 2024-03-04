@@ -100,7 +100,15 @@ apt install -y virt-what
 apt install -y mingetty
 
 # Python
-apt install -y python3-dev python3-setuptools
+apt-get install -y python3-dev python3-venv python3-setuptools
+
+# Create virtualenv for gns3server
+if [[ ! -d "/home/gns3/.venv/gns3server-venv" ]]
+then
+  python3 -m venv /home/gns3/.venv/gns3server-venv
+  sudo chown -R gns3:gns3 /home/gns3/.venv
+fi
+
 
 # For the NAT node
 apt install -y libvirt-daemon-system

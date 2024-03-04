@@ -37,8 +37,11 @@ then
   wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && sudo -H python3 /tmp/get-pip.py
 fi
 
-# upgrade pip to the latest version
-sudo -H python3 -m pip install --upgrade pip
+# use the GNS3 server virtual environment
+source /home/gns3/.venv/gns3server-venv/bin/activate
+
+# upgrade pip and wheel to the latest version
+python3 -m pip install --upgrade pip wheel
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
@@ -46,9 +49,9 @@ set -e
 if [[ "$GNS3_VERSION" == "master" || "$GNS3_VERSION" == "2.2" || "$GNS3_VERSION" == "3.0" ]]
 then
   # Install from a branch on GitHub
-  sudo -H python3 -m pip install "https://github.com/GNS3/gns3-server/archive/refs/heads/$GNS3_VERSION.zip"
+  python3 -m pip install "https://github.com/GNS3/gns3-server/archive/refs/heads/$GNS3_VERSION.zip"
 else
-  sudo -H python3 -m pip install gns3-server==${GNS3_VERSION}
+  python3 -m pip install gns3-server==${GNS3_VERSION}
 fi
 
 set +e

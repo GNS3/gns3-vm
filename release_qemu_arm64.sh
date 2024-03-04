@@ -25,7 +25,7 @@ echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
 if [[ "$GNS3_VM_FILE" == "" ]]
 then
-    export GNS3VM_VERSION="0.15.0" # `python last_vm_version.py`
+    export GNS3VM_VERSION="0.16.0" # `python last_vm_version.py`
     export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
     curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
@@ -47,4 +47,6 @@ do
     qemu-img convert -O vmdk "${qcow2_file}" "${vmdk_file}.vmdk"
 done
 
+echo "Compressing VMDK files to GNS3.VM.ARM64.${GNS3_VERSION}.zip..."
 zip -9 "GNS3.VM.ARM64.${GNS3_VERSION}.zip" *.vmdk
+exit 0

@@ -9,10 +9,11 @@ User=gns3
 Group=gns3
 PermissionsStartOnly=true
 AmbientCapabilities=CAP_NET_BIND_SERVICE
-EnvironmentFile=/etc/environment
+WorkingDirectory=/home/gns3
+Environment="PATH=/home/gns3/.venv/gns3server-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 ExecStartPre=/bin/mkdir -p /var/log/gns3 /var/run/gns3
 ExecStartPre=/bin/chown -R gns3:gns3 /var/log/gns3 /var/run/gns3
-ExecStart=/usr/local/bin/gns3server --log /var/log/gns3/gns3.log --logcompression --config /opt/gns3/server/gns3_server.conf
+ExecStart=/home/gns3/.venv/gns3server-venv/bin/gns3server --log /var/log/gns3/gns3.log --logcompression --config /opt/gns3/server/gns3_server.conf
 ExecReload=/bin/kill -s HUP $MAINPID
 Restart=on-failure
 RestartSec=5

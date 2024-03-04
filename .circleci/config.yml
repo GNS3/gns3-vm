@@ -273,7 +273,7 @@ jobs:
 
       - run:
           name: Release QEMU ARM64 VM
-          no_output_timeout: 15m
+          no_output_timeout: 20m
           command: |
             ssh root@${DEVICE_IP} "
               set -e

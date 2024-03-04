@@ -91,7 +91,7 @@ def gns3_version():
     """
 
     try:
-        return subprocess.check_output(["gns3server", "--version"]).strip().decode()
+        return subprocess.check_output(". /home/gns3/.venv/gns3server-venv/bin/activate && python3 -m gns3server --version", shell=True).strip().decode()
     except (subprocess.CalledProcessError, FileNotFoundError):
         return None
 
