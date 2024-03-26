@@ -289,7 +289,7 @@ Uptime: {uptime}\n\n""".format(
 
     ip = get_ip()
     if ip:
-        content += "IP: {ip} PORT: {server_port}\n\nTo log in using SSH: ssh gns3@{ip}\nPassword: gns3\n\nTo launch the Web-Ui: {protocol}://{ip}{url_port}\n\nImages and projects are stored in '/opt/gns3'""".format(protocol=protocol, ip=ip, server_port=server_port, url_port=port_string)
+        content += "IP: {ip} PORT: {server_port}\n\nTo log in using SSH: ssh gns3@{ip}\nPassword: gns3\n\nTo launch the Web-Ui: {protocol}://{ip}{url_port} (default username/password is admin/admin)\n\nImages and projects are stored in '/opt/gns3'""".format(protocol=protocol, ip=ip, server_port=server_port, url_port=port_string)
     else:
         content += "eth0 is not configured. Please manually configure by selecting the 'Network' entry in the menu."
 
