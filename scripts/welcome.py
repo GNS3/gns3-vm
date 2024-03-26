@@ -194,12 +194,12 @@ def upgrade(force=False):
     if match:
         # development release (unstable)
         releases = get_all_releases(match.group(1), dev=True)
-        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/jammy-unstable/scripts/upgrade_{}.sh".format(release_channel)
+        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/noble-unstable/scripts/upgrade_{}.sh".format(release_channel)
         choices.append((match.group(1), "Latest development version on {} branch".format(match.group(1))))
     else:
         # current release (stable)
         releases = get_all_releases(release_channel)
-        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/jammy-stable/scripts/upgrade_{}.sh".format(release_channel)
+        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/noble-stable/scripts/upgrade_{}.sh".format(release_channel)
 
     if releases is None:
         return
