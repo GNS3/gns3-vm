@@ -1,5 +1,5 @@
 #!/bin/bash
 
 # Used by the GNS3 restore command
-export BRANCH="jammy-stable"
+export BRANCH="jammy-unstable"
 curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade_3.0.sh" | bash
