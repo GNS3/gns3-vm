@@ -94,8 +94,18 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     for item in root.iter('{http://schemas.dmtf.org/ovf/envelope/1}Item'):
         connection = item.find('{http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData}Connection')
         if connection is not None and connection.text.lower() == "nat":
-            print("Remove nat adapter")
+            print("Remove NAT adapter")
             virtual_hardware.remove(item)
+
+    # Set the Video RAM to 4MB
+    for item in root.iter('{http://schemas.dmtf.org/ovf/envelope/1}Item'):
+        element_name = item.find('{http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData}ElementName')
+        if element_name is not None and element_name.text.lower() == "video":
+            config = item.find('vmw:Config[@vmw:key="videoRamSizeInKB"]', {'vmw': "http://www.vmware.com/schema/ovf"})
+            if config is not None:
+                print("Set Video RAM to 4MB")
+                config.attrib['{http://www.vmware.com/schema/ovf}value'] = '4096'
+                break
 
     for node in nodes_to_remove:
         virtual_hardware.remove(node)
