@@ -128,7 +128,7 @@ jobs:
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc | apt-key add -
               apt-add-repository \"deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian \$(lsb_release -cs) contrib\"
               apt update
-              apt -y install virtualbox-6.1
+              apt -y install virtualbox-7.0
             "
 
       - run:
