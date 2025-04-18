@@ -114,6 +114,24 @@
                "{{.Name}}",
                "--nictype2",
                "82540EM"
+             ],
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--graphicscontroller",
+               "vmsvga"
+             ],
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--vram",
+               "16"
+             ],
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--nested-hw-virt",
+               "on"
              ]
           ]
       },
