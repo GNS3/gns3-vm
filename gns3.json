@@ -11,7 +11,7 @@
       "format": "ova",
       "guest_additions_mode": "disable",
       "guest_os_type": "Ubuntu_64",
-      "headless": false,
+      "headless": true,
       "http_directory": "http",
       "iso_checksum": "{{user `iso_checksum_type`}}:{{user `iso_checksum`}}",
       "iso_url": "{{user `iso_url`}}",

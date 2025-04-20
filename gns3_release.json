@@ -33,7 +33,7 @@
     {
       "format": "ova",
       "guest_additions_mode": "disable",
-      "headless": false,
+      "headless": true,
       "shutdown_command": "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
       "shutdown_timeout": "60m",
       "source_path": "{{user `gns3_src`}}",
