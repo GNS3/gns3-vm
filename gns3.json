@@ -22,9 +22,6 @@
       "ssh_timeout": "10m",
       "ssh_username": "{{user `ssh_name`}}",
       "type": "virtualbox-iso",
-      "nested_virt": true,
-      "gfx_controller": "vmsvga",
-      "gfx_vram_size": 16,
       "vboxmanage": [
         [
           "modifyvm",
