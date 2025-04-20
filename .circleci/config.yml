@@ -137,16 +137,15 @@ jobs:
             echo "
               set -e
 
-              if [ ! -f "/tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle.tar" ]
+              if [ ! -f "/tmp/VMWare.bundle" ]
               then
-                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/16.2.5/20904516/linux/core/VMware-Workstation-16.2.5-20904516.x86_64.bundle.tar -O /tmp/VMWare.bundle.tar
-                tar xvvf /tmp/VMWare.bundle.tar -C /tmp/
+                wget https://sourceforge.net/projects/gns-3/files/VMware/VMware-Workstation-Full-17.6.3-24583834.x86_64.bundle/download -O /tmp/VMWare.bundle
               fi
 
-              chmod a+x /tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle
+              chmod a+x /tmp/VMWare.bundle
 
-              /tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle --eulas-agreed --required --console
-              /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_16_SERIAL}
+              /tmp/VMWare.bundle --eulas-agreed --required --console
+              /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_17_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
             scp script.sh root@${DEVICE_IP}:
