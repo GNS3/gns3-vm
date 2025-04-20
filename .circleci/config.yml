@@ -160,11 +160,13 @@ jobs:
 
               if [ ! -f "/tmp/packer.zip" ]
               then
-                wget https://releases.hashicorp.com/packer/1.0.4/packer_1.0.4_linux_amd64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.12.0/packer_1.12.0_linux_amd64.zip -O /tmp/packer.zip
               fi
 
               7z e -y /tmp/packer.zip -o/usr/local/bin/
               chmod +x /usr/local/bin/packer
+              /usr/local/bin/packer plugins install github.com/hashicorp/virtualbox
+              /usr/local/bin/packer plugins install github.com/hashicorp/vmware
             "
 
       - run:
@@ -263,11 +265,12 @@ jobs:
               if [ ! -f "/tmp/packer.zip" ]
               then
                 apt update && apt install -y 7zip
-                wget https://releases.hashicorp.com/packer/1.0.4/packer_1.0.4_linux_arm64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.12.0/packer_1.12.0_linux_arm64.zip -O /tmp/packer.zip
               fi
 
               7z e -y /tmp/packer.zip -o/usr/local/bin/
               chmod +x /usr/local/bin/packer
+              /usr/local/bin/packer plugins install github.com/hashicorp/qemu
             "
 
       - run:

@@ -1,244 +1,279 @@
 {
-   "variables" : {
-      "ssh_pass" : "gns3",
-      "ssh_name" : "gns3",
-      "hostname" : "gns3vm",
-      "memory": "2048",
-      "cpus": "1",
-      "cores": "1",
-      "disk_size": "20000",
-      "data_disk": "500000",
-      "iso_checksum_type": "sha256",
-      "iso_checksum": "b8f31413336b9393ad5d8ef0282717b2ab19f007df2e9ed5196c13d8f9153c8b",
-      "iso_url": "https://releases.ubuntu.com/20.04/ubuntu-20.04.6-live-server-amd64.iso",
-      "gns3_version": "{{env `GNS3_VERSION`}}"
-   },
-   "provisioners" : [
-      {
-         "destination" : "/tmp/config",
-         "type" : "file",
-         "source" : "config"
-      },
-      {
-         "destination" : "/tmp/gns3welcome.py",
-         "type" : "file",
-         "source" : "scripts/welcome.py"
-      },
-      {
-         "type" : "shell",
-         "script" : "scripts/setup_ubuntu.sh",
-         "execute_command" : "echo  {{user `ssh_name`}} | {{ .Vars }} sudo -E -S bash '{{ .Path }}'"
-      },
-      {
-         "type" : "shell",
-         "script" : "scripts/provision.sh"
-      },
-      {
-        "inline": "sudo -u gns3 mkdir -p ~/.config/GNS3/",
-        "type": "shell"
-      },
-      {
-         "destination" : "/home/gns3/.config/GNS3/gns3vm_version",
-         "type" : "file",
-         "source" : "version"
-      },
-      {
-         "type": "shell",
-         "script" : "scripts/reboot.sh",
-         "only": ["virtualbox-iso", "qemu"],
-         "expect_disconnect": true
-      },
-      {
-         "type": "shell",
-         "pause_before": "30s",
-         "only": ["virtualbox-iso", "qemu"],
-         "scripts": [
-            "scripts/splashscreen.sh",
-            "scripts/cleaner.sh"
-         ]
+  "builders": [
+    {
+      "boot_command": [
+        "<enter><enter><f6><esc><wait> ",
+        "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+        "<enter>"
+      ],
+      "boot_wait": "10s",
+      "disk_size": "{{user `disk_size`}}",
+      "format": "ova",
+      "guest_additions_mode": "disable",
+      "guest_os_type": "Ubuntu_64",
+      "headless": false,
+      "http_directory": "http",
+      "iso_checksum": "{{user `iso_checksum_type`}}:{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+      "shutdown_timeout": "60m",
+      "ssh_handshake_attempts": "20",
+      "ssh_password": "{{user `ssh_pass`}}",
+      "ssh_timeout": "10m",
+      "ssh_username": "{{user `ssh_name`}}",
+      "type": "virtualbox-iso",
+      "nested_virt": true,
+      "gfx_controller": "vmsvga",
+      "gfx_vram_size": 16,
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "{{user `memory`}}"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "{{user `cpus`}}"
+        ],
+        [
+          "createhd",
+          "--format",
+          "VDI",
+          "--filename",
+          "output-{{build_name}}/opt.vdi",
+          "--variant",
+          "Standard",
+          "--size",
+          "{{user `data_disk`}}"
+        ],
+        [
+          "storagectl",
+          "{{.Name}}",
+          "--name",
+          "SATA Controller",
+          "--add",
+          "sata",
+          "--controller",
+          "IntelAHCI"
+        ],
+        [
+          "storageattach",
+          "{{.Name}}",
+          "--storagectl",
+          "SATA Controller",
+          "--port",
+          "2",
+          "--type",
+          "hdd",
+          "--medium",
+          "output-{{build_name}}/opt.vdi"
+        ]
+      ],
+      "vboxmanage_post": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--nic1",
+          "hostonly"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--nictype1",
+          "82540EM"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--hostonlyadapter1",
+          "vboxnet0"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--nic2",
+          "nat"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--nictype2",
+          "82540EM"
+        ],
+        [
+          "modifyhd",
+          "--compact",
+          "{{pwd}}/output-{{build_name}}/{{.Name}}.vdi"
+        ],
+        [
+          "modifyhd",
+          "--compact",
+          "{{pwd}}/output-{{build_name}}/opt.vdi"
+        ]
+      ],
+      "vm_name": "GNS3 VM"
+    },
+    {
+      "boot_command": [
+        "<enter><enter><f6><esc><wait> ",
+        "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+        "<enter>"
+      ],
+      "boot_wait": "5s",
+      "disk_additional_size": [
+        "{{user `data_disk`}}"
+      ],
+      "disk_size": "{{user `disk_size`}}",
+      "disk_type_id": 0,
+      "guest_os_type": "ubuntu-64",
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "{{user `iso_checksum_type`}}:{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "shutdown_command": "sudo /sbin/shutdown -h now",
+      "shutdown_timeout": "60m",
+      "skip_compaction": true,
+      "ssh_handshake_attempts": "20",
+      "ssh_password": "{{user `ssh_pass`}}",
+      "ssh_timeout": "10m",
+      "ssh_username": "{{user `ssh_name`}}",
+      "type": "vmware-iso",
+      "vm_name": "GNS3 VM",
+      "vmdk_name": "GNS3 VM",
+      "vmx_data": {
+        "cpuid.coresPerSocket": "{{user `cores`}}",
+        "disk.enableUUID": "TRUE",
+        "hints.hideAll": "TRUE",
+        "memsize": "{{user `memory`}}",
+        "msg.noOk": "TRUE",
+        "numvcpus": "{{user `cpus`}}",
+        "vhv.enable": "TRUE"
       }
-   ],
-   "builders" : [
-       {
-         "type" : "virtualbox-iso",
-         "ssh_timeout": "10m",
-         "ssh_handshake_attempts": "20",
-         "boot_wait" : "10s",
-         "disk_size" : "{{user `disk_size`}}",
-         "iso_checksum_type" : "{{user `iso_checksum_type`}}",
-         "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
-         "shutdown_timeout": "60m",
-         "format": "ova",
-         "headless": true,
-         "vboxmanage" : [
-            [
-               "modifyvm",
-               "{{.Name}}",
-               "--memory",
-               "{{user `memory`}}"
-            ],
-            [
-               "modifyvm",
-               "{{.Name}}",
-               "--cpus",
-               "{{user `cpus`}}"
-            ],
-            [
-               "createhd",
-               "--format",
-               "VDI",
-               "--filename",
-               "output-{{build_name}}/opt.vdi",
-               "--variant",
-               "Standard",
-               "--size",
-               "{{user `data_disk`}}"
-            ],
-            [
-               "storagectl",
-               "{{.Name}}",
-               "--name",
-               "SATA Controller",
-               "--add",
-               "sata",
-               "--controller",
-               "IntelAHCI"
-            ],
-            [
-               "storageattach",
-               "{{.Name}}",
-               "--storagectl",
-               "SATA Controller",
-               "--port",
-               "2",
-               "--type",
-               "hdd",
-               "--medium",
-               "output-{{build_name}}/opt.vdi"
-            ]
-         ],
-         "vboxmanage_post" : [
-             [
-               "modifyvm",
-               "{{.Name}}",
-               "--nic1",
-               "hostonly"
-             ],
-             [
-               "modifyvm",
-               "{{.Name}}",
-               "--nictype1",
-               "82540EM"
-             ],
-             [
-                "modifyvm",
-                "{{.Name}}",
-                "--hostonlyadapter1",
-                "vboxnet0"
-             ],
-             [
-                "modifyvm",
-                "{{.Name}}",
-                "--nic2",
-                "nat"
-             ],
-             [
-               "modifyvm",
-               "{{.Name}}",
-               "--nictype2",
-               "82540EM"
-             ],
-             [
-                "modifyhd",
-                "--compact",
-                "{{pwd}}/output-{{build_name}}/{{.Name}}.vdi"
-             ],
-             [
-                "modifyhd",
-                "--compact",
-                "{{pwd}}/output-{{build_name}}/opt.vdi"
-             ]
-         ],
-         "http_directory" : "http",
-         "vm_name" : "GNS3 VM",
-         "ssh_username" : "{{user `ssh_name`}}",
-         "iso_checksum" : "{{user `iso_checksum`}}",
-         "ssh_password" : "{{user `ssh_pass`}}",
-         "boot_command": [
-            "<enter><enter><f6><esc><wait> ",
-            "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
-            "<enter>"
-         ],
-         "guest_additions_mode" : "disable",
-         "guest_os_type": "Ubuntu_64",
-         "iso_url" : "{{user `iso_url`}}"
-      },
-      {
-         "type" : "vmware-iso",
-         "boot_wait" : "5s",
-         "disk_size": "{{user `disk_size`}}",
-         "disk_additional_size": ["{{user `data_disk`}}"],
-         "disk_type_id" : 0,
-         "guest_os_type": "ubuntu-64",
-         "ssh_timeout": "10m",
-         "ssh_handshake_attempts": "20",
-         "vm_name" : "GNS3 VM",
-         "vmdk_name": "GNS3 VM",
-         "http_directory" : "http",
-         "iso_checksum" : "{{user `iso_checksum`}}",
-         "vmx_data" : {
-            "memsize" : "{{user `memory`}}",
-            "cpuid.coresPerSocket" : "{{user `cores`}}",
-            "numvcpus": "{{user `cpus`}}",
-            "vhv.enable": "TRUE",
-            "disk.enableUUID": "TRUE",
-            "hints.hideAll": "TRUE",
-            "msg.noOk": "TRUE"
-         },
-         "iso_checksum_type" : "{{user `iso_checksum_type`}}",
-         "headless": true,
-         "shutdown_command" : "sudo /sbin/shutdown -h now",
-         "shutdown_timeout": "60m",
-         "ssh_username" : "{{user `ssh_name`}}",
-         "ssh_password" : "{{user `ssh_pass`}}",
-         "boot_command": [
-            "<enter><enter><f6><esc><wait> ",
-            "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
-            "<enter>"
-         ],
-         "skip_compaction": true,
-         "iso_url" : "{{user `iso_url`}}"
-      },
-      {
-         "type": "qemu",
-         "vm_name" : "GNS3 VM",
-         "qemu_binary": "qemu-system-aarch64",
-         "disk_compression": true,
-         "disk_image": true,
-         "headless": true,
-         "net_device": "virtio-net-pci",
-         "iso_url" : "{{user `iso_url`}}",
-         "iso_checksum" : "{{user `iso_checksum`}}",
-         "iso_checksum_type": "{{user `iso_checksum_type`}}",
-         "use_default_display": true,
-         "http_directory": "http",
-         "qemuargs": [
-                ["-drive", "file=gns3vm-disk1.qcow2,if=virtio,format=qcow2,cache=none"],
-                ["-drive", "file=gns3vm-disk2.qcow2,if=virtio,format=qcow2,cache=none"],
-                ["-serial", "file:serial.out"],
-                ["-machine", "virt,gic-version=3,accel=kvm"],
-                ["-cpu", "max"],
-                ["-smp", "8"],
-                ["-m", "4096"],
-                ["-bios", "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd"],
-                ["-boot", "strict=off"]
-         ],
-         "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
-         "shutdown_timeout": "20m",
-         "ssh_username" : "{{user `ssh_name`}}",
-         "ssh_password" : "{{user `ssh_pass`}}",
-         "ssh_timeout": "20m",
-         "ssh_handshake_attempts": "20"
-      }
-   ]
+    },
+    {
+      "disk_compression": true,
+      "disk_image": true,
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "{{user `iso_checksum_type`}}:{{user `iso_checksum`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "net_device": "virtio-net-pci",
+      "qemu_binary": "qemu-system-aarch64",
+      "qemuargs": [
+        [
+          "-drive",
+          "file=gns3vm-disk1.qcow2,if=virtio,format=qcow2,cache=none"
+        ],
+        [
+          "-drive",
+          "file=gns3vm-disk2.qcow2,if=virtio,format=qcow2,cache=none"
+        ],
+        [
+          "-serial",
+          "file:serial.out"
+        ],
+        [
+          "-machine",
+          "virt,gic-version=3,accel=kvm"
+        ],
+        [
+          "-cpu",
+          "max"
+        ],
+        [
+          "-smp",
+          "8"
+        ],
+        [
+          "-m",
+          "4096"
+        ],
+        [
+          "-bios",
+          "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd"
+        ],
+        [
+          "-boot",
+          "strict=off"
+        ]
+      ],
+      "shutdown_command": "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+      "shutdown_timeout": "20m",
+      "ssh_handshake_attempts": "20",
+      "ssh_password": "{{user `ssh_pass`}}",
+      "ssh_timeout": "20m",
+      "ssh_username": "{{user `ssh_name`}}",
+      "type": "qemu",
+      "use_default_display": true,
+      "vm_name": "GNS3 VM"
+    }
+  ],
+  "provisioners": [
+    {
+      "destination": "/tmp/config",
+      "source": "config",
+      "type": "file"
+    },
+    {
+      "destination": "/tmp/gns3welcome.py",
+      "source": "scripts/welcome.py",
+      "type": "file"
+    },
+    {
+      "execute_command": "echo  {{user `ssh_name`}} | {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+      "script": "scripts/setup_ubuntu.sh",
+      "type": "shell"
+    },
+    {
+      "script": "scripts/provision.sh",
+      "type": "shell"
+    },
+    {
+      "inline": "sudo -u gns3 mkdir -p ~/.config/GNS3/",
+      "type": "shell"
+    },
+    {
+      "destination": "/home/gns3/.config/GNS3/gns3vm_version",
+      "source": "version",
+      "type": "file"
+    },
+    {
+      "expect_disconnect": true,
+      "only": [
+        "virtualbox-iso",
+        "qemu"
+      ],
+      "script": "scripts/reboot.sh",
+      "type": "shell"
+    },
+    {
+      "only": [
+        "virtualbox-iso",
+        "qemu"
+      ],
+      "pause_before": "30s",
+      "scripts": [
+        "scripts/splashscreen.sh",
+        "scripts/cleaner.sh"
+      ],
+      "type": "shell"
+    }
+  ],
+  "variables": {
+    "cores": "1",
+    "cpus": "1",
+    "data_disk": "500000",
+    "disk_size": "20000",
+    "gns3_version": "{{env `GNS3_VERSION`}}",
+    "hostname": "gns3vm",
+    "iso_checksum": "b8f31413336b9393ad5d8ef0282717b2ab19f007df2e9ed5196c13d8f9153c8b",
+    "iso_checksum_type": "sha256",
+    "iso_url": "https://releases.ubuntu.com/20.04/ubuntu-20.04.6-live-server-amd64.iso",
+    "memory": "2048",
+    "ssh_name": "gns3",
+    "ssh_pass": "gns3"
+  }
 }
