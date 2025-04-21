@@ -64,7 +64,7 @@ def get():
             hostname=GNS3_HOSTNAME,
             plan=server_type,
             metro=metro,
-            operating_system="ubuntu_22_04",
+            operating_system="ubuntu_24_04",
             termination_time=termination_time.isoformat())
 
     # wait max 20 min for being active
