@@ -9,5 +9,5 @@ then
     exit 1
 fi
 
-export BRANCH="focal-stable"
+export BRANCH="focal-unstable"
 curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/restore.sh" | bash
