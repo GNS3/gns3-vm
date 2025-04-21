@@ -27,7 +27,6 @@ echo "Building VirtualBox VM for GNS3 $GNS3_VERSION"
 # Build the VM based on the VMware OVA
 7zz e -y $GNS3_VM_FILE
 export GNS3_SRC="GNS3 VM.ova"
-packer plugins install github.com/hashicorp/virtualbox
 packer build -only=virtualbox-ovf gns3_release_virtualbox.json
 
 cd output-virtualbox-ovf

@@ -12,7 +12,6 @@ then
   # download the cloud image outside packer
    curl -O https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-arm64.img
 fi
-packer plugins install github.com/hashicorp/qemu
 packer build -only=qemu-arm64 $* base_vm.json
 
 cd output-qemu-arm64

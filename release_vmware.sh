@@ -44,7 +44,6 @@ for qcow2_file in *.qcow2; do
     qemu-img convert -O vmdk "${qcow2_file}" "${vmdk_file}.vmdk"
 done
 
-packer plugins install github.com/hashicorp/vmware
 packer build -only=vmware-iso gns3_release.json
 
 cd output-vmware-iso
