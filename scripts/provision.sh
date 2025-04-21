@@ -32,7 +32,7 @@ sudo -H pip3 install pythondialog
 # Force the hostid for IOU license check
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 
-if [[ $PACKER_BUILDER_TYPE == "vmware-iso" ]]
+if [[ $PACKER_BUILDER_TYPE == "vmware-iso" || $PACKER_BUILDER_TYPE == "qemu" ]]
 then
    # VMware open-vm-tools
    sudo apt-get install --yes open-vm-tools
