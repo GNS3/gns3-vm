@@ -9,8 +9,12 @@
       "boot_wait": "10s",
       "disk_size": "{{user `disk_size`}}",
       "format": "ova",
-      "guest_additions_mode": "disable",
+      "guest_additions_mode": "upload",
+      "guest_additions_path": "/tmp/VBoxGuestAdditions.iso",
       "guest_os_type": "Ubuntu_64",
+      "nested_virt": true,
+      "gfx_controller": "vmsvga",
+      "gfx_vram_size": 16,
       "headless": true,
       "http_directory": "http",
       "iso_checksum": "{{user `iso_checksum_type`}}:{{user `iso_checksum`}}",
@@ -236,6 +240,12 @@
       "destination": "/home/gns3/.config/GNS3/gns3vm_version",
       "source": "version",
       "type": "file"
+    },
+    {
+      "only": ["virtualbox-iso"],
+      "inline": "sudo mount /tmp/VBoxGuestAdditions.iso /mnt && sudo /mnt/VBoxLinuxAdditions.run --nox11",
+      "valid_exit_codes": [0, 1, 2],
+      "type": "shell"
     },
     {
       "expect_disconnect": true,
