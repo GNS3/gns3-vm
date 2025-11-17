@@ -34,7 +34,7 @@ else
     cp "$GNS3_VM_FILE" "/tmp/GNS3VM.Base.ARM64.${GNS3VM_VERSION}.zip"
 fi
 
-7zz e -y "/tmp/GNS3VM.Base.ARM64.${GNS3VM_VERSION}.zip"
+7z e -y "/tmp/GNS3VM.Base.ARM64.${GNS3VM_VERSION}.zip"
 
 rm -Rf output-qemu-arm64
 packer build -only=qemu-arm64 gns3_release.json
@@ -47,6 +47,6 @@ do
 done
 
 echo "Compressing VMDK files to GNS3.VM.ARM64.${GNS3_VERSION}.zip..."
-7zz a -bsp1 -mx=1 "GNS3.VM.ARM64.${GNS3_VERSION}.zip" *.vmdk
+7z a -bsp1 -mx=1 "GNS3.VM.ARM64.${GNS3_VERSION}.zip" *.vmdk
 
 exit 0

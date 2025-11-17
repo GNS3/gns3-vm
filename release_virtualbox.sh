@@ -25,12 +25,12 @@ fi
 echo "Building VirtualBox VM for GNS3 $GNS3_VERSION"
 
 # Build the VM based on the VMware OVA
-7zz e -y $GNS3_VM_FILE
+7z e -y $GNS3_VM_FILE
 export GNS3_SRC="GNS3 VM.ova"
 packer build -only=virtualbox-ovf gns3_release_virtualbox.json
 
 cd output-virtualbox-ovf
-7zz a -bsp1 -mx=1 "../GNS3.VM.VirtualBox.${GNS3_VERSION}.zip" "GNS3 VM.ova"
+7z a -bsp1 -mx=1 "../GNS3.VM.VirtualBox.${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 cd ..
 rm -Rf output-virtualbox-ovf

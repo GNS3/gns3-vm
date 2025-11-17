@@ -42,4 +42,4 @@ rm -Rf output-qemu-arm64
 cp gns3vm-disk1.qcow2 gns3vm-disk1.qcow2.bak
 qemu-img convert -O qcow2 gns3vm-disk1.qcow2.bak gns3vm-disk1.qcow2
 
-7zz a -bsp1 -mx=1 "GNS3VM.Base.ARM64.${GNS3VM_VERSION}.zip" gns3vm-disk1.qcow2 gns3vm-disk2.qcow2
+7z a -bsp1 -mx=1 "GNS3VM.Base.ARM64.${GNS3VM_VERSION}.zip" gns3vm-disk1.qcow2 gns3vm-disk2.qcow2
