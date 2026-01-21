@@ -34,7 +34,7 @@ sudo DEBIAN_FRONTEND=noninteractive apt install -y python3-dev gcc git ntp
 # Install pip3 if missing
 if [[ ! $(which pip3) ]]
 then
-  wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py && sudo -H python3 /tmp/get-pip.py
+  wget https://bootstrap.pypa.io/pip/3.8/get-pip.py -O /tmp/get-pip.py && sudo -H python3 /tmp/get-pip.py
 fi
 
 # use the GNS3 server virtual environment
