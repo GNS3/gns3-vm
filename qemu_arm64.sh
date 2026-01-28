@@ -18,7 +18,7 @@ fi
 mkdir -p ubuntu-arm64-iso
 sudo mount -r ubuntu.iso ubuntu-arm64-iso
 
-qemu-img create -f qcow2 gns3vm-disk1.qcow2 20G
+qemu-img create -f qcow2 gns3vm-disk1.qcow2 100G
 qemu-img create -f qcow2 gns3vm-disk2.qcow2 1T
 
 nohup python3 -m http.server --directory http 4242 &
