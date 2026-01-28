@@ -76,10 +76,10 @@ commands:
             cd artifacts
             for file in *.zip
             do
-              sha256sum "$file" > "$file.sha256"
-              cat "$file.sha256"
-              sha256sum -c "$file.sha256"
+              sha256sum "$file" >> "GNS3.VM.checksums.sha256"
             done
+            cat "GNS3.VM.checksums.sha256"
+            sha256sum -c "GNS3.VM.checksums.sha256"
             ls -l
             cd -
 
