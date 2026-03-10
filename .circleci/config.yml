@@ -179,7 +179,7 @@ jobs:
               if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
               then
                 ./virtualbox.sh
-                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.16.0.zip
+                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.17.0.zip
               fi
             "
 
@@ -193,7 +193,7 @@ jobs:
 
               if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.16.0.zip
+                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.17.0.zip
               fi
             "
 
@@ -223,7 +223,7 @@ jobs:
               if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
               then
                 ./vmware.sh
-                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.16.0.zip
+                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.17.0.zip
               fi
             "
 
@@ -285,7 +285,7 @@ jobs:
               then
                 apt install -y qemu-utils qemu-system-arm qemu-efi-aarch64
                 ./qemu_arm64.sh
-                ./release_qemu_arm64.sh ${GNS3_VERSION} GNS3VM.ARM64.0.16.0.zip
+                ./release_qemu_arm64.sh ${GNS3_VERSION} GNS3VM.ARM64.0.17.0.zip
               fi
             "
 
