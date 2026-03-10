@@ -32,7 +32,7 @@ mkdir kvm-build
 cd kvm-build
 
 tar -xvf "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
-for vmdk_file in *.vmdk; do
+for vmdk_file in GNS3\ VM*.vmdk; do
     echo "Converting ${vmdk_file} to Qcow2 format..."
     qcow2_file=`basename "${vmdk_file}" .vmdk`
     qemu-img convert -O qcow2 "${vmdk_file}" "${qcow2_file}.qcow2"
