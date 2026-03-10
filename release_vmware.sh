@@ -36,7 +36,7 @@ else
     cp "$GNS3_VM_FILE" "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
 fi
 
-7zz e -y "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
+7z e -y "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
 
 for qcow2_file in *.qcow2; do
     echo "Converting ${qcow2_file} to VMDK format..."
@@ -44,14 +44,13 @@ for qcow2_file in *.qcow2; do
     qemu-img convert -O vmdk "${qcow2_file}" "${vmdk_file}.vmdk"
 done
 
-packer plugins install github.com/hashicorp/vmware
 packer build -only=vmware-iso gns3_release.json
 
 cd output-vmware-iso
 
 echo "Export to OVA"
 ovftool --noImageFiles --noNvramFile "GNS3 VM.vmx" "GNS3 VM.ova"
-7zz a -bsp1 -mx=1 "../GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip" "GNS3 VM.ova"
+7z a -bsp1 -mx=1 "../GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 cd ..
 rm -Rf output-vmware-iso

@@ -76,10 +76,10 @@ commands:
             cd artifacts
             for file in *.zip
             do
-              sha256sum "$file" > "$file.sha256"
-              cat "$file.sha256"
-              sha256sum -c "$file.sha256"
+              sha256sum "$file" >> "GNS3.VM.checksums.sha256"
             done
+            cat "GNS3.VM.checksums.sha256"
+            sha256sum -c "GNS3.VM.checksums.sha256"
             ls -l
             cd -
 
@@ -131,7 +131,7 @@ jobs:
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc | apt-key add -
               apt-add-repository \"deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian \$(lsb_release -cs) contrib\"
-              apt update && apt -y install virtualbox-6.1
+              apt update && apt -y install virtualbox-7.0
             "
 
       - run:
@@ -140,16 +140,15 @@ jobs:
             echo "
               set -e
 
-              if [ ! -f "/tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle.tar" ]
+              if [ ! -f "/tmp/VMWare.bundle" ]
               then
-                wget https://softwareupdate.vmware.com/cds/vmw-desktop/ws/16.2.5/20904516/linux/core/VMware-Workstation-16.2.5-20904516.x86_64.bundle.tar -O /tmp/VMWare.bundle.tar
-                tar xvvf /tmp/VMWare.bundle.tar -C /tmp/
+                wget https://sourceforge.net/projects/gns-3/files/VMware/VMware-Workstation-Full-17.6.3-24583834.x86_64.bundle/download -O /tmp/VMWare.bundle
               fi
 
-              chmod a+x /tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle
+              chmod a+x /tmp/VMWare.bundle
 
-              /tmp/VMware-Workstation-16.2.5-20904516.x86_64.bundle --eulas-agreed --required --console
-              /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_16_SERIAL}
+              /tmp/VMWare.bundle --eulas-agreed --required --console
+              /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_17_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
             scp script.sh root@${DEVICE_IP}:
@@ -163,10 +162,12 @@ jobs:
 
               if [ ! -f "/tmp/packer.zip" ]
               then
-                wget https://releases.hashicorp.com/packer/1.11.2/packer_1.11.2_linux_amd64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.12.0/packer_1.12.0_linux_amd64.zip -O /tmp/packer.zip
               fi
 
-              7zz e -y /tmp/packer.zip -o/usr/local/bin/
+              7z e -y /tmp/packer.zip -o/usr/local/bin/
+              /usr/local/bin/packer plugins install github.com/hashicorp/virtualbox
+              /usr/local/bin/packer plugins install github.com/hashicorp/vmware
               apt install -y genisoimage qemu-utils qemu-system-x86 qemu-kvm
             "
 
@@ -266,10 +267,11 @@ jobs:
 
               if [ ! -f "/tmp/packer.zip" ]
               then
-                wget https://releases.hashicorp.com/packer/1.11.2/packer_1.11.2_linux_arm64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.12.0/packer_1.12.0_linux_arm64.zip -O /tmp/packer.zip
               fi
 
-              7zz e -y /tmp/packer.zip -o/usr/local/bin/
+              7z e -y /tmp/packer.zip -o/usr/local/bin/
+              /usr/local/bin/packer plugins install github.com/hashicorp/qemu
               apt install -y xorriso # needed by packer
             "
 
@@ -295,12 +297,12 @@ jobs:
 workflows:
   build_only_on_tag:
     jobs:
-#      - x86-build:
-#          filters:
-#            tags:
-#              only: /v3.*/
-#            branches:
-#              ignore: /.*/
+      - x86-build:
+          filters:
+            tags:
+              only: /v3.*/
+            branches:
+              ignore: /.*/
       - arm64-build:
           filters:
             tags:

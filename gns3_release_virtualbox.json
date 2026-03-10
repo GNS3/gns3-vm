@@ -11,7 +11,12 @@
      {
         "inline": "sudo apt purge -y open-vm-tools",
         "type": "shell"
-      }
+     },
+     {
+        "inline": "sudo mount /tmp/VBoxGuestAdditions.iso /mnt && sudo /mnt/VBoxLinuxAdditions.run --nox11",
+        "valid_exit_codes": [0, 1, 2],
+        "type": "shell"
+     }
    ],
    "builders" : [
       {
@@ -26,7 +31,8 @@
           "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
           "shutdown_timeout": "60m",
           "format": "ova",
-          "guest_additions_mode" : "disable",
+          "guest_additions_mode": "upload",
+          "guest_additions_path": "/tmp/VBoxGuestAdditions.iso",
           "vboxmanage" : [
              [
                "modifyvm",
@@ -65,7 +71,25 @@
                "{{.Name}}",
                "--nictype2",
                "82540EM"
-             ]
+             ],
+             [
+               "modifyvm",
+               "{{.Name}}",
+               "--graphicscontroller",
+               "vmsvga"
+             ],
+            [
+              "modifyvm",
+              "{{.Name}}",
+              "--vram",
+              "16"
+            ],
+            [
+              "modifyvm",
+              "{{.Name}}",
+              "--nested-hw-virt",
+              "on"
+            ]
           ]
       }
    ]

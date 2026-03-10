@@ -28,7 +28,7 @@ echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
 # Build the VM based on the VirtualBox OVA
-7zz e -y $GNS3_VM_FILE
+7z e -y $GNS3_VM_FILE
 export GNS3_SRC="GNS3 VM.ova"
 
 # Install the virtual kernel & tools, this is to support LIS (Linux Integration Services)
@@ -46,7 +46,7 @@ done
 
 cp ../create-vm.ps1 create-vm.ps1
 cp ../install-vm.bat install-vm.bat
-7zz a -bsp1 -mx=1 "../GNS3.VM.Hyper-V.${GNS3_VERSION}.zip" *.vhd create-vm.ps1 install-vm.bat
+7z a -bsp1 -mx=1 "../GNS3.VM.Hyper-V.${GNS3_VERSION}.zip" *.vhd create-vm.ps1 install-vm.bat
 
 cd ..
 rm -Rf output-virtualbox-ovf

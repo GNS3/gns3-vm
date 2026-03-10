@@ -229,6 +229,14 @@ chown root:root /etc/default/grub
 chmod 700 /etc/default/grub
 update-grub
 
+# Setup libvirt network
+cp gns3.xml /etc/libvirt/qemu/networks/gns3.xml
+virsh net-destroy default
+virsh net-undefine default
+virsh net-define /etc/libvirt/qemu/networks/gns3.xml
+virsh net-start gns3
+virsh net-autostart gns3
+
 # Setup Console
 cp "console-setup" "/etc/default/console-setup"
 chown root:root /etc/default/console-setup
