@@ -101,11 +101,6 @@ fi
 sudo -E add-apt-repository -y ppa:stefanberger/swtpm-focal
 sudo apt purge -y swtpm # uninstall the old version to prevent conflicts
 
-# Add the PPA to install a recent version of Qemu
-sudo -E add-apt-repository -y ppa:canonical-server/server-backports
-sudo apt autoremove -y
-sudo apt-get purge -y "qemu*"
-
 # Set up the Docker repository
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo -E add-apt-repository -y \
@@ -146,9 +141,17 @@ fi
 # For the NAT node
 apt-get install -y --allow-change-held-packages libvirt-daemon-system
 
+# Add the PPA to install a recent version of Qemu
+sudo -E add-apt-repository -y ppa:canonical-server/server-backports
+sudo apt autoremove -y
+sudo apt-get purge -y "qemu*"
+
 # Install Qemu & dependencies
 apt-get install -y qemu-system-x86 cpulimit libtpms0 swtpm
 sudo usermod -aG kvm gns3
+
+# Remove the PPA once Qemu is installed
+sudo add-apt-repository -y --remove ppa:canonical-server/server-backports
 
 # Prevent libvirt-daemon-system to be uninstalled by cleaner.sh
 apt-mark hold libvirt-daemon-system
