@@ -101,11 +101,6 @@ fi
 sudo -E add-apt-repository -y ppa:stefanberger/swtpm-focal
 sudo apt purge -y swtpm # uninstall the old version to prevent conflicts
 
-# Add the PPA to install a recent version of Qemu
-sudo -E add-apt-repository -y ppa:canonical-server/server-backports
-sudo apt autoremove -y
-sudo apt-get purge -y "qemu*"
-
 # Set up the Docker repository
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo -E add-apt-repository -y \
@@ -143,12 +138,18 @@ then
   sudo chown -R gns3:gns3 /home/gns3/.venv
 fi
 
-# For the NAT node
-apt-get install -y --allow-change-held-packages libvirt-daemon-system
+# Add the PPA to install a recent version of Qemu & libvirt
+sudo -E add-apt-repository -y ppa:canonical-server/server-backports
+sudo apt autoremove -y
+sudo apt-get purge -y "qemu*"
+sudo apt-get purge -y --allow-change-held-packages "libvirt*"
 
 # Install Qemu & dependencies
 apt-get install -y qemu-system-x86 cpulimit libtpms0 swtpm
 sudo usermod -aG kvm gns3
+
+# For the NAT node
+apt-get install -y --allow-change-held-packages libvirt-daemon-system
 
 # Prevent libvirt-daemon-system to be uninstalled by cleaner.sh
 apt-mark hold libvirt-daemon-system
@@ -230,11 +231,11 @@ chown root:root /lib/udev/rules.d/60-qemu-system-common.rules
 
 # Setup libvirt network
 cp gns3.xml /etc/libvirt/qemu/networks/gns3.xml
-virsh net-destroy default
-virsh net-undefine default
-virsh net-define /etc/libvirt/qemu/networks/gns3.xml
-virsh net-start gns3
-virsh net-autostart gns3
+if virsh net-info default | grep -q '^Active:.*yes'; then
+    virsh net-destroy default
+    virsh net-define /etc/libvirt/qemu/networks/gns3.xml
+    virsh net-autostart gns3
+fi
 
 # Setup Console
 cp "console-setup" "/etc/default/console-setup"
