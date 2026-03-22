@@ -141,15 +141,15 @@ fi
 # Add the PPA to install a recent version of Qemu & libvirt
 sudo -E add-apt-repository -y ppa:canonical-server/server-backports
 sudo apt autoremove -y
-sudo apt-get purge -y "libvirt*"
 sudo apt-get purge -y "qemu*"
-
-# For the NAT node
-apt-get install -y libvirt-daemon-system
+sudo apt-get purge -y --allow-change-held-packages "libvirt*"
 
 # Install Qemu & dependencies
 apt-get install -y qemu-system-x86 cpulimit libtpms0 swtpm
 sudo usermod -aG kvm gns3
+
+# For the NAT node
+apt-get install -y --allow-change-held-packages libvirt-daemon-system
 
 # Prevent libvirt-daemon-system to be uninstalled by cleaner.sh
 apt-mark hold libvirt-daemon-system

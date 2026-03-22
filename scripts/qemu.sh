@@ -38,6 +38,8 @@ if [[ "$TAG" != "4.2.1" ]]
 then
   # Get backports from https://launchpad.net/~canonical-server/+archive/ubuntu/server-backports/
   sudo -E add-apt-repository -y ppa:canonical-server/server-backports
+else
+  sudo add-apt-repository -y --remove ppa:canonical-server/server-backports
 fi
 
 sudo apt-mark unhold libvirt-daemon-system
@@ -46,7 +48,5 @@ sudo apt-get purge -y "qemu*"
 sudo apt-get update
 sudo apt-get install -y qemu-system-x86
 sudo usermod -aG kvm gns3
-sudo add-apt-repository -y --remove ppa:canonical-server/server-backports
-sudo apt-get update
 echo "Qemu version $TAG has been installed"
 sleep 10
