@@ -36,14 +36,10 @@ fi
 
 if [[ "$TAG" != "4.2.1" ]]
 then
-
   # Get backports from https://launchpad.net/~canonical-server/+archive/ubuntu/server-backports/
   sudo -E add-apt-repository -y ppa:canonical-server/server-backports
-
 else
-
   sudo add-apt-repository -y --remove ppa:canonical-server/server-backports
-
 fi
 
 sudo apt-mark unhold libvirt-daemon-system

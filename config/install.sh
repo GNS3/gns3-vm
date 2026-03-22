@@ -231,11 +231,11 @@ update-grub
 
 # Setup libvirt network
 cp gns3.xml /etc/libvirt/qemu/networks/gns3.xml
-virsh net-destroy default
-virsh net-undefine default
-virsh net-define /etc/libvirt/qemu/networks/gns3.xml
-virsh net-start gns3
-virsh net-autostart gns3
+if virsh net-info default | grep -q '^Active:.*yes'; then
+    virsh net-destroy default
+    virsh net-define /etc/libvirt/qemu/networks/gns3.xml
+    virsh net-autostart gns3
+fi
 
 # Setup Console
 cp "console-setup" "/etc/default/console-setup"
