@@ -17,52 +17,40 @@ then
     exit 1
 fi
 
-#export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
-#FIXME: force to 2.2
-export GNS3_RELEASE_CHANNEL="2.2"
+export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 
-echo "Build VM for GNS3 $GNS3_VERSION"
+echo "Building VMware VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
 if [[ "$GNS3_VM_FILE" == "" ]]
 then
-    export GNS3VM_VERSION="0.17.0" # `python last_vm_version.py`
-    export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
+    export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.Base.${GNS3VM_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
-    if [[ ! -f "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" ]]
+    if [[ ! -f "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip" ]]
     then
         echo "Downloading $GNS3VM_URL"
-        curl -Lk --http1.1 "$GNS3VM_URL" > "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
+        curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
     fi
 else
     echo "GNS3 VM file: $GNS3_VM_FILE"
-    export GNS3VM_VERSION=`cat version`
-    cp "$GNS3_VM_FILE" "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip"
+    cp "$GNS3_VM_FILE" "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
 fi
 
-7z e -y "/tmp/GNS3VM.VMware.${GNS3VM_VERSION}.zip" "GNS3 VM.ova"
-mv "GNS3 VM.ova" "/tmp/GNS3VM.VMWare.${GNS3VM_VERSION}.ova"
+7z e -y "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
 
-echo "Convert to VMX file format"
-rm -Rf output-vmx
-mkdir output-vmx
-ovftool "/tmp/GNS3VM.VMWare.${GNS3VM_VERSION}.ova" output-vmx/gns3.vmx
+for qcow2_file in *.qcow2; do
+    echo "Converting ${qcow2_file} to VMDK format..."
+    vmdk_file=`basename "${qcow2_file}" .qcow2`
+    qemu-img convert -O vmdk "${qcow2_file}" "${vmdk_file}.vmdk"
+done
 
-echo "Upgrade with packer"
-rm "/tmp/GNS3VM.VMWare.${GNS3VM_VERSION}.ova"
-rm -Rf output-vmware-vmx
-export GNS3_SRC="output-vmx/gns3.vmx"
-packer build -only=vmware-vmx gns3_release.json
+packer build -only=vmware-iso gns3_release.json
 
-cd output-vmware-vmx
+cd output-vmware-iso
 
 echo "Export to OVA"
 ovftool --noImageFiles --noNvramFile "GNS3 VM.vmx" "GNS3 VM.ova"
-
-#echo "Fix OVA network"
-#mv "GNS3 VM.ova" "GNS3 VM.tmp.ova"
-#python3 ../fix_vmware_ova_network.py "GNS3 VM.tmp.ova" "GNS3 VM.ova"
 7z a -bsp1 -mx=1 "../GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 cd ..
-rm -Rf output-*
+rm -Rf output-vmware-iso

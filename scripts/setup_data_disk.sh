@@ -1,14 +1,8 @@
 #!/bin/bash
 
-# Setup Ubuntu
-# This script should be run as root
-
 set -e
 
-# Auto login
-apt-get update
-
-if [[ "$(dpkg --print-architecture)" == "arm64" ]]
+if [[ -b "/dev/vdb" ]]
 then
   DATA_DISK="/dev/vdb"
   DATA_PART="/dev/vdb1"
@@ -23,4 +17,4 @@ mkfs.ext4 $DATA_PART
 echo "UUID=$(blkid -s UUID -o value $DATA_PART)  /opt  ext4  nodiratime  0  2" >> /etc/fstab
 mount -a
 
-echo "Ubuntu has been setup"
+echo "Data disk has been setup and partition mounted on /opt"

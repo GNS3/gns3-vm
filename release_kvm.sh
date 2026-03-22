@@ -15,25 +15,21 @@ then
     exit 1
 fi
 
-#export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
-#FIXME: force to 2.2
-export GNS3_RELEASE_CHANNEL="2.2"
-
-echo "Build VM for GNS3 $GNS3_VERSION"
+echo "Creating KVM VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
-
-if [[ ! -f "./GNS3.VM.VirtualBox.${GNS3_VERSION}.zip" ]]
+if [[ ! -f "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip" ]]
 then
-    export GNS3VM_URL="https://github.com/GNS3/gns3-gui/releases/download/v${GNS3_VERSION}/GNS3.VM.VirtualBox.${GNS3_VERSION}.zip"
-    echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
-    curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip"
-else
-    cp "./GNS3.VM.VirtualBox.${GNS3_VERSION}.zip" "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip"
+    echo "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip does not exist"
+    exit 1
 fi
 
 7z e -y "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip" "GNS3 VM.ova"
 mv "GNS3 VM.ova" "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
+
+rm -Rf kvm-build
+mkdir kvm-build
+cd kvm-build
 
 tar -xvf "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
 for vmdk_file in GNS3\ VM*.vmdk; do
@@ -42,6 +38,6 @@ for vmdk_file in GNS3\ VM*.vmdk; do
     qemu-img convert -O qcow2 "${vmdk_file}" "${qcow2_file}.qcow2"
 done
 
-7z a -bsp1 -mx=1 "GNS3.VM.KVM.${GNS3_VERSION}.zip" *.qcow2 start-gns3vm.sh
+7z a -bsp1 -mx=1 "../GNS3.VM.KVM.${GNS3_VERSION}.zip" *.qcow2 ../start-gns3vm.sh
 
 rm "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"

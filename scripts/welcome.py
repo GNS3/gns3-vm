@@ -25,6 +25,8 @@ import subprocess
 import configparser
 import urllib.request
 import json
+import bcrypt
+
 from dialog import Dialog, PythonDialogBug
 
 try:
@@ -50,14 +52,13 @@ def get_ip():
     return IP.decode().strip()
 
 
-def get_config():
+def get_server_config():
     """
     Returns the server config.
     """
 
-    major_version = gns3_major_version()
     config = configparser.RawConfigParser()
-    path = os.path.expanduser("~/.config/GNS3/{}/gns3_server.conf".format(major_version))
+    path = "/opt/gns3/server/gns3_server.conf"
     config.read([path], encoding="utf-8")
     return config
 
@@ -67,8 +68,7 @@ def write_config(config):
     Writes the server config.
     """
 
-    major_version = gns3_major_version()
-    with open(os.path.expanduser("~/.config/GNS3/{}/gns3_server.conf".format(major_version)), 'w') as f:
+    with open("/opt/gns3/server/gns3_server.conf", 'w') as f:
         config.write(f)
 
 
@@ -118,9 +118,12 @@ def set_release_channel():
     if d.yesno("This feature is for testers only. You may break your GNS3 installation. Are you REALLY sure you want to continue?", yes_label="Exit (Safe option)", no_label="Continue") == d.OK:
         return
     code, tag = d.menu("Select the GNS3 release channel",
-                       choices=[("2.2", "Current stable release (RECOMMENDED)"),
-                                ("2.2dev", "Next stable release, development version")
-                                ])
+                       choices=[
+                           ("2.2", "Current stable release (RECOMMENDED)"),
+                           ("2.2dev", "Current unstable version"),
+                           ("3.0", "Next stable release"),
+                           ("3.0dev", "Totally unstable version")
+                       ])
     d.clear()
     if code == Dialog.OK:
         os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
@@ -139,7 +142,7 @@ def get_release_channel():
             content = f.read()
             return content
     except OSError:
-        return "2.2"
+        return "3.0"
 
 
 def get_all_releases(release_channel, dev=False):
@@ -194,12 +197,12 @@ def upgrade(force=False):
     if match:
         # development release (unstable)
         releases = get_all_releases(match.group(1), dev=True)
-        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/focal-unstable/scripts/upgrade_{}.sh".format(release_channel)
+        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/noble-unstable/scripts/upgrade_{}.sh".format(release_channel)
         choices.append((match.group(1), "Latest development version on {} branch".format(match.group(1))))
     else:
         # current release (stable)
         releases = get_all_releases(release_channel)
-        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/focal-stable/scripts/upgrade_{}.sh".format(release_channel)
+        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/noble-stable/scripts/upgrade_{}.sh".format(release_channel)
 
     if releases is None:
         return
@@ -271,24 +274,27 @@ Uptime: {uptime}\n\n""".format(
             kvm=kvm_support(),
             uptime=uptime())
 
-    config = get_config()
+    config = get_server_config()
     port_string = ":3080"
     server_port = "3080"
+    protocol = "http"
     if config.has_section("Server"):
         try:
             server_port = config.get("Server", "port")
-            if server_port == "80":
+            if server_port == "80" or server_port == "443":
                 port_string = ""
             else:
                 port_string = ":" + server_port
+            if server_port == "443":
+                protocol = "https"
         except configparser.NoOptionError:
             server_port = "3080"
 
     ip = get_ip()
     if ip:
-        content += "IP: {ip} PORT: {server_port}\n\nTo log in using SSH: ssh gns3@{ip}\nPassword: gns3\n\nTo launch the Web-Ui: http://{ip}{url_port}\n\nImages and projects are stored in '/opt/gns3'""".format(ip=ip, server_port=server_port, url_port=port_string)
+        content += "IP: {ip} PORT: {server_port}\n\nTo log in using SSH: ssh gns3@{ip}\nPassword: gns3\n\nTo launch the Web-Ui: {protocol}://{ip}{url_port} (default username/password is admin/admin)\n\nImages and projects are stored in '/opt/gns3'""".format(protocol=protocol, ip=ip, server_port=server_port, url_port=port_string)
     else:
-        content += "eth0 is not configured. Please manually configure by selecting the 'Network' entry in the menu."
+        content += "eth0 is not configured (no IP address found). Please manually configure by selecting the 'Network' entry in the menu."
 
     try:
         d.msgbox(content)
@@ -373,26 +379,43 @@ def console_configuration():
 
 def set_security():
     """
-    Configures authentication on the GNS3 server.
+    Configures SSL encryption on the GNS3 server.
     """
 
-    config = get_config()
-    if d.yesno("Enable GNS3 server authentication?") == d.OK:
-        if not config.has_section("Server"):
-            config.add_section("Server")
-        config.set("Server", "auth", True)
-        (answer, text) = d.inputbox("Login?")
-        if answer != d.OK:
-            return
-        config.set("Server", "user", text)
-        (answer, text) = d.passwordbox("Password?")
-        if answer != d.OK:
-            return
-        config.set("Server", "password", text)
-    else:
-        config.set("Server", "auth", False)
-    write_config(config)
+    if d.yesno("Do you want to configure SSL encryption?") == d.OK:
+        certfile = "/opt/gns3/server/ssl/server.cert"
+        certkey = "/opt/gns3/server/ssl/server.key"
+        os.makedirs("/opt/gns3/server/ssl", exist_ok=True)
+        subj = "/C=US/ST=Texas/O=GNS3SELF/localityName=Austin/commonName=localhost/organizationalUnitName=GNS3Server/emailAddress=gns3cert@gns3.com"
+        ret = os.system('openssl req -nodes -new -x509 -keyout {} -out {} -subj "{}"'.format(certkey, certfile, subj))
+        if ret != 0:
+            d.msgbox("Could not set up SSL encryption")
+        else:
+            config = get_server_config()
+            if not config.has_section("Server"):
+                config.add_section("Server")
+            config.set("Server", "protocol", "https")
+            config.set("Server", "enable_ssl", True)
+            config.set("Server", "port", 443)
+            config.set("Server", "certfile", certfile)
+            config.set("Server", "certkey", certkey)
+            write_config(config)
+            os.system("sudo service gns3 restart")
+            d.infobox("SSL configured with self-signed certificate created in '/opt/gns3/server/ssl'")
 
+
+def reset_password():
+    """
+    Resets the controller admin password.
+    """
+
+    if d.yesno("Do you want to reset the admin password for the GNS3 controller?") == d.OK:
+        # sqlite3 gns3_controller.db "UPDATE users SET hashed_password = null WHERE username = 'admin';"
+        salt = bcrypt.gensalt()
+        default_password = "admin"
+        hashed_password = bcrypt.hashpw(password=default_password.encode('utf-8'), salt=salt).decode('utf-8')
+        os.system('sqlite3 /opt/gns3/server/gns3_controller.db "UPDATE users SET hashed_password = {} WHERE username = admin;"'.format(hashed_password))
+        d.infobox("Admin password has been reset to 'admin'")
 
 def qemu():
     """
@@ -400,19 +423,19 @@ def qemu():
     """
 
     code, version = d.menu("Select the Qemu version to install",
-                            choices=[("4.2.1", "Qemu version 4.2.1"),
-                                     ("8.0.4", "Qemu version 8.0.4")])
+                            choices=[("8.2.2", "Qemu version 8.2.2")])
     d.clear()
     if code == Dialog.OK:
-        script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/focal-stable/scripts/qemu.sh"
-        ret = os.system("curl -Lk {url} > /tmp/qemu.sh && bash -x /tmp/qemu.sh {version}".format(url=script_url,
-                                                                                                 version=version))
-        if ret != 0:
-            print("Could not install Qemu version {version}".format(version=version))
-        elif not os.path.exists(os.path.expanduser("~/.config/GNS3/qemu_version")):
-            os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
-            with open(os.path.expanduser("~/.config/GNS3/qemu_version"), "w+") as f:
-                f.write(version)
+        d.infobox("Qemu version 8.2.2 is already installed and there is currently no back-ported version available")
+        # script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/focal-stable/scripts/qemu.sh"
+        # ret = os.system("curl -Lk {url} > /tmp/qemu.sh && bash -x /tmp/qemu.sh {version}".format(url=script_url,
+        #                                                                                          version=version))
+        # if ret != 0:
+        #     print("Could not install Qemu version {version}".format(version=version))
+        # elif not os.path.exists(os.path.expanduser("~/.config/GNS3/qemu_version")):
+        #     os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
+        #     with open(os.path.expanduser("~/.config/GNS3/qemu_version"), "w+") as f:
+        #         f.write(version)
 
 
 def log():
@@ -429,8 +452,7 @@ def edit_config():
     Edits GNS3 server configuration file.
     """
 
-    major_version = gns3_major_version()
-    os.system("nano ~/.config/GNS3/{}/gns3_server.conf".format(major_version))
+    os.system("nano /opt/gns3/server/gns3_server.conf")
 
 
 def edit_network():
@@ -483,7 +505,13 @@ def kvm_support():
     Returns true if KVM is supported.
     """
 
-    return subprocess.call("kvm-ok") == 0
+    if os.path.exists("/tmp/kvm-detected"):
+        return True
+    result = subprocess.call("kvm-ok") == 0
+    if result is True:
+        with open("/tmp/kvm-detected", "w+") as f:
+            f.write("1")
+    return result
 
 
 def ubuntu_version():
@@ -533,7 +561,7 @@ def kvm_control():
     """
 
     kvm_ok = kvm_support()
-    config = get_config()
+    config = get_server_config()
     try:
         if config.getboolean("Qemu", "enable_kvm") is True:
             if kvm_ok is False:
@@ -551,6 +579,8 @@ def kvm_control():
         return
 
 
+
+
 vm_information()
 kvm_control()
 
@@ -566,7 +596,8 @@ try:
                             ("Log", "Show the GNS3 server log"),
                             ("Test", "Check Internet connection"),
                             ("Qemu", "Switch Qemu version"),
-                            ("Security", "Configure server authentication"),
+                            ("Security", "Configure server security"),
+                            ("Reset", "Reset controller admin password"),
                             ("Keyboard", "Change keyboard layout"),
                             ("Console", "Change console settings (font size etc.)"),
                             ("Configure", "Edit server configuration (advanced users ONLY)"),
@@ -605,6 +636,8 @@ try:
                 edit_network()
             elif tag == "Security":
                 set_security()
+            elif tag == "Reset":
+                reset_password()
             elif tag == "Keyboard":
                 keyboard_configuration()
             elif tag == "Console":

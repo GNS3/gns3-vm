@@ -11,6 +11,8 @@
 #      dhcp4: no
 #      addresses:
 #        - 10.10.10.2/24
-#      gateway4: 10.10.10.1
+#      routes:
+#        - to: default
+#          via: 10.0.0.1
 #      nameservers:
 #          addresses: [8.8.8.8, 8.8.4.4]

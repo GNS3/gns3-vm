@@ -7,27 +7,19 @@ export UBUNTU_RELEASE=`lsb_release -c -s`
 set -e
 
 # Update the system
-sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get dist-upgrade -y
+#sudo apt-get update
+#sudo apt-get upgrade -y
+#sudo apt-get dist-upgrade -y
 
 # use the Ubuntu LTS enablement (also called HWE or Hardware Enablement) stack
-sudo apt-get install -y --install-recommends linux-generic-hwe-20.04
-
-sudo apt-get install -y curl software-properties-common
+# sudo apt-get install -y --install-recommends linux-generic-hwe-22.04
 
 cd /tmp/config
 sudo bash install.sh
 
-# Install pip3 if missing
-if [[ ! $(which pip3) ]]
-then
-  wget https://bootstrap.pypa.io/pip/3.8/get-pip.py -O /tmp/get-pip.py && sudo -H python3 /tmp/get-pip.py
-fi
-
 # Install the GNS3 VM menu dependency
 sudo apt-get install -y dialog
-sudo -H pip3 install pythondialog
+sudo -H pip3 install pythondialog bcrypt==4.1.2 --break-system-packages
 
 # Force the hostid for IOU license check
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
