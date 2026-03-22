@@ -19,7 +19,7 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-export BRANCH="noble-unstable"
+export BRANCH="focal-unstable"
 export UNSTABLE_APT="1"
 
 # upgrade the GNS3 VM first
@@ -60,27 +60,6 @@ else
 fi
 
 python3 -m pip install .
-
-# update the web-ui as well
-if [[ -z "$1" ]] || [[ "$1" == "3.0" ]]
-then
-  cd ..
-  if [[ ! -d "gns3-web-ui" ]]
-  then
-    git clone https://github.com/GNS3/gns3-web-ui.git gns3-web-ui
-  fi
-  sudo chown -R gns3:gns3 gns3-web-ui
-  cd gns3-web-ui
-  sudo chmod -R 775 .git
-  git reset --hard HEAD
-  git fetch origin
-  git checkout "master-3.0"
-  git pull
-  WEB_UI_PATH=$(dirname `python3 -c "import gns3server; print(gns3server.__file__)"`)/static/web-ui
-  sudo rm -rf $WEB_UI_PATH/*
-  sudo cp -R dist/* $WEB_UI_PATH
-  echo "Development Web-Ui installed"
-fi
 
 echo "Update to 3.0dev completed, rebooting in 10 seconds..."
 sleep 10

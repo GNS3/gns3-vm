@@ -29,7 +29,6 @@ token = sys.argv[1]
 action = sys.argv[2]
 packet_project = sys.argv[3]
 server_type = sys.argv[4]
-metro = sys.argv[5]
 
 GNS3_HOSTNAME = 'gns3-vm-builder-{}'.format(server_type)
 
@@ -57,13 +56,14 @@ def get():
 
         # termination time is 1h 30min from now (UTC time)
         termination_time = datetime.now(timezone.utc) + timedelta(hours=1, minutes=30)
+        #print("Current time is: {}".format(datetime.now(timezone.utc).isoformat()))
         #print("Creating device with termination time: {}".format(termination_time.isoformat()))
 
         device = manager.create_device(
             project_id=gns3_project.id,
             hostname=GNS3_HOSTNAME,
             plan=server_type,
-            metro=metro,
+            metro="dc",
             operating_system="ubuntu_24_04",
             termination_time=termination_time.isoformat())
 

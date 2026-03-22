@@ -31,19 +31,35 @@ sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
 sudo DEBIAN_FRONTEND=noninteractive apt install -y python3-dev gcc git ntp
 
+# Install pip3 if missing
+if [[ ! $(which pip3) ]]
+then
+  wget https://bootstrap.pypa.io/pip/3.8/get-pip.py -O /tmp/get-pip.py && sudo -H python3 /tmp/get-pip.py
+fi
+
 # use the GNS3 server virtual environment
 source /home/gns3/.venv/gns3server-venv/bin/activate
 
-# upgrade pip, wheel and setuptools to the latest version
+# upgrade pip and wheel to the latest version
 python3 -m pip install --upgrade pip wheel setuptools
 
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-if [[ "$GNS3_VERSION" == "master" || "$GNS3_VERSION" == "3.0" ]]
+if [[ "$GNS3_VERSION" == "master" ]]
 then
-  # Install from a branch on GitHub
-  python3 -m pip install "https://github.com/GNS3/gns3-server/archive/refs/heads/$GNS3_VERSION.zip"
+  cd /tmp
+  git clone https://github.com/GNS3/gns3-server.git gns3-server
+  cd gns3-server
+  git checkout -b "$GNS3_VERSION" 
+  python3 setup.py install
+elif [[ "$GNS3_VERSION" == "2.2" ]]
+then
+  cd /tmp
+  git clone https://github.com/GNS3/gns3-server.git gns3-server
+  cd gns3-server
+  git checkout -b 2.2
+  python3 setup.py install
 else
   python3 -m pip install gns3-server==${GNS3_VERSION}
 fi
@@ -51,8 +67,9 @@ fi
 set +e
 
 # Configure the GNS3 server
-mkdir -p "/opt/gns3/server"
-cat > "/opt/gns3/server/gns3_server.conf" << EOF
+export GNS3_MAJOR_VERSION=$(echo ${GNS3_VERSION} | egrep -o '^[0-9]+.[0-9]+')
+mkdir -p ~/.config/GNS3/${GNS3_MAJOR_VERSION}
+cat > ~/.config/GNS3/${GNS3_MAJOR_VERSION}/gns3_server.conf << EOF
 [Server]
 host = 0.0.0.0
 port = 80

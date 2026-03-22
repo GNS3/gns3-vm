@@ -1,9 +1,3 @@
-#!/bin/bash
-#
-# Copyright (C) 2023 GNS3 Technologies Inc.
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
@@ -19,7 +13,7 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-export BRANCH="noble-stable"
+export BRANCH="focal-stable"
 export UNSTABLE_APT="0"
 export PYPI_GNS3SERVER_JSON_URL="https://pypi.org/pypi/gns3-server/json"
 
@@ -40,10 +34,8 @@ source /home/gns3/.venv/gns3server-venv/bin/activate
 
 if  [[ -z "$HTTP_PROXY" ]]
 then
-  python3 -m pip install --upgrade pip setuptools
   python3 -m pip install gns3-server==$RELEASE
 else
-  python3 -m pip install --proxy $HTTP_PROXY --upgrade pip setuptools
   python3 -m pip install --proxy $HTTP_PROXY gns3-server==$RELEASE
 fi
 

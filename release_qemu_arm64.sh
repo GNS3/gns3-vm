@@ -17,8 +17,8 @@ then
 fi
 
 #export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
-#FIXME: force to 3.0
-export GNS3_RELEASE_CHANNEL="3.0"
+#FIXME: force to 2.2
+export GNS3_RELEASE_CHANNEL="2.2"
 
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
@@ -26,18 +26,19 @@ echo "Release channel: $GNS3_RELEASE_CHANNEL"
 if [[ "$GNS3_VM_FILE" == "" ]]
 then
     export GNS3VM_VERSION="0.17.0" # `python last_vm_version.py`
-    export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.Base.ARM64.${GNS3VM_VERSION}.zip"
+    export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
     echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
-    curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.Base.ARM64.${GNS3VM_VERSION}.zip"
+    curl --insecure -L "$GNS3VM_URL" > "/tmp/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
 else
     echo "GNS3 VM file: $GNS3_VM_FILE"
-    cp "$GNS3_VM_FILE" "/tmp/GNS3VM.Base.ARM64.${GNS3VM_VERSION}.zip"
+    cp "$GNS3_VM_FILE" "/tmp/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
 fi
 
-7z e -y "/tmp/GNS3VM.Base.ARM64.${GNS3VM_VERSION}.zip"
+7z e -y "/tmp/GNS3VM.ARM64.${GNS3VM_VERSION}.zip"
 
-rm -Rf output-qemu-arm64
-packer build -only=qemu-arm64 gns3_release.json
+packer build -only=qemu gns3_release.json
+
+rm -Rf output-qemu
 
 for qcow2_file in *.qcow2
 do

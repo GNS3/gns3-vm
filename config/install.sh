@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (C) 2022 GNS3 Technologies Inc.
+# Copyright (C) 2015 GNS3 Technologies Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,59 +24,54 @@
 set -e
 
 export DEBIAN_FRONTEND="noninteractive"
-export UBUNTU_RELEASE=`lsb_release -c -s`
 
-#################
-## APT sources ##
-#################
+# Fix bug https://bugs.launchpad.net/ubuntu/+source/openssl/+bug/1832919
+dpkg-reconfigure libc6
+sudo -E apt-get -q --option Dpkg::Options::=-"-force-confold" --allow-change-held-packages --assume-yes install libssl1.1
 
 if [[ "$(dpkg --print-architecture)" == "arm64" ]]
 then
 
-# Use the Ubuntu ports repository for arm64 and the main repository for i386 and amd64
-cat > /etc/apt/sources.list.d/ubuntu.sources << EOF
-Types: deb
-URIs: http://ports.ubuntu.com/ubuntu-ports
-Suites: noble noble-updates noble-backports
-Components: main restricted universe multiverse
-Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-Architectures: arm64
+cat > /etc/apt/sources.list << EOF
+# For arm64 architecture
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-updates main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-backports main restricted universe multiverse
+deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-security main restricted universe multiverse
 
-Types: deb
-URIs: http://ports.ubuntu.com/ubuntu-ports
-Suites: noble-security
-Components: main restricted universe multiverse
-Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-Architectures: arm64
-
-Types: deb
-URIs: http://archive.ubuntu.com/ubuntu
-Suites: noble noble-updates noble-backports
-Components: main restricted universe multiverse
-Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-Architectures: i386 amd64
-
-Types: deb
-URIs: http://security.ubuntu.com/ubuntu/
-Suites: noble-security
-Components: main restricted universe multiverse
-Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-Architectures: i386 amd64
+# For i386 architecture (IOU support)
+deb [arch=i386] http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+deb [arch=i386] http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+deb [arch=i386] http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+deb [arch=i386] http://security.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
 EOF
-
-# Activate i386 and amd64 for IOU support
-dpkg --add-architecture i386
-dpkg --add-architecture amd64
 
 else
 
-  # Select the best APT mirror
-  # Taken from https://github.com/vegardit/fast-apt-mirror.sh
-  sudo -H ./fast-apt-mirror.sh find --apply --speedtests 10 --
+cat > /etc/apt/sources.list << EOF
+# For i386 and amd64 architectures
+deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ focal-updates main restricted universe multiverse
+deb http://archive.ubuntu.com/ubuntu/ focal-backports main restricted universe multiverse
+deb http://security.ubuntu.com/ubuntu/ focal-security main restricted universe multiverse
+EOF
 
-  # Activate i386 for IOU support
-  dpkg --add-architecture i386
+fi
 
+# Activate i386 for IOU support
+dpkg --add-architecture i386
+
+# Never upgrade
+mkdir -p /etc/update-manager
+cp release-upgrades /etc/update-manager/release-upgrades
+chmod 644 /etc/update-manager/release-upgrades
+chown -R root:root /etc/update-manager
+
+# Add the GNS3 PPA
+if [[ ! $(which add-apt-repository) ]]
+then
+    apt-get update
+    apt-get install -y software-properties-common
 fi
 
 # use sudo -E to preserve proxy config
@@ -89,60 +84,85 @@ else
     add-apt-repository -y --remove ppa:gns3/unstable
 fi
 
+# add Qemu 3.1.0 if explicitly requested
+#if [[ ! -f ~/.config/GNS3/qemu_version ]]
+#then
+#  sudo -E add-apt-repository -y ppa:gns3/qemu
+#else
+#  if [[ -f ~/.config/GNS3/qemu_version && `cat ~/.config/GNS3/qemu_version` == "3.1.0" ]]
+#  then
+#    sudo -E add-apt-repository -y ppa:gns3/qemu
+#  else
+#    sudo add-apt-repository -y --remove ppa:gns3/qemu
+#  fi
+#fi
+
 # Add the PPA to install a recent version of swtpm
-sudo -E add-apt-repository -y ppa:stefanberger/swtpm-noble
+sudo -E add-apt-repository -y ppa:stefanberger/swtpm-focal
 sudo apt purge -y swtpm # uninstall the old version to prevent conflicts
 
+# Add the PPA to install a recent version of Qemu
+sudo -E add-apt-repository -y ppa:canonical-server/server-backports
+sudo apt autoremove -y
+sudo apt-get purge -y "qemu*"
+
 # Set up the Docker repository
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor --yes -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo -E add-apt-repository -y \
+   "deb [arch=$(dpkg --print-architecture)] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
 
 apt-get update
 
-# Fix upgrade error "ModuleNotFoundError: No module named 'debian'"
-apt install --reinstall python3-debian
-
 # Install jq for upgrades
-apt install -y jq
+apt-get install -y jq
 
 # Install virt-what
-apt install -y virt-what
+apt-get install -y virt-what
+
+# Install cpu-checker (for kvm-ok)
+apt-get install -y cpu-checker
 
 # Autologin
-apt install -y mingetty
+apt-get install -y mingetty
 
-# Python
-apt-get install -y python3-dev python3-venv python3-pip python3-setuptools
+# Python 3.9
+apt-get install -y python3.9 python3.9-venv python3-setuptools
 
-# Create virtualenv for gns3server
+## Delete the old environment if it's not Python 3.9.5
+if [[ -d "/home/gns3/.venv/gns3server-venv" && "$(/home/gns3/.venv/gns3server-venv/bin/python3 -V)" != "Python 3.9.5" ]]
+then
+  rm -rf /home/gns3/.venv/gns3server-venv
+fi
+
+# Create virtualenv for gns3server using Python 3.9
 if [[ ! -d "/home/gns3/.venv/gns3server-venv" ]]
 then
-  python3 -m venv /home/gns3/.venv/gns3server-venv
+  python3.9 -m venv /home/gns3/.venv/gns3server-venv
   sudo chown -R gns3:gns3 /home/gns3/.venv
 fi
 
-
 # For the NAT node
-apt install -y libvirt-daemon-system
+apt-get install -y --allow-change-held-packages libvirt-daemon-system
 
-# For admin password reset in the controller database
-apt install -y sqlite3
-
-
-##################
-## Qemu support ##
-##################
-
-# Install Qemu
-apt install -y qemu-system-x86 cpulimit libtpms0 swtpm
+# Install Qemu & dependencies
+apt-get install -y qemu-system-x86 cpulimit libtpms0 swtpm
 sudo usermod -aG kvm gns3
+
+# Prevent libvirt-daemon-system to be uninstalled by cleaner.sh
+apt-mark hold libvirt-daemon-system
 
 # GNS3 projects directory in the VM is located on a different partition than the partition for the root directory (/)
 # additional permissions need to be configured for swtpm in AppArmor
 echo "owner /opt/gns3/** rwk," | sudo tee /etc/apparmor.d/local/usr.bin.swtpm > /dev/null
 sudo service apparmor restart
+
+if [[ "$(dpkg --print-architecture)" == "arm64" ]]
+then
+  # Install Qemu user emulation with binfmt_misc on arm64 (for IOU support)
+  apt-get install binfmt-support qemu-user qemu-user-binfmt
+fi
 
 # Fix the KVM high CPU usage with some appliances
 # See https://github.com/GNS3/gns3-vm/issues/128
@@ -150,18 +170,12 @@ if [[ ! $(cat /etc/modprobe.d/qemu-system-x86.conf | grep "halt_poll_ns") ]]; th
    echo "options kvm halt_poll_ns=0" | sudo tee --append /etc/modprobe.d/qemu-system-x86.conf
 fi
 
-# Setup KVM permissions
-cp 60-qemu-system-common.rules /lib/udev/rules.d/60-qemu-system-common.rules
-chmod 644 /lib/udev/rules.d/60-qemu-system-common.rules
-chown root:root /lib/udev/rules.d/60-qemu-system-common.rules
-
-####################
-## Docker support ##
-####################
+# Install other GNS3 dependencies
+apt-get install -y gns3-iou dynamips vpcs ubridge mtools
 
 # Install Docker
 set +e  # avoid service error on arm64
-apt install -y docker-ce docker-ce-cli containerd.io
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 sudo usermod -aG docker gns3
 sudo service docker stop
 sudo rm -rf /var/lib/docker/aufs
@@ -175,59 +189,44 @@ chown root:root /etc/docker/daemon.json
 chmod 644 /etc/docker/daemon.json
 
 # Install VNC support for Docker
-apt install -y tigervnc-standalone-server
+apt-get install -y --allow-change-held-packages tigervnc-standalone-server
 
+# Prevent tigervnc to be uninstalled by cleaner.sh
+apt-mark hold tigervnc-standalone-server
 
-#################
-## IOU support ##
-#################
-
-if [[ "$(dpkg --print-architecture)" == "arm64" ]]
-then
-  # Install Qemu user emulation with binfmt_misc on arm64 (for IOU support)
-  apt install -y binfmt-support qemu-user qemu-user-binfmt
-  apt install -y libc6:i386 libc6:amd64
-fi
-
-apt install -y gns3-iou
-
-# System tuning for IOU support
-cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
-chmod 755 /etc/sysctl.d/50-qlen_gns3.conf
-chown root:root /etc/sysctl.d/50-qlen_gns3.conf
-
-####################
-## Network config ##
-####################
-
-# Setup netplan
-cp "gns3vm_default_netcfg.yaml" "/etc/netplan/80_gns3vm_default_netcfg.yaml"
-chown root:root /etc/netplan/80_gns3vm_default_netcfg.yaml
-chmod 600 /etc/netplan/80_gns3vm_default_netcfg.yaml
-
-# Do not overwrite user static network config
-if [[ ! -f "/etc/netplan/90_gns3vm_static_netcfg.yaml" ]]
-then
-    cp "gns3vm_static_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
-    chown root:root /etc/netplan/90_gns3vm_static_netcfg.yaml
-    chmod 600 /etc/netplan/90_gns3vm_static_netcfg.yaml
-fi
-
-#netplan apply
-
-# Install other GNS3 dependencies
-apt install -y dynamips vpcs ubridge mtools
+# Install net-tools for ifconfig etc.
+apt-get install -y net-tools
 
 # Setup rc.local
 cp "rc.local" "/etc/rc.local"
 chmod 700 /etc/rc.local
 chown root:root /etc/rc.local
 
+# Setup netplan
+cp "gns3vm_default_netcfg.yaml" "/etc/netplan/80_gns3vm_default_netcfg.yaml"
+chown root:root /etc/netplan/80_gns3vm_default_netcfg.yaml
+chmod 644 /etc/netplan/80_gns3vm_default_netcfg.yaml
+
+# Do not overwrite user static network config
+if [[ ! -f "/etc/netplan/90_gns3vm_static_netcfg.yaml" ]]
+then
+    cp "gns3vm_static_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
+    chown root:root /etc/netplan/90_gns3vm_static_netcfg.yaml
+    chmod 644 /etc/netplan/90_gns3vm_static_netcfg.yaml
+fi
+
+netplan apply
+
 # Setup Grub
 cp "grub" "/etc/default/grub"
 chown root:root /etc/default/grub
 chmod 700 /etc/default/grub
 update-grub
+
+# Setup KVM permissions
+cp 60-qemu-system-common.rules /lib/udev/rules.d/60-qemu-system-common.rules
+chmod 644 /lib/udev/rules.d/60-qemu-system-common.rules
+chown root:root /lib/udev/rules.d/60-qemu-system-common.rules
 
 # Setup libvirt network
 cp gns3.xml /etc/libvirt/qemu/networks/gns3.xml
@@ -252,6 +251,11 @@ cp sysctl.conf /etc/sysctl.conf
 chmod 644 /etc/sysctl.conf
 chown root:root /etc/sysctl.conf
 
+# IPtables
+#cp iptables /etc/network/if-pre-up.d/iptables
+#chmod 755 /etc/network/if-pre-up.d/iptables
+#chown root:root /etc/network/if-pre-up.d/iptables
+
 # GNS3 Restore
 cp gns3-restore.sh /usr/local/bin/gns3restore
 chmod 755 /usr/local/bin/gns3restore
@@ -266,6 +270,11 @@ chown root:root /usr/local/bin/gns3vm
 cp bash_profile /home/gns3/.bash_profile
 chmod 700 /home/gns3/.bash_profile
 chown gns3:gns3 /home/gns3/.bash_profile
+
+# System tuning for IOU support
+cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
+chmod 755 /etc/sysctl.d/50-qlen_gns3.conf
+chown root:root /etc/sysctl.d/50-qlen_gns3.conf
 
 # Open GNS3 menu at startup
 mkdir -p /etc/systemd/system/getty@tty1.service.d/
@@ -290,14 +299,7 @@ chmod 755 /lib/systemd/system/gns3vm.service
 chown root:root /lib/systemd/system/gns3vm.service
 systemctl enable gns3vm
 
-# Install SNMP agent but disable on boot
-apt install -y snmpd
-systemctl disable snmpd
-
-# Disable cloud-init
-touch /etc/cloud/cloud-init.disabled
-
 # Restart systemd services
-#systemctl daemon-reload
-#systemctl restart gns3.service
-#systemctl restart gns3vm.service
+systemctl daemon-reload
+systemctl restart gns3.service
+systemctl restart gns3vm.service

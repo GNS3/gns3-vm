@@ -30,26 +30,24 @@ commands:
 
       - run:
           name: Get builder device
-          no_output_timeout: 20m
+          no_output_timeout: 15m
           command: |
             source env/bin/activate
-            DEVICE_IP=`python3 .circleci/device.py ${EQUINIX_TOKEN} get "${EQUINIX_PROJECT}" ${DEVICE_TYPE} ${METRO}`
+            DEVICE_IP=`python3 .circleci/device.py ${EQUINIX_TOKEN} get "${EQUINIX_PROJECT}" ${DEVICE_TYPE}`
             echo "export DEVICE_IP=\"$DEVICE_IP\"" >> $BASH_ENV
             echo "Obtained device on $DEVICE_IP"
             ssh-keyscan -H ${DEVICE_IP} >> ~/.ssh/known_hosts
 
       - run:
-          name: Install dependencies and clone repository on device
+          name: Clone repository on device
           command: |
             ssh root@${DEVICE_IP} "
               set -e
-              apt update
-              apt install -y 7zip
               if [ ! -d "~/gns3-vm" ]
               then
                 git clone https://github.com/GNS3/gns3-vm.git
                 cd gns3-vm
-                git checkout noble-stable
+                git checkout focal-stable
               fi
             "
 
@@ -67,7 +65,7 @@ commands:
           when: always
           command: |
             source env/bin/activate
-            python3 .circleci/device.py ${EQUINIX_TOKEN} destroy "${EQUINIX_PROJECT}" ${DEVICE_TYPE} ${METRO}
+            python3 .circleci/device.py ${EQUINIX_TOKEN} destroy "${EQUINIX_PROJECT}" ${DEVICE_TYPE}
 
       - run:
           name: Generate SHA256 checksums
@@ -95,10 +93,8 @@ commands:
             cd ..
 
             echo "Deploying version ${CIRCLE_TAG} on GitHub"
-            ls -l artifacts
             for file in artifacts/GNS3.VM.*.{zip,sha256}
             do
-              echo "Uploading $file to GitHub"
               python3 gns3-build/upload.py ${CIRCLE_TAG} $file
             done
 
@@ -116,7 +112,6 @@ jobs:
 
     environment:
         DEVICE_TYPE: m3.small.x86
-        METRO: sv # Silicon Valley
 
     steps:
       - checkout
@@ -127,11 +122,13 @@ jobs:
           command: |
             ssh root@${DEVICE_IP} "
               set -e
-              apt -y install linux-headers-\$(uname -r)
+              apt update
+              apt -y install linux-headers-\$(uname -r) git 7zip
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc | apt-key add -
               apt-add-repository \"deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian \$(lsb_release -cs) contrib\"
-              apt update && apt -y install virtualbox-7.0
+              apt update
+              apt -y install virtualbox-7.0
             "
 
       - run:
@@ -155,7 +152,7 @@ jobs:
             ssh root@${DEVICE_IP} "bash script.sh"
 
       - run:
-          name: Install Packer for amd64 & Qemu
+          name: Install Packer for amd64
           command: |
             ssh root@${DEVICE_IP} "
               set -e
@@ -166,24 +163,9 @@ jobs:
               fi
 
               7z e -y /tmp/packer.zip -o/usr/local/bin/
+              chmod +x /usr/local/bin/packer
               /usr/local/bin/packer plugins install github.com/hashicorp/virtualbox
               /usr/local/bin/packer plugins install github.com/hashicorp/vmware
-              apt install -y genisoimage qemu-utils qemu-system-x86 qemu-kvm
-            "
-
-      - run:
-          name: Release VMWare VM
-          command: |
-            ssh root@${DEVICE_IP} "
-              set -e
-
-              cd gns3-vm
-
-              if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
-              then
-                ./build_base_vm.sh
-                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.Base.$(cat version).zip
-              fi
             "
 
       - run:
@@ -196,7 +178,8 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_virtualbox.sh ${GNS3_VERSION} GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip
+                ./virtualbox.sh
+                ./release_virtualbox.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.17.0.zip
               fi
             "
 
@@ -210,7 +193,7 @@ jobs:
 
               if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_hyperv.sh ${GNS3_VERSION} GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip
+                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.VirtualBox.0.17.0.zip
               fi
             "
 
@@ -222,11 +205,25 @@ jobs:
 
               cd gns3-vm
 
-              cp \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" /tmp/GNS3VM.VirtualBox.${GNS3_NUMBER}.zip
-
               if [ ! -e \"GNS3.VM.KVM.${GNS3_NUMBER}.zip\" ];
               then
+                apt install -y qemu-utils
                 ./release_kvm.sh ${GNS3_VERSION}
+              fi
+            "
+
+      - run:
+          name: Release VMWare VM
+          command: |
+            ssh root@${DEVICE_IP} "
+              set -e
+
+              cd gns3-vm
+
+              if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
+              then
+                ./vmware.sh
+                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.VMware.0.17.0.zip
               fi
             "
 
@@ -253,7 +250,6 @@ jobs:
 
     environment:
         DEVICE_TYPE: c3.large.arm
-        METRO: da # Dallas
 
     steps:
       - checkout
@@ -267,12 +263,13 @@ jobs:
 
               if [ ! -f "/tmp/packer.zip" ]
               then
+                apt update && apt install -y 7zip
                 wget https://releases.hashicorp.com/packer/1.12.0/packer_1.12.0_linux_arm64.zip -O /tmp/packer.zip
               fi
 
               7z e -y /tmp/packer.zip -o/usr/local/bin/
+              chmod +x /usr/local/bin/packer
               /usr/local/bin/packer plugins install github.com/hashicorp/qemu
-              apt install -y xorriso # needed by packer
             "
 
       - run:
@@ -287,8 +284,8 @@ jobs:
               if [ ! -e \"GNS3.VM.ARM64.${GNS3_NUMBER}.zip\" ];
               then
                 apt install -y qemu-utils qemu-system-arm qemu-efi-aarch64
-                ./build_base_vm_arm64.sh
-                ./release_qemu_arm64.sh ${GNS3_VERSION} GNS3VM.Base.ARM64.$(cat version).zip
+                ./qemu_arm64.sh
+                ./release_qemu_arm64.sh ${GNS3_VERSION} GNS3VM.ARM64.0.17.0.zip
               fi
             "
 
@@ -300,12 +297,12 @@ workflows:
       - x86-build:
           filters:
             tags:
-              only: /v3.*/
+              only: /v2.*/
             branches:
               ignore: /.*/
       - arm64-build:
           filters:
             tags:
-              only: /v3.*/
+              only: /v2.*/
             branches:
               ignore: /.*/

@@ -45,9 +45,14 @@ sudo dpkg --configure -a
 sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
 
 # upgrade the GNS3 welcome script
-sudo -H pip3 install pythondialog bcrypt==4.1.2 --break-system-packages
 curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/welcome.py" > /tmp/gns3welcome.py
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 755 "/usr/local/bin/gns3welcome.py"
 
 set +e
+
+#if [ `cat /home/gns3/.config/GNS3/gns3vm_version` = '0.10.14' ]
+#then
+#    # upgrade the VM
+#    echo -n '0.10.14' > /home/gns3/.config/GNS3/gns3vm_version
+#fi
