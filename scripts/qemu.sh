@@ -47,5 +47,6 @@ sudo apt-get update
 sudo apt-get install -y qemu-system-x86
 sudo usermod -aG kvm gns3
 sudo add-apt-repository -y --remove ppa:canonical-server/server-backports
+sudo apt-get update
 echo "Qemu version $TAG has been installed"
 sleep 10

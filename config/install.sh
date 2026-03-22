@@ -141,6 +141,9 @@ fi
 # For the NAT node
 apt-get install -y --allow-change-held-packages libvirt-daemon-system
 
+# Prevent libvirt-daemon-system to be uninstalled by cleaner.sh
+apt-mark hold libvirt-daemon-system
+
 # Add the PPA to install a recent version of Qemu
 sudo -E add-apt-repository -y ppa:canonical-server/server-backports
 sudo apt autoremove -y
@@ -152,9 +155,7 @@ sudo usermod -aG kvm gns3
 
 # Remove the PPA once Qemu is installed
 sudo add-apt-repository -y --remove ppa:canonical-server/server-backports
-
-# Prevent libvirt-daemon-system to be uninstalled by cleaner.sh
-apt-mark hold libvirt-daemon-system
+sudo apt-get update
 
 # GNS3 projects directory in the VM is located on a different partition than the partition for the root directory (/)
 # additional permissions need to be configured for swtpm in AppArmor
