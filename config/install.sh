@@ -231,12 +231,13 @@ chown root:root /lib/udev/rules.d/60-qemu-system-common.rules
 
 # Setup libvirt network
 cp gns3.xml /etc/libvirt/qemu/networks/gns3.xml
-if [[ $(virsh net-info default &>/dev/null) ]]; then
-  virsh net-destroy default
-fi
+set +e
+virsh net-destroy default
+virsh net-undefine default
 virsh net-define /etc/libvirt/qemu/networks/gns3.xml
 virsh net-start gns3
 virsh net-autostart gns3
+set -e
 
 # Setup Console
 cp "console-setup" "/etc/default/console-setup"
