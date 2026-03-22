@@ -233,7 +233,6 @@ chown root:root /lib/udev/rules.d/60-qemu-system-common.rules
 cp gns3.xml /etc/libvirt/qemu/networks/gns3.xml
 if [[ $(virsh net-info default &>/dev/null) ]]; then
   virsh net-destroy default
-  virsh net-undefine default
 fi
 virsh net-define /etc/libvirt/qemu/networks/gns3.xml
 virsh net-start gns3
