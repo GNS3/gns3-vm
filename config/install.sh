@@ -230,9 +230,14 @@ chmod 700 /etc/default/grub
 update-grub
 
 # Setup libvirt network
-cp gns3.xml /etc/libvirt/qemu/networks/gns3.xml
 if virsh net-info default | grep -q '^Active:.*yes'; then
+    virsh net-undefine default
     virsh net-destroy default
+fi
+
+if [[ ! -f "/etc/libvirt/qemu/networks/gns3.xml" ]]
+then
+    cp gns3.xml /etc/libvirt/qemu/networks/gns3.xml
     virsh net-define /etc/libvirt/qemu/networks/gns3.xml
     virsh net-autostart gns3
 fi
