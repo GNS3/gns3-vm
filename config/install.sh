@@ -231,8 +231,8 @@ chown root:root /lib/udev/rules.d/60-qemu-system-common.rules
 
 # Setup libvirt network
 if virsh net-info default | grep -q '^Active:.*yes'; then
+    virsh net-undefine default
     virsh net-destroy default
-    #virsh net-undefine default
 fi
 
 if [[ ! -f "/etc/libvirt/qemu/networks/gns3.xml" ]]
