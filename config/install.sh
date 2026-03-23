@@ -233,6 +233,7 @@ chown root:root /lib/udev/rules.d/60-qemu-system-common.rules
 cp gns3.xml /etc/libvirt/qemu/networks/gns3.xml
 if virsh net-info default | grep -q '^Active:.*yes'; then
     virsh net-destroy default
+    virsh net-undefine default
     virsh net-define /etc/libvirt/qemu/networks/gns3.xml
     virsh net-autostart gns3
 fi
