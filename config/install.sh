@@ -231,7 +231,7 @@ chown root:root /lib/udev/rules.d/60-qemu-system-common.rules
 
 # Setup libvirt network
 if virsh net-info default | grep -q '^Active:.*yes'; then
-    virsh net-undefine default
+    virsh net-undefine default || true
     virsh net-destroy default
 fi
 
