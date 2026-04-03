@@ -9,5 +9,5 @@ then
     exit 1
 fi
 
-export BRANCH="noble-unstable"
+export BRANCH="resolute-unstable"
 curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/restore.sh" | bash
