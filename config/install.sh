@@ -37,28 +37,28 @@ then
 cat > /etc/apt/sources.list.d/ubuntu.sources << EOF
 Types: deb
 URIs: http://ports.ubuntu.com/ubuntu-ports
-Suites: noble noble-updates noble-backports
+Suites: resolute resolute-updates resolute-backports
 Components: main restricted universe multiverse
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 Architectures: arm64
 
 Types: deb
 URIs: http://ports.ubuntu.com/ubuntu-ports
-Suites: noble-security
+Suites: resolute-security
 Components: main restricted universe multiverse
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 Architectures: arm64
 
 Types: deb
 URIs: http://archive.ubuntu.com/ubuntu
-Suites: noble noble-updates noble-backports
+Suites: resolute resolute-updates resolute-backports
 Components: main restricted universe multiverse
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 Architectures: i386 amd64
 
 Types: deb
 URIs: http://security.ubuntu.com/ubuntu/
-Suites: noble-security
+Suites: resolute-security
 Components: main restricted universe multiverse
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 Architectures: i386 amd64
@@ -90,8 +90,8 @@ else
 fi
 
 # Add the PPA to install a recent version of swtpm
-sudo -E add-apt-repository -y ppa:stefanberger/swtpm-noble
-sudo apt purge -y swtpm # uninstall the old version to prevent conflicts
+#sudo -E add-apt-repository -y ppa:stefanberger/swtpm-resolute
+#sudo apt purge -y swtpm # uninstall the old version to prevent conflicts
 
 # Set up the Docker repository
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor --yes -o /usr/share/keyrings/docker-archive-keyring.gpg

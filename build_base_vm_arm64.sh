@@ -7,10 +7,10 @@ export GNS3VM_VERSION=`cat version`
 echo "Build Base VM $GNS3VM_VERSION for ARM64"
 
 rm -Rf output-qemu-amd64
-if [[ ! -f "./noble-server-cloudimg-arm64.img" ]]
+if [[ ! -f "./resolute-server-cloudimg-arm64.img" ]]
 then
   # download the cloud image outside packer
-   curl -O https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-arm64.img
+   curl -O https://cloud-images.ubuntu.com/resolute/current/resolute-server-cloudimg-arm64.img
 fi
 packer build -only=qemu-arm64 $* base_vm.json
 
