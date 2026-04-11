@@ -75,6 +75,8 @@ then
 fi
 
 # use sudo -E to preserve proxy config
+sudo -E apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys B83AAABFFBD82D21B543C8EA86C22C2EC6A24D7F
+
 if [[ "$UNSTABLE_APT" == "1" ]]
 then
     sudo -E add-apt-repository -y ppa:gns3/unstable
@@ -98,6 +100,7 @@ fi
 #fi
 
 # Add the PPA to install a recent version of swtpm
+sudo -E apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 98E5A594422A7F7CEC7A5DCD1E9E66385D3E4D5D
 sudo -E add-apt-repository -y ppa:stefanberger/swtpm-focal
 sudo apt purge -y swtpm # uninstall the old version to prevent conflicts
 
@@ -139,6 +142,7 @@ then
 fi
 
 # Add the PPA to install a recent version of Qemu & libvirt
+sudo -E apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 94E187AD53A59D1847E4880F8A295C4FB8B190B7
 sudo -E add-apt-repository -y ppa:canonical-server/server-backports
 sudo apt autoremove -y
 sudo apt-get purge -y "qemu*"
