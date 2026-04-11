@@ -75,6 +75,7 @@ then
 fi
 
 # use sudo -E to preserve proxy config
+export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 sudo -E apt-key adv --keyserver hkps://keyserver.ubuntu.com --recv-keys B83AAABFFBD82D21B543C8EA86C22C2EC6A24D7F
 
 if [[ "$UNSTABLE_APT" == "1" ]]
