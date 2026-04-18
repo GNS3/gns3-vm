@@ -19,7 +19,7 @@ sudo bash install.sh
 
 # Install the GNS3 VM menu dependency
 sudo apt-get install -y dialog
-sudo -H pip3 install pythondialog bcrypt==4.1.2 --break-system-packages
+sudo -H pip3 install pythondialog bcrypt --break-system-packages
 
 # Force the hostid for IOU license check
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid

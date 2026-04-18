@@ -123,6 +123,8 @@ Architectures: $(dpkg --print-architecture)
 Signed-By: /etc/apt/keyrings/docker.asc
 EOF
 
+apt update
+
 # Fix upgrade error "ModuleNotFoundError: No module named 'debian'"
 apt install --reinstall python3-debian
 
@@ -211,7 +213,7 @@ then
   apt install -y libc6:i386 libc6:amd64
 fi
 
-apt install -y gns3-iou
+#apt install -y gns3-iou
 
 # System tuning for IOU support
 cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
