@@ -595,7 +595,7 @@ try:
                             ("Shell", "Open a shell"),
                             ("Log", "Show the GNS3 server log"),
                             ("Test", "Check Internet connection"),
-                            ("Qemu", "Switch Qemu version"),
+                            #("Qemu", "Switch Qemu version"),
                             ("Security", "Configure server security"),
                             ("Reset", "Reset controller admin password"),
                             ("Keyboard", "Change keyboard layout"),
