@@ -32,9 +32,9 @@ export UBUNTU_RELEASE=`lsb_release -c -s`
 
 # delete existing APT sources to prevent conflicts with the GNS3 PPA
 # and to select the best mirror for the current region
-rm /etc/apt/sources.list.d/*.list
-rm /etc/apt/sources.list.d/gns3*.sources
-rm /etc/apt/sources.list.d/stefanberger*.sources
+rm -f /etc/apt/sources.list.d/*.list
+rm -f /etc/apt/sources.list.d/gns3*.sources
+rm -f /etc/apt/sources.list.d/stefanberger*.sources
 
 if [[ "$(dpkg --print-architecture)" == "arm64" ]]
 then
