@@ -10,22 +10,23 @@ while sudo fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 
    sleep 5
 done
 
-# Add the GNS3 PPA
-if [[ ! $(which add-apt-repository) ]]
-then
-    sudo apt-get update
-    sudo apt-get install -y software-properties-common
-fi
-
 echo "${GNS3_VERSION}" | grep -E  "(dev|a|rc|b|unstable|master)"
 if [[ $? -eq 0 ]]
 then
-  sudo add-apt-repository -y -r ppa:gns3/ppa
-  sudo add-apt-repository -y ppa:gns3/unstable
+  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/unstable/ubuntu"
 else
-  sudo add-apt-repository -y -r ppa:gns3/unstable
-  sudo add-apt-repository -y ppa:gns3/ppa
+  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/ppa/ubuntu"
 fi
+
+# Add the GNS3 PPA to the APT sources
+sudo tee /etc/apt/sources.list.d/gns3-ppa.sources <<EOF
+Types: deb
+URIs: $(echo "${GNS3_PPA_URI}")
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: main
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/gns3-ppa.asc
+EOF
 
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
