@@ -30,11 +30,17 @@ export UBUNTU_RELEASE=`lsb_release -c -s`
 ## APT sources ##
 #################
 
+# delete existing APT sources to prevent conflicts with the GNS3 PPA
+# and to select the best mirror for the current region
+rm /etc/apt/sources.list.d/*.list
+rm /etc/apt/sources.list.d/gns3*.sources
+rm /etc/apt/sources.list.d/stefanberger*.sources
+
 if [[ "$(dpkg --print-architecture)" == "arm64" ]]
 then
 
 # Use the Ubuntu ports repository for arm64 and the main repository for i386 and amd64
-tee /etc/apt/sources.list.d/ubuntu.sources <<EOF
+sudo tee /etc/apt/sources.list.d/ubuntu.sources <<EOF
 Types: deb
 URIs: http://ports.ubuntu.com/ubuntu-ports
 Suites: noble noble-updates noble-backports
@@ -105,6 +111,24 @@ Components: main
 Architectures: $(dpkg --print-architecture)
 Signed-By: /etc/apt/keyrings/gns3-ppa.asc
 EOF
+
+# Add the SWTPM PPA official GPG key
+if [[ ! -f "/etc/apt/keyrings/swtpm-ppa.asc" ]]
+then
+  curl -fsSL 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x98E5A594422A7F7CEC7A5DCD1E9E66385D3E4D5D' -o /etc/apt/keyrings/swtpm-ppa.asc
+  chmod a+r /etc/apt/keyrings/swtpm-ppa.asc
+fi
+
+# Add the SWTPM PPA to the APT sources
+tee /etc/apt/sources.list.d/swtpm-ppa.sources <<EOF
+Types: deb
+URIs: https://ppa.launchpadcontent.net/stefanberger/swtpm-noble/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: main
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/swtpm-ppa.asc
+EOF
+
 
 # Add the Docker official GPG key
 if [[ ! -f "/etc/apt/keyrings/docker.asc" ]]
