@@ -28,7 +28,7 @@ Architectures: $(dpkg --print-architecture)
 Signed-By: /etc/apt/keyrings/gns3-ppa.asc
 EOF
 
-sudo apt-get update
+sudo apt update
 sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
 sudo DEBIAN_FRONTEND=noninteractive apt install -y python3-dev gcc git ntp
 
@@ -41,12 +41,18 @@ python3 -m pip install --upgrade pip wheel setuptools
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-if [[ "$GNS3_VERSION" == "master" || "$GNS3_VERSION" == "3.0" ]]
+if [[ "$GNS3_VERSION" == "2.2" ]]
 then
   # Install from a branch on GitHub
   python3 -m pip install "https://github.com/GNS3/gns3-server/archive/refs/heads/$GNS3_VERSION.zip"
-else
-  python3 -m pip install gns3-server==${GNS3_VERSION}
+elif [[ "$GNS3_VERSION" == "3.0" ]]
+then
+  python3 -m pip install gns3-server[ai-copilot]==${GNS3_VERSION}
+  gns3server-web-wireshark-setup
+elif [[ "$GNS3_VERSION" == "3.0dev" ]]
+then
+  python3 -m pip install "gns3-server[ai-copilot] @ git+https://github.com/GNS3/gns3-server.git@3.0"
+  gns3server-web-wireshark-setup
 fi
 
 set +e
@@ -66,8 +72,8 @@ EOF
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 755 "/usr/local/bin/gns3welcome.py"
 
-sudo apt-get -y autoremove --purge
-sudo apt-get -y clean
+sudo apt -y autoremove --purge
+sudo apt -y clean
 
 sudo rm -fr /var/lib/apt/lists/*
 sudo rm -fr /var/cache/apt/*

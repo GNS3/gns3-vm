@@ -49,7 +49,6 @@
          "type": "shell",
          "pause_before": "30s",
          "scripts": [
-            "scripts/splashscreen.sh",
             "scripts/cleaner.sh"
          ]
       }
@@ -71,7 +70,7 @@
          "accelerator": "kvm",
          "net_device": "virtio-net-pci",
          "iso_url" : "resolute-server-cloudimg-amd64.img",
-         "iso_checksum" : "file:http://cloud-images.ubuntu.com/resolute/current/SHA256SUMS",
+         "iso_checksum" : "file:https://cloud-images.ubuntu.com/resolute/current/SHA256SUMS",
          "cpus": "{{user `cpus`}}",
          "memory": "{{user `memory`}}",
          "cd_files": ["./cloud-init/meta-data", "./cloud-init/user-data"],

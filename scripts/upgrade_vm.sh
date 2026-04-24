@@ -42,7 +42,7 @@ cd gns3-vm-${BRANCH}/config
 sudo -E bash -x install.sh
 
 sudo dpkg --configure -a
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
+sudo apt -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
 
 # upgrade the GNS3 welcome script
 sudo -H pip3 install pythondialog bcrypt --break-system-packages

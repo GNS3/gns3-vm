@@ -125,9 +125,6 @@ EOF
 
 apt update
 
-# Fix upgrade error "ModuleNotFoundError: No module named 'debian'"
-apt install --reinstall python3-debian
-
 # Install jq for upgrades
 apt install -y jq
 
@@ -138,7 +135,7 @@ apt install -y virt-what
 apt install -y mingetty
 
 # Python
-apt-get install -y python3-dev python3-venv python3-pip python3-setuptools
+apt install -y python3-minimal python3-venv python3-pip # python3-dev python3-setuptools
 
 # Create virtualenv for gns3server
 if [[ ! -d "/home/gns3/.venv/gns3server-venv" ]]
@@ -147,13 +144,11 @@ then
   sudo chown -R gns3:gns3 /home/gns3/.venv
 fi
 
-
 # For the NAT node
 apt install -y libvirt-daemon-system
 
 # For admin password reset in the controller database
 apt install -y sqlite3
-
 
 ##################
 ## Qemu support ##
@@ -201,7 +196,6 @@ chmod 644 /etc/docker/daemon.json
 # Install VNC support for Docker
 apt install -y tigervnc-standalone-server
 
-
 #################
 ## IOU support ##
 #################
@@ -213,7 +207,7 @@ then
   apt install -y libc6:i386 libc6:amd64
 fi
 
-#apt install -y gns3-iou
+apt install -y gns3-iou
 
 # System tuning for IOU support
 cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
