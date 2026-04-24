@@ -119,8 +119,7 @@ def set_release_channel():
         return
     code, tag = d.menu("Select the GNS3 release channel",
                        choices=[
-                           ("2.2", "Current stable release (RECOMMENDED)"),
-                           ("2.2dev", "Current unstable version"),
+                           ("2.2", "Stable release (RECOMMENDED)"),
                            ("3.0", "Next stable release"),
                            ("3.0dev", "Totally unstable version")
                        ])
@@ -417,26 +416,6 @@ def reset_password():
         os.system('sqlite3 /opt/gns3/server/gns3_controller.db "UPDATE users SET hashed_password = {} WHERE username = admin;"'.format(hashed_password))
         d.infobox("Admin password has been reset to 'admin'")
 
-def qemu():
-    """
-    Switch the Qemu version.
-    """
-
-    code, version = d.menu("Select the Qemu version to install",
-                            choices=[("8.2.2", "Qemu version 8.2.2")])
-    d.clear()
-    if code == Dialog.OK:
-        d.infobox("Qemu version 8.2.2 is already installed and there is currently no back-ported version available")
-        # script_url = "https://raw.githubusercontent.com/GNS3/gns3-vm/focal-stable/scripts/qemu.sh"
-        # ret = os.system("curl -Lk {url} > /tmp/qemu.sh && bash -x /tmp/qemu.sh {version}".format(url=script_url,
-        #                                                                                          version=version))
-        # if ret != 0:
-        #     print("Could not install Qemu version {version}".format(version=version))
-        # elif not os.path.exists(os.path.expanduser("~/.config/GNS3/qemu_version")):
-        #     os.makedirs(os.path.expanduser("~/.config/GNS3"), exist_ok=True)
-        #     with open(os.path.expanduser("~/.config/GNS3/qemu_version"), "w+") as f:
-        #         f.write(version)
-
 
 def log():
     """
@@ -595,7 +574,6 @@ try:
                             ("Shell", "Open a shell"),
                             ("Log", "Show the GNS3 server log"),
                             ("Test", "Check Internet connection"),
-                            ("Qemu", "Switch Qemu version"),
                             ("Security", "Configure server security"),
                             ("Reset", "Reset controller admin password"),
                             ("Keyboard", "Change keyboard layout"),

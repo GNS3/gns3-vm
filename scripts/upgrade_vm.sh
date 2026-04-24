@@ -42,10 +42,10 @@ cd gns3-vm-${BRANCH}/config
 sudo -E bash -x install.sh
 
 sudo dpkg --configure -a
-sudo apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
+sudo apt -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
 
 # upgrade the GNS3 welcome script
-sudo -H pip3 install pythondialog bcrypt==4.1.2 --break-system-packages
+sudo -H pip3 install pythondialog bcrypt --break-system-packages
 curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/welcome.py" > /tmp/gns3welcome.py
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 755 "/usr/local/bin/gns3welcome.py"

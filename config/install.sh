@@ -34,7 +34,7 @@ if [[ "$(dpkg --print-architecture)" == "arm64" ]]
 then
 
 # Use the Ubuntu ports repository for arm64 and the main repository for i386 and amd64
-cat > /etc/apt/sources.list.d/ubuntu.sources << EOF
+tee /etc/apt/sources.list.d/ubuntu.sources <<EOF
 Types: deb
 URIs: http://ports.ubuntu.com/ubuntu-ports
 Suites: resolute resolute-updates resolute-backports
@@ -79,30 +79,51 @@ else
 
 fi
 
-# use sudo -E to preserve proxy config
-if [[ "$UNSTABLE_APT" == "1" ]]
+# Add the GNS3 PPA official GPG key
+if [[ ! -f "/etc/apt/keyrings/gns3-ppa.asc" ]]
 then
-    sudo -E add-apt-repository -y ppa:gns3/unstable
-    add-apt-repository -y --remove ppa:gns3/ppa
-else
-    sudo -E add-apt-repository -y ppa:gns3/ppa
-    add-apt-repository -y --remove ppa:gns3/unstable
+  apt update
+  apt install -y ca-certificates curl
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xB83AAABFFBD82D21B543C8EA86C22C2EC6A24D7F' -o /etc/apt/keyrings/gns3-ppa.asc
+  chmod a+r /etc/apt/keyrings/gns3-ppa.asc
 fi
 
-# Add the PPA to install a recent version of swtpm
-#sudo -E add-apt-repository -y ppa:stefanberger/swtpm-resolute
-#sudo apt purge -y swtpm # uninstall the old version to prevent conflicts
+if [[ "$UNSTABLE_APT" == "1" ]]
+then
+  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/unstable/ubuntu"
+else
+  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/ppa/ubuntu"
+fi
 
-# Set up the Docker repository
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor --yes -o /usr/share/keyrings/docker-archive-keyring.gpg
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Add the GNS3 PPA to the APT sources
+tee /etc/apt/sources.list.d/gns3-ppa.sources <<EOF
+Types: deb
+URIs: $(echo "${GNS3_PPA_URI}")
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: main
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/gns3-ppa.asc
+EOF
 
-apt-get update
+# Add the Docker official GPG key
+if [[ ! -f "/etc/apt/keyrings/docker.asc" ]]
+then
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
+fi
 
-# Fix upgrade error "ModuleNotFoundError: No module named 'debian'"
-apt install --reinstall python3-debian
+# Add the Docker repository to the APT sources
+tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+apt update
 
 # Install jq for upgrades
 apt install -y jq
@@ -114,7 +135,7 @@ apt install -y virt-what
 apt install -y mingetty
 
 # Python
-apt-get install -y python3-dev python3-venv python3-pip python3-setuptools
+apt install -y python3-minimal python3-venv python3-pip # python3-dev python3-setuptools
 
 # Create virtualenv for gns3server
 if [[ ! -d "/home/gns3/.venv/gns3server-venv" ]]
@@ -123,13 +144,11 @@ then
   sudo chown -R gns3:gns3 /home/gns3/.venv
 fi
 
-
 # For the NAT node
 apt install -y libvirt-daemon-system
 
 # For admin password reset in the controller database
 apt install -y sqlite3
-
 
 ##################
 ## Qemu support ##
@@ -176,7 +195,6 @@ chmod 644 /etc/docker/daemon.json
 
 # Install VNC support for Docker
 apt install -y tigervnc-standalone-server
-
 
 #################
 ## IOU support ##

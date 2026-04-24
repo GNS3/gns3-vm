@@ -4,8 +4,8 @@
 
 set -e
 
-sudo apt-get remove -y plymouth-theme-ubuntu-text
-sudo apt-get install -y plymouth-themes plymouth-label
+sudo apt remove -y plymouth-theme-ubuntu-text
+sudo apt install -y plymouth-themes plymouth-label
 
 set +e 
 sudo mkdir -p /usr/share/plymouth/themes/gns3

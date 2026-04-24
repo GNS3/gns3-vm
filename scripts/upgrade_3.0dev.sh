@@ -28,8 +28,8 @@ curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade
 # install the GNS3 server
 if [[ ! -d "gns3-server" ]]
 then
-    sudo apt-get update
-    sudo apt-get install -y git
+    sudo apt update
+    sudo apt install -y git
     git clone https://github.com/GNS3/gns3-server.git gns3-server
 fi
 

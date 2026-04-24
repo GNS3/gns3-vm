@@ -10,7 +10,7 @@ rm -Rf output-qemu-amd64
 if [[ ! -f "./resolute-server-cloudimg-amd64.img" ]]
 then
   # download the cloud image outside packer
-   curl -O https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img
+   curl -O https://cloud-images.ubuntu.com/resolute/current/resolute-server-cloudimg-amd64.img
 fi
 packer build -only=qemu-amd64 $* base_vm.json
 
