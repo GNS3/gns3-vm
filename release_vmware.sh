@@ -17,7 +17,13 @@ then
     exit 1
 fi
 
-export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
+echo "${GNS3_VERSION}" | grep -E  "(dev|a|rc|b|unstable|master)"
+if [[ $? -eq 0 ]]
+then
+  export GNS3_RELEASE_CHANNEL=$GNS3_VERSION
+else
+  export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
+fi
 
 echo "Building VMware VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"

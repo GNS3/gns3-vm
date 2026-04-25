@@ -30,7 +30,7 @@ EOF
 
 sudo apt update
 sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
-sudo DEBIAN_FRONTEND=noninteractive apt install -y python3-dev gcc git ntp
+sudo DEBIAN_FRONTEND=noninteractive apt install -y python3-dev gcc git openntpd
 
 # use the GNS3 server virtual environment
 source /home/gns3/.venv/gns3server-venv/bin/activate
@@ -48,11 +48,9 @@ then
 elif [[ "$GNS3_VERSION" == "3.0" ]]
 then
   python3 -m pip install gns3-server[ai-copilot]==${GNS3_VERSION}
-  gns3server-web-wireshark-setup
 elif [[ "$GNS3_VERSION" == "3.0dev" ]]
 then
   python3 -m pip install "gns3-server[ai-copilot] @ git+https://github.com/GNS3/gns3-server.git@3.0"
-  gns3server-web-wireshark-setup
 fi
 
 set +e

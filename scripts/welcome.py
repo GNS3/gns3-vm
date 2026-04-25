@@ -26,6 +26,7 @@ import configparser
 import urllib.request
 import json
 import bcrypt
+import shlex
 
 from dialog import Dialog, PythonDialogBug
 
@@ -213,12 +214,12 @@ def upgrade(force=False):
         d.clear()
         if code == Dialog.OK:
             # download and execute upgrade script from the corresponding branch on GitHub and pass the GNS3 version we want
-            ret = os.system("curl -Lk {url} > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh {version}".format(url=script_url, version=gns3_version))
+            ret = subprocess.run(["bash", "-c", "curl -Lk {} > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh {}".format(shlex.quote(script_url), shlex.quote(gns3_version))]).returncode
         else:
             return
     else:
         # download and execute upgrade script from the corresponding branch on GitHub, the latest GNS3 version will be installed
-        ret = os.system("curl -Lk {url} > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh".format(url=script_url))
+        ret = subprocess.run(["bash", "-c", "curl -Lk {} > /tmp/upgrade.sh && bash -x /tmp/upgrade.sh".format(shlex.quote(script_url))]).returncode
 
     if ret != 0:
         print("ERROR DURING THE UPGRADE PROCESS PLEASE, TAKE A SCREENSHOT IF YOU NEED SUPPORT")
@@ -230,7 +231,7 @@ def shrink_disk():
     Shrinks the VM disk.
     """
 
-    ret = os.system("lspci | grep -i vmware")
+    ret = subprocess.run(["bash", "-c", "lspci | grep -i vmware"]).returncode
     if ret != 0:
         d.msgbox("Shrinking the disk is only supported when running the GNS3 VM with VMware")
         return
@@ -238,10 +239,10 @@ def shrink_disk():
     if d.yesno("Would you like to shrink the VM disk? The VM will reboot at the end of the process. Continue?") != d.OK:
         return
 
-    os.system("sudo service gns3 stop")
-    os.system("sudo service docker stop")
-    os.system("sudo vmware-toolbox-cmd disk shrink /opt")
-    os.system("sudo vmware-toolbox-cmd disk shrink /")
+    subprocess.run(["sudo", "service", "gns3", "stop"])
+    subprocess.run(["sudo", "service", "docker", "stop"])
+    subprocess.run(["sudo", "vmware-toolbox-cmd", "disk", "shrink", "/opt"])
+    subprocess.run(["sudo", "vmware-toolbox-cmd", "disk", "shrink", "/"])
     d.msgbox("Process completed, the GNS3 VM will reboot now")
     os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
 
@@ -319,10 +320,10 @@ def migrate():
             return
         if option == "Send":
             # first make sure they are no files belonging to root
-            os.system("sudo chown -R gns3:gns3 /opt/gns3")
+            subprocess.run(["sudo", "chown", "-R", "gns3:gns3", "/opt/gns3"])
             # then rsync the data
-            command = r"rsync -az --progress -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/gns3-vm-key' /opt/gns3 gns3@{}:/opt".format(destination)
-            ret = os.system('bash -c "{}"'.format(command))
+            command = "rsync -az --progress -e 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.ssh/gns3-vm-key' /opt/gns3 gns3@{}:/opt".format(shlex.quote(destination))
+            ret = subprocess.run(["bash", "-c", command]).returncode
             time.sleep(10)
             if ret != 0:
                 d.msgbox("Could not send data to the other GNS3 VM located at {}".format(destination))
@@ -335,8 +336,8 @@ then
     ssh-keygen -f ~/.ssh/gns3-vm-key -N '' -C gns3@{}
 fi
 ssh-copy-id -i ~/.ssh/gns3-vm-key gns3@{}
-""".format(get_ip(), destination)
-            ret = os.system('bash -c "{}"'.format(script))
+""".format(shlex.quote(get_ip()), shlex.quote(destination))
+            ret = subprocess.run(["bash", "-c", script]).returncode
             time.sleep(10)
             if ret != 0:
                 d.msgbox("Error while setting up the migrate feature")
@@ -365,7 +366,7 @@ def keyboard_configuration():
     Allows users to change the keyboard layout
     """
 
-    os.system("/usr/bin/sudo dpkg-reconfigure keyboard-configuration")
+    subprocess.run(["sudo", "dpkg-reconfigure", "keyboard-configuration"])
 
 
 def console_configuration():
@@ -373,7 +374,7 @@ def console_configuration():
     Allows users to change the console settings
     """
 
-    os.system("/usr/bin/sudo dpkg-reconfigure console-setup")
+    subprocess.run(["sudo", "dpkg-reconfigure", "console-setup"])
 
 
 def set_security():
@@ -386,7 +387,7 @@ def set_security():
         certkey = "/opt/gns3/server/ssl/server.key"
         os.makedirs("/opt/gns3/server/ssl", exist_ok=True)
         subj = "/C=US/ST=Texas/O=GNS3SELF/localityName=Austin/commonName=localhost/organizationalUnitName=GNS3Server/emailAddress=gns3cert@gns3.com"
-        ret = os.system('openssl req -nodes -new -x509 -keyout {} -out {} -subj "{}"'.format(certkey, certfile, subj))
+        ret = subprocess.run(["openssl", "req", "-nodes", "-new", "-x509", "-keyout", certkey, "-out", certfile, "-subj", subj]).returncode
         if ret != 0:
             d.msgbox("Could not set up SSL encryption")
         else:
@@ -399,7 +400,7 @@ def set_security():
             config.set("Server", "certfile", certfile)
             config.set("Server", "certkey", certkey)
             write_config(config)
-            os.system("sudo service gns3 restart")
+            subprocess.run(["sudo", "service", "gns3", "restart"])
             d.infobox("SSL configured with self-signed certificate created in '/opt/gns3/server/ssl'")
 
 
@@ -413,8 +414,17 @@ def reset_password():
         salt = bcrypt.gensalt()
         default_password = "admin"
         hashed_password = bcrypt.hashpw(password=default_password.encode('utf-8'), salt=salt).decode('utf-8')
-        os.system('sqlite3 /opt/gns3/server/gns3_controller.db "UPDATE users SET hashed_password = {} WHERE username = admin;"'.format(hashed_password))
+        subprocess.run(["sqlite3", "/opt/gns3/server/gns3_controller.db",
+                        "UPDATE users SET hashed_password = '{}' WHERE username = 'admin';".format(hashed_password)])
         d.infobox("Admin password has been reset to 'admin'")
+
+
+def web_wireshark():
+    """
+    Install the web-wireshark container.
+    """
+
+    subprocess.run(["bash", "-c", "source /home/gns3/.venv/gns3server-venv/bin/activate && gns3server-web-wireshark-setup && exit"])
 
 
 def log():
@@ -422,8 +432,8 @@ def log():
     Displays the GNS3 server log.
     """
 
-    os.system("/usr/bin/sudo chmod 755 /var/log/gns3/gns3.log")
-    os.system("tail -n 20 -f /var/log/gns3/gns3.log")
+    subprocess.run(["sudo", "chmod", "755", "/var/log/gns3/gns3.log"])
+    subprocess.run(["tail", "-n", "20", "-f", "/var/log/gns3/gns3.log"])
 
 
 def edit_config():
@@ -431,7 +441,7 @@ def edit_config():
     Edits GNS3 server configuration file.
     """
 
-    os.system("nano /opt/gns3/server/gns3_server.conf")
+    subprocess.run(["nano", "/opt/gns3/server/gns3_server.conf"])
 
 
 def edit_network():
@@ -441,8 +451,8 @@ def edit_network():
 
     if d.yesno("The server will reboot at the end of the process. Continue?") != d.OK:
         return
-    os.system("sudo nano /etc/netplan/90_gns3vm_static_netcfg.yaml")
-    os.system("sudo netplan apply")
+    subprocess.run(["sudo", "nano", "/etc/netplan/90_gns3vm_static_netcfg.yaml"])
+    subprocess.run(["sudo", "netplan", "apply"])
     os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
 
 
@@ -460,9 +470,9 @@ def edit_proxy():
 
     with open('/tmp/00proxy', 'w+') as f:
         f.write('Acquire::http::Proxy "' + http_proxy + '";')
-    os.system("sudo mv /tmp/00proxy /etc/apt/apt.conf.d/00proxy")
-    os.system("sudo chown root /etc/apt/apt.conf.d/00proxy")
-    os.system("sudo chmod 744 /etc/apt/apt.conf.d/00proxy")
+    subprocess.run(["sudo", "mv", "/tmp/00proxy", "/etc/apt/apt.conf.d/00proxy"])
+    subprocess.run(["sudo", "chown", "root", "/etc/apt/apt.conf.d/00proxy"])
+    subprocess.run(["sudo", "chmod", "744", "/etc/apt/apt.conf.d/00proxy"])
 
     with open('/tmp/proxy.sh', 'w+') as f:
         f.write('export http_proxy="' + http_proxy + '"\n')
@@ -470,10 +480,10 @@ def edit_proxy():
         f.write('export HTTP_PROXY="' + http_proxy + '"\n')
         f.write('export HTTPS_PROXY="' + https_proxy + '"\n')
 
-    os.system("sudo mv /tmp/proxy.sh /etc/profile.d/proxy.sh")
-    os.system("sudo chown root /etc/profile.d/proxy.sh")
-    os.system("sudo chmod 744 /etc/profile.d/proxy.sh")
-    os.system("sudo cp /etc/profile.d/proxy.sh /etc/default/docker")
+    subprocess.run(["sudo", "mv", "/tmp/proxy.sh", "/etc/profile.d/proxy.sh"])
+    subprocess.run(["sudo", "chown", "root", "/etc/profile.d/proxy.sh"])
+    subprocess.run(["sudo", "chmod", "744", "/etc/profile.d/proxy.sh"])
+    subprocess.run(["sudo", "cp", "/etc/profile.d/proxy.sh", "/etc/default/docker"])
 
     d.msgbox("The GNS3 VM will reboot now")
     os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
@@ -573,6 +583,7 @@ try:
                             ("Upgrade", "Upgrade the GNS3 VM"),
                             ("Shell", "Open a shell"),
                             ("Log", "Show the GNS3 server log"),
+                            ("Web Wireshark", "Install web-wireshark"),
                             ("Test", "Check Internet connection"),
                             ("Security", "Configure server security"),
                             ("Reset", "Reset controller admin password"),
@@ -604,8 +615,8 @@ try:
                 vm_information()
             elif tag == "Migrate":
                 migrate()
-            elif tag == "Qemu":
-                qemu()
+            elif tag == "Web Wireshark":
+                web_wireshark()
             elif tag == "Log":
                 log()
             elif tag == "Configure":
