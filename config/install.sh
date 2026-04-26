@@ -98,6 +98,9 @@ apt-get install -y dynamips iouyap ubridge
 # Install VNC support for Docker
 apt-get install -y x11vnc xvfb
 
+# Install tshark for packet capture
+apt-get install -y tshark
+
 # Install iou dependencies
 apt-get install -y gns3-iou 
 
