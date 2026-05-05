@@ -39,7 +39,7 @@ sudo chmod -R 775 .git
 git reset --hard HEAD
 git fetch origin
 
-if [[ -z "$1" ]] || [[ "$1" == "3.0" ]]
+if [[ -z "$1" ]] || [[ "$1" == "3.1" ]]
 then
   git checkout "3.0" # latest dev version on this branch
   git pull
@@ -62,7 +62,7 @@ fi
 python3 -m pip install .
 
 # update the web-ui as well
-if [[ -z "$1" ]] || [[ "$1" == "3.0" ]]
+if [[ -z "$1" ]] || [[ "$1" == "3.1" ]]
 then
   cd ..
   if [[ ! -d "gns3-web-ui" ]]
@@ -82,6 +82,6 @@ then
   echo "Development Web-Ui installed"
 fi
 
-echo "Update to 3.0dev completed, rebooting in 10 seconds..."
+echo "Update to 3.1dev completed, rebooting in 10 seconds..."
 sleep 10
 sudo reboot

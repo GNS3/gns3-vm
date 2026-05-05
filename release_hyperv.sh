@@ -23,7 +23,7 @@ then
 fi
 
 
-export GNS3_RELEASE_CHANNEL="3.0"
+export GNS3_RELEASE_CHANNEL="3.1"
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 

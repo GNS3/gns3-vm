@@ -41,15 +41,18 @@ python3 -m pip install --upgrade pip wheel setuptools
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-if [[ "$GNS3_VERSION" == "2.2" ]]
+if [[ "$GNS3_RELEASE_CHANNEL" == "2.2" ]]
 then
   # Install from a branch on GitHub
+  echo "Installing GNS3 server $GNS3_VERSION from GitHub"
   python3 -m pip install "https://github.com/GNS3/gns3-server/archive/refs/heads/$GNS3_VERSION.zip"
-elif [[ "$GNS3_VERSION" == "3.0" ]]
+elif [[ "$GNS3_RELEASE_CHANNEL" == "3.1" ]]
 then
+  echo "Installing GNS3 server $GNS3_VERSION from PyPI"
   python3 -m pip install gns3-server[ai-copilot]==${GNS3_VERSION}
-elif [[ "$GNS3_VERSION" == "3.0dev" ]]
+elif [[ "$GNS3_RELEASE_CHANNEL" == "3.1dev" ]]
 then
+  echo "Installing GNS3 server dev $GNS3_VERSION from GitHub"
   python3 -m pip install "gns3-server[ai-copilot] @ git+https://github.com/GNS3/gns3-server.git@3.0"
 fi
 

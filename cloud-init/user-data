@@ -1,6 +1,5 @@
 #cloud-config
 hostname: gns3vm
-package_upgrade: true
 users:
   - name: gns3
     sudo: ALL=(ALL) NOPASSWD:ALL
@@ -11,11 +10,6 @@ users:
     plain_text_passwd: gns3
 ssh_pwauth: true
 disable_root: false
-
-packages:
-  - nano
-  - curl
-  - software-properties-common
 
 runcmd:
   # never upgrade to the next Ubuntu version

@@ -32,6 +32,7 @@
          "type" : "shell",
          "script" : "scripts/provision_gns3.sh",
           "environment_vars": [
+            "GNS3_RELEASE_CHANNEL={{user `gns3_release_channel`}}",
             "GNS3_VERSION={{user `gns3_version`}}"
           ]
       }

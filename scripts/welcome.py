@@ -121,8 +121,8 @@ def set_release_channel():
     code, tag = d.menu("Select the GNS3 release channel",
                        choices=[
                            ("2.2", "Stable release (RECOMMENDED)"),
-                           ("3.0", "Next stable release"),
-                           ("3.0dev", "Totally unstable version")
+                           ("3.1", "Next stable release"),
+                           ("3.1dev", "Totally unstable version")
                        ])
     d.clear()
     if code == Dialog.OK:
@@ -142,7 +142,7 @@ def get_release_channel():
             content = f.read()
             return content
     except OSError:
-        return "3.0"
+        return "3.1"
 
 
 def get_all_releases(release_channel, dev=False):
