@@ -120,7 +120,7 @@ def set_release_channel():
         return
     code, tag = d.menu("Select the GNS3 release channel",
                        choices=[
-                           ("2.2", "Stable release (RECOMMENDED)"),
+                           ("2.2", "Stable release"),
                            ("3.1", "Next stable release"),
                            ("3.1dev", "Totally unstable version")
                        ])
@@ -424,6 +424,12 @@ def web_wireshark():
     Install the web-wireshark container.
     """
 
+    version = gns3_version()
+    if version is None:
+        d.msgbox("The GNS3 server is not installed, please manually install it or download a pre-installed VM.")
+        return
+    if not version.startswith("3"):
+        d.msgbox("Web-Wireshark is not available for version {}".format(version))
     subprocess.run(["bash", "-c", "source /home/gns3/.venv/gns3server-venv/bin/activate && gns3server-web-wireshark-setup && exit"])
 
 

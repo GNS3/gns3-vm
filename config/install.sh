@@ -151,7 +151,7 @@ apt install -y sqlite3
 ##################
 
 # Install Qemu
-apt install -y qemu-system-x86 cpulimit libtpms0 swtpm
+apt install -y qemu-system-x86 qemu-utils cpulimit swtpm
 sudo usermod -aG kvm gns3
 
 # GNS3 projects directory in the VM is located on a different partition than the partition for the root directory (/)
@@ -312,6 +312,9 @@ systemctl enable gns3vm
 # Install SNMP agent but disable on boot
 apt install -y snmpd
 systemctl disable snmpd
+
+# Install NTP client
+apt install -y chrony
 
 # Disable cloud-init
 touch /etc/cloud/cloud-init.disabled
