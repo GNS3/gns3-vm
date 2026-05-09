@@ -38,6 +38,11 @@ for vmdk_file in GNS3\ VM*.vmdk; do
     qemu-img convert -O qcow2 "${vmdk_file}" "${qcow2_file}.qcow2"
 done
 
-7z a -bsp1 -mx=1 "../GNS3.VM.KVM.${GNS3_VERSION}.zip" *.qcow2 ../start-gns3vm.sh
+cp ../gns3vm_libvirt.xml .
+
+# Update disk paths in the libvirt XML with the current GNS3 version
+sed -i "s|GNS3\.VM\.KVM\.[0-9.]\+|GNS3.VM.KVM.${GNS3_VERSION}|g" gns3vm_libvirt.xml
+
+7z a -bsp1 -mx=1 "../GNS3.VM.KVM.${GNS3_VERSION}.zip" *.qcow2 gns3vm_libvirt.xml ../start-gns3vm.sh
 
 rm "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
