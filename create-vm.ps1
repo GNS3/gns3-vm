@@ -18,7 +18,7 @@ ElseIf ($Manufacturer -eq "AuthenticAMD") {
 Else {
     Write-Error "Hyper-V with nested virtualization does not support $Manufacturer processors" -ErrorAction Stop
 }
-Add-VMHardDiskDrive -VMName "GNS3 VM" -Path "GNS3 VM-disk001.vhd"
-Add-VMHardDiskDrive -VMName "GNS3 VM" -Path "GNS3 VM-disk002.vhd"
+Add-VMHardDiskDrive -VMName "GNS3 VM" -Path "gns3vm-disk1.vhd"
+Add-VMHardDiskDrive -VMName "GNS3 VM" -Path "gns3vm-disk2.vhd"
 Set-VMProcessor -VMName "GNS3 VM" -ExposeVirtualizationExtensions $true
 Set-VMNetworkAdapter -VMName "GNS3 VM" -MacAddressSpoofing On

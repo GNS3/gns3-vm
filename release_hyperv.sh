@@ -16,32 +16,50 @@ then
     exit 1
 fi
 
-if [[ "$GNS3_VM_FILE" == "" ]]
-then
-    echo "You need to pass the GNS3 VM file as parameter"
-    exit 1
-fi
+export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 
-
-export GNS3_RELEASE_CHANNEL="3.1"
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
-# Build the VM based on the VirtualBox OVA
-7z e -y $GNS3_VM_FILE
-export GNS3_SRC="GNS3 VM.ova"
+export GNS3VM_VERSION='0.19.0'
+
+if [[ "$GNS3_VM_FILE" == "" ]]
+then
+    export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.Base.${GNS3VM_VERSION}.zip"
+    echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
+    if [[ ! -f "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip" ]]
+    then
+        echo "Downloading $GNS3VM_URL"
+        curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
+    fi
+else
+    echo "GNS3 VM file: $GNS3_VM_FILE"
+    cp "$GNS3_VM_FILE" "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
+fi
+
+7z e -y "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
+
+for qcow2_file in *.qcow2; do
+    echo "Converting ${qcow2_file} to VMDK format..."
+    vmdk_file=`basename "${qcow2_file}" .qcow2`
+    qemu-img convert -O vmdk "${qcow2_file}" "${vmdk_file}.vmdk"
+done
 
 # Install the virtual kernel & tools, this is to support LIS (Linux Integration Services)
 # for Hyper-V to find the guest IP address.
-packer build -only=virtualbox-ovf gns3_release_hyperv.json
+packer build -only=vmware-iso gns3_release_hyperv.json
 
-cd output-virtualbox-ovf
+cd output-vmware-iso
 
-tar -xvf "GNS3 VM.ova"
-for vmdk_file in *.vmdk; do
+mv ../gns3vm-disk1.vmdk .
+mv ../gns3vm-disk2.vmdk .
+
+for vmdk_file in gns3vm-disk{1,2}.vmdk; do
     echo "Converting ${vmdk_file} to VHD format..."
     vhd_file=`basename "${vmdk_file}" .vmdk`
     vboxmanage clonemedium --format vhd "${vmdk_file}" "${vhd_file}.vhd"
+    vboxmanage closemedium "${vmdk_file}"
+    vboxmanage closemedium "${vhd_file}.vhd"
 done
 
 cp ../create-vm.ps1 create-vm.ps1
@@ -49,5 +67,4 @@ cp ../install-vm.bat install-vm.bat
 7z a -bsp1 -mx=1 "../GNS3.VM.Hyper-V.${GNS3_VERSION}.zip" *.vhd create-vm.ps1 install-vm.bat
 
 cd ..
-rm -Rf output-virtualbox-ovf
-
+rm -Rf output-vmware-iso

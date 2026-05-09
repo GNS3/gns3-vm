@@ -210,7 +210,7 @@ jobs:
 
               if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_hyperv.sh ${GNS3_VERSION} GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip
+                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.Base.$(cat version).zip
               fi
             "
 
