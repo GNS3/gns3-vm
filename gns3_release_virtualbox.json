@@ -16,6 +16,10 @@
         "inline": "sudo mount /tmp/VBoxGuestAdditions.iso /mnt && sudo /mnt/VBoxLinuxAdditions.run --nox11",
         "valid_exit_codes": [0, 1, 2],
         "type": "shell"
+     },
+     {
+       "inline": "sudo truncate -s 0 /etc/machine-id",
+       "type": "shell"
      }
    ],
    "builders" : [
