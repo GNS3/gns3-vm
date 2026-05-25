@@ -41,7 +41,7 @@ git fetch origin
 
 if [[ -z "$1" ]] || [[ "$1" == "3.1" ]]
 then
-  git checkout "3.0" # latest dev version on this branch
+  git checkout "3.1" # latest dev version on this branch
   git pull
 else
   git checkout $1
@@ -74,7 +74,7 @@ then
   sudo chmod -R 775 .git
   git reset --hard HEAD
   git fetch origin
-  git checkout "master-3.0"
+  git checkout "3.1"
   git pull
   WEB_UI_PATH=$(dirname `python3 -c "import gns3server; print(gns3server.__file__)"`)/static/web-ui
   sudo rm -rf $WEB_UI_PATH/*

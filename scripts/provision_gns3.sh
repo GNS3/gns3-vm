@@ -31,7 +31,7 @@ then
 elif [[ "$GNS3_RELEASE_CHANNEL" == "3.1dev" ]]
 then
   echo "Installing GNS3 server dev $GNS3_VERSION from GitHub"
-  python3 -m pip install "gns3-server[ai-copilot]@git+https://github.com/GNS3/gns3-server.git@3.0"
+  python3 -m pip install "gns3-server[ai-copilot]@git+https://github.com/GNS3/gns3-server.git@3.1"
 fi
 
 # clean pip cache to reduce the size of the VM
