@@ -45,3 +45,8 @@ sudo e4defrag / &>/dev/null
 
 # Setup zerofree for disk compaction
 sudo bash /usr/local/bin/zerofree
+
+if [[ $PACKER_BUILDER_TYPE == "vmware-iso" || $PACKER_BUILDER_TYPE == "qemu" ]]
+then
+   sudo vmware-toolbox-cmd disk shrink /
+fi

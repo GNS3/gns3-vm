@@ -30,10 +30,16 @@ export UBUNTU_RELEASE=`lsb_release -c -s`
 ## APT sources ##
 #################
 
+# Do not install recommended/suggested packages by default to save disk space
+tee > /etc/apt/apt.conf.d/99-no-install-recommends <<EOF
+APT::Install-Recommends "0";
+APT::Install-Suggests "0";
+EOF
+
 if [[ "$(dpkg --print-architecture)" == "arm64" ]]
 then
 
-# Use the Ubuntu ports repository for arm64 and the main repository for i386 and amd64
+# Use the Ubuntu ports repository for arm64 and the main repository for amd64
 tee /etc/apt/sources.list.d/ubuntu.sources <<EOF
 Types: deb
 URIs: http://ports.ubuntu.com/ubuntu-ports
@@ -54,28 +60,18 @@ URIs: http://archive.ubuntu.com/ubuntu
 Suites: resolute resolute-updates resolute-backports
 Components: main restricted universe multiverse
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-Architectures: i386 amd64
+Architectures: amd64
 
 Types: deb
 URIs: http://security.ubuntu.com/ubuntu/
 Suites: resolute-security
 Components: main restricted universe multiverse
 Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-Architectures: i386 amd64
+Architectures: amd64
 EOF
 
-# Activate i386 and amd64 for IOU support
-dpkg --add-architecture i386
+# Activate amd64 for IOU support
 dpkg --add-architecture amd64
-
-else
-
-  # Select the best APT mirror
-  # Taken from https://github.com/vegardit/fast-apt-mirror.sh
-  sudo -H ./fast-apt-mirror.sh find --apply --speedtests 10 --
-
-  # Activate i386 for IOU support
-  dpkg --add-architecture i386
 
 fi
 
@@ -135,7 +131,7 @@ apt install -y virt-what
 apt install -y mingetty
 
 # Python
-apt install -y python3-minimal python3-venv python3-pip # python3-dev python3-setuptools
+apt install -y python3-minimal python3-venv python3-pip
 
 # Create virtualenv for gns3server
 if [[ ! -d "/home/gns3/.venv/gns3server-venv" ]]
@@ -155,7 +151,7 @@ apt install -y sqlite3
 ##################
 
 # Install Qemu
-apt install -y qemu-system-x86 cpulimit libtpms0 swtpm
+apt install -y qemu-system-x86 qemu-utils cpulimit swtpm
 sudo usermod -aG kvm gns3
 
 # GNS3 projects directory in the VM is located on a different partition than the partition for the root directory (/)
@@ -205,9 +201,8 @@ then
   # Install Qemu user emulation with binfmt_misc on arm64 (for IOU support)
   apt install -y binfmt-support qemu-user qemu-user-binfmt
   apt install -y libc6:i386 libc6:amd64
+  apt install -y gns3-iou:amd64
 fi
-
-apt install -y gns3-iou
 
 # System tuning for IOU support
 cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
@@ -231,10 +226,11 @@ then
     chmod 600 /etc/netplan/90_gns3vm_static_netcfg.yaml
 fi
 
-#netplan apply
-
 # Install other GNS3 dependencies
 apt install -y dynamips vpcs ubridge mtools
+
+# Install tshark for packet capture
+apt-get install -y tshark
 
 # Setup rc.local
 cp "rc.local" "/etc/rc.local"
@@ -316,6 +312,9 @@ systemctl enable gns3vm
 # Install SNMP agent but disable on boot
 apt install -y snmpd
 systemctl disable snmpd
+
+# Install NTP client
+apt install -y chrony
 
 # Disable cloud-init
 touch /etc/cloud/cloud-init.disabled

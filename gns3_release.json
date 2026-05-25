@@ -1,121 +1,154 @@
 {
-   "variables" : {
-      "ssh_pass" : "gns3",
-      "ssh_name" : "gns3",
-      "gns3_version": "{{env `GNS3_VERSION`}}",
-      "gns3_release_channel": "{{env `GNS3_RELEASE_CHANNEL`}}",
-      "gns3_src": "{{env `GNS3_SRC`}}",
-      "memory": "2048",
-      "cpus": "1",
-      "cores": "1"
-   },
-   "provisioners" : [
-      {
-        "inline": "sudo rm -rf /tmp/*",
-        "type": "shell"
+  "variables": {
+    "ssh_pass": "gns3",
+    "ssh_name": "gns3",
+    "gns3_version": "{{env `GNS3_VERSION`}}",
+    "gns3_release_channel": "{{env `GNS3_RELEASE_CHANNEL`}}",
+    "gns3_src": "{{env `GNS3_SRC`}}",
+    "memory": "2048",
+    "cpus": "1",
+    "cores": "1"
+  },
+  "provisioners": [
+    {
+      "inline": "sudo rm -rf /tmp/*",
+      "type": "shell"
+    },
+    {
+      "inline": "sudo apt install -y open-vm-tools",
+      "type": "shell",
+      "only": [
+        "vmware-iso"
+      ]
+    },
+    {
+      "inline": "echo -n \"{{user `gns3_release_channel`}}\" > /home/gns3/.config/GNS3/gns3_release_channel",
+      "type": "shell"
+    },
+    {
+      "destination": "/tmp/gns3welcome.py",
+      "type": "file",
+      "source": "scripts/welcome.py"
+    },
+    {
+      "type": "shell",
+      "script": "scripts/provision_gns3.sh",
+      "environment_vars": [
+        "GNS3_RELEASE_CHANNEL={{user `gns3_release_channel`}}",
+        "GNS3_VERSION={{user `gns3_version`}}"
+      ]
+    },
+    {
+      "inline": "sudo truncate -s 0 /etc/machine-id",
+      "type": "shell"
+    }
+  ],
+  "builders": [
+    {
+      "type": "vmware-iso",
+      "guest_os_type": "ubuntu-64",
+      "ssh_timeout": "10m",
+      "ssh_handshake_attempts": "20",
+      "vm_name": "GNS3 VM",
+      "vmdk_name": "gns3vm-disk",
+      "skip_compaction": false,
+      "iso_url": "gns3vm-disk1.vmdk",
+      "iso_checksum": "none",
+      "cpus": "{{user `cpus`}}",
+      "cores": "{{user `cores`}}",
+      "memory": "{{user `memory`}}",
+      "disk_type_id": 0,
+      "vmx_data": {
+        "scsi0:0.present": "TRUE",
+        "scsi0:0.fileName": "{{pwd}}/gns3vm-disk1.vmdk",
+        "scsi0:1.present": "TRUE",
+        "scsi0:1.fileName": "{{pwd}}/gns3vm-disk2.vmdk",
+        "vhv.enable": "TRUE",
+        "disk.enableUUID": "TRUE",
+        "hints.hideAll": "TRUE",
+        "msg.noOk": "TRUE"
       },
-     {
-        "inline": "sudo apt install -y open-vm-tools",
-        "type": "shell",
-        "only": ["vmware-iso"]
+      "vmx_data_post": {
+        "vhv.enable": "TRUE",
+        "disk.enableUUID": "TRUE",
+        "ethernet0.present": "TRUE",
+        "ethernet0.startConnected": "TRUE",
+        "ethernet0.connectionType": "hostonly",
+        "ethernet0.addressType": "generated",
+        "ethernet0.generatedAddressOffset": "0",
+        "ethernet0.wakeOnPcktRcv": "FALSE",
+        "ethernet0.pciSlotNumber": "32",
+        "ethernet1.present": "TRUE",
+        "ethernet1.startConnected": "TRUE",
+        "ethernet1.connectionType": "nat",
+        "ethernet1.addressType": "generated",
+        "ethernet1.generatedAddressOffset": "10",
+        "ethernet1.wakeOnPcktRcv": "FALSE",
+        "ethernet1.pciSlotNumber": "33",
+        "ethernet1.virtualDev": "e1000"
       },
-      {
-        "inline": "echo -n \"{{user `gns3_release_channel`}}\" > /home/gns3/.config/GNS3/gns3_release_channel",
-        "type": "shell"
-      },
-      {
-         "destination" : "/tmp/gns3welcome.py",
-         "type" : "file",
-         "source" : "scripts/welcome.py"
-      },
-      {
-         "type" : "shell",
-         "script" : "scripts/provision_gns3.sh",
-          "environment_vars": [
-            "GNS3_VERSION={{user `gns3_version`}}"
-          ]
-      }
-   ],
-   "builders" : [
-      {
-         "type" : "vmware-iso",
-         "guest_os_type": "ubuntu-64",
-         "ssh_timeout": "10m",
-         "ssh_handshake_attempts": "20",
-         "vm_name" : "GNS3 VM",
-         "vmdk_name": "gns3vm-disk",
-         "skip_compaction": false,
-         "iso_url" : "gns3vm-disk1.vmdk",
-         "iso_checksum" : "none",
-         "cpus": "{{user `cpus`}}",
-         "cores": "{{user `cores`}}",
-         "memory": "{{user `memory`}}",
-         "disk_type_id" : 0,
-         "vmx_data" : {
-            "scsi0:0.present": "TRUE",
-            "scsi0:0.fileName": "{{pwd}}/gns3vm-disk1.vmdk",
-            "scsi0:1.present": "TRUE",
-            "scsi0:1.fileName": "{{pwd}}/gns3vm-disk2.vmdk",
-            "vhv.enable": "TRUE",
-            "disk.enableUUID": "TRUE",
-            "hints.hideAll": "TRUE",
-            "msg.noOk": "TRUE"
-         },
-        "vmx_data_post":
-          {
-            "vhv.enable": "TRUE",
-            "disk.enableUUID": "TRUE",
-            "ethernet0.present": "TRUE",
-            "ethernet0.startConnected": "TRUE",
-            "ethernet0.connectionType": "hostonly",
-            "ethernet0.addressType": "generated",
-            "ethernet0.generatedAddressOffset": "0",
-            "ethernet0.wakeOnPcktRcv": "FALSE",
-            "ethernet0.pciSlotNumber": "32",
-            "ethernet1.present": "TRUE",
-            "ethernet1.startConnected": "TRUE",
-            "ethernet1.connectionType": "nat",
-            "ethernet1.addressType": "generated",
-            "ethernet1.generatedAddressOffset": "10",
-            "ethernet1.wakeOnPcktRcv": "FALSE",
-            "ethernet1.pciSlotNumber": "33",
-            "ethernet1.virtualDev": "e1000"
-         },
-         "headless": true,
-         "shutdown_command" : "sudo /sbin/shutdown -h now",
-         "shutdown_timeout": "60m",
-         "ssh_username" : "{{user `ssh_name`}}",
-         "ssh_password" : "{{user `ssh_pass`}}"
-      },
-      {
-         "type": "qemu",
-         "name": "qemu-arm64",
-         "vm_name" : "GNS3 VM",
-         "qemu_binary": "qemu-system-aarch64",
-         "disk_compression": true,
-         "disk_image": true,
-         "headless": true,
-         "net_device": "virtio-net-pci",
-         "iso_url" : "gns3vm-disk1.qcow2",
-         "iso_checksum" : "none",
-         "use_default_display": true,
-         "qemuargs": [
-                ["-drive", "file=gns3vm-disk1.qcow2,if=virtio,format=qcow2,cache=none"],
-                ["-drive", "file=gns3vm-disk2.qcow2,if=virtio,format=qcow2,cache=none"],
-                ["-serial", "file:serial.out"],
-                ["-machine", "virt,gic-version=3,accel=kvm"],
-                ["-cpu", "max"],
-                ["-smp", "4"],
-                ["-m", "2048"],
-                ["-bios", "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd"],
-                ["-boot", "strict=off"]
-         ],
-         "shutdown_command" : "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
-         "shutdown_timeout": "20m",
-         "ssh_username" : "{{user `ssh_name`}}",
-         "ssh_password" : "{{user `ssh_pass`}}",
-         "ssh_timeout": "20m",
-         "ssh_handshake_attempts": "20"
-      }
-   ]
+      "headless": true,
+      "shutdown_command": "sudo /sbin/shutdown -h now",
+      "shutdown_timeout": "60m",
+      "ssh_username": "{{user `ssh_name`}}",
+      "ssh_password": "{{user `ssh_pass`}}"
+    },
+    {
+      "type": "qemu",
+      "name": "qemu-arm64",
+      "vm_name": "GNS3 VM",
+      "qemu_binary": "qemu-system-aarch64",
+      "disk_compression": true,
+      "disk_image": true,
+      "headless": true,
+      "net_device": "virtio-net-pci",
+      "iso_url": "gns3vm-disk1.qcow2",
+      "iso_checksum": "none",
+      "use_default_display": true,
+      "qemuargs": [
+        [
+          "-drive",
+          "file=gns3vm-disk1.qcow2,if=virtio,format=qcow2,cache=none"
+        ],
+        [
+          "-drive",
+          "file=gns3vm-disk2.qcow2,if=virtio,format=qcow2,cache=none"
+        ],
+        [
+          "-serial",
+          "file:serial.out"
+        ],
+        [
+          "-machine",
+          "virt,gic-version=3,accel=kvm"
+        ],
+        [
+          "-cpu",
+          "max"
+        ],
+        [
+          "-smp",
+          "4"
+        ],
+        [
+          "-m",
+          "2048"
+        ],
+        [
+          "-bios",
+          "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd"
+        ],
+        [
+          "-boot",
+          "strict=off"
+        ]
+      ],
+      "shutdown_command": "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
+      "shutdown_timeout": "20m",
+      "ssh_username": "{{user `ssh_name`}}",
+      "ssh_password": "{{user `ssh_pass`}}",
+      "ssh_timeout": "20m",
+      "ssh_handshake_attempts": "20"
+    }
+  ]
 }

@@ -10,28 +10,6 @@ while sudo fuser /var/{lib/{dpkg,apt/lists},cache/apt/archives}/lock >/dev/null 
    sleep 5
 done
 
-echo "${GNS3_VERSION}" | grep -E  "(dev|a|rc|b|unstable|master)"
-if [[ $? -eq 0 ]]
-then
-  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/unstable/ubuntu"
-else
-  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/ppa/ubuntu"
-fi
-
-# Add the GNS3 PPA to the APT sources
-sudo tee /etc/apt/sources.list.d/gns3-ppa.sources <<EOF
-Types: deb
-URIs: $(echo "${GNS3_PPA_URI}")
-Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
-Components: main
-Architectures: $(dpkg --print-architecture)
-Signed-By: /etc/apt/keyrings/gns3-ppa.asc
-EOF
-
-sudo apt update
-sudo DEBIAN_FRONTEND=noninteractive apt upgrade -y
-sudo DEBIAN_FRONTEND=noninteractive apt install -y python3-dev gcc git openntpd
-
 # use the GNS3 server virtual environment
 source /home/gns3/.venv/gns3server-venv/bin/activate
 
@@ -41,17 +19,24 @@ python3 -m pip install --upgrade pip wheel setuptools
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-if [[ "$GNS3_VERSION" == "2.2" ]]
+if [[ "$GNS3_RELEASE_CHANNEL" == "2.2" ]]
 then
   # Install from a branch on GitHub
-  python3 -m pip install "https://github.com/GNS3/gns3-server/archive/refs/heads/$GNS3_VERSION.zip"
-elif [[ "$GNS3_VERSION" == "3.0" ]]
+  echo "Installing GNS3 server $GNS3_VERSION from GitHub"
+  python3 -m pip install "gns3-server@git+https://github.com/GNS3/gns3-server.git@v$GNS3_VERSION"
+elif [[ "$GNS3_RELEASE_CHANNEL" == "3.1" ]]
 then
+  echo "Installing GNS3 server $GNS3_VERSION from PyPI"
   python3 -m pip install gns3-server[ai-copilot]==${GNS3_VERSION}
-elif [[ "$GNS3_VERSION" == "3.0dev" ]]
+elif [[ "$GNS3_RELEASE_CHANNEL" == "3.1dev" ]]
 then
-  python3 -m pip install "gns3-server[ai-copilot] @ git+https://github.com/GNS3/gns3-server.git@3.0"
+  echo "Installing GNS3 server dev $GNS3_VERSION from GitHub"
+  python3 -m pip install "gns3-server[ai-copilot]@git+https://github.com/GNS3/gns3-server.git@3.1"
 fi
+
+# clean pip cache to reduce the size of the VM
+python3 -m pip cache info
+python3 -m pip cache purge
 
 set +e
 
@@ -82,3 +67,8 @@ sudo e4defrag / &>/dev/null
 
 # Setup zerofree for disk compaction
 sudo bash /usr/local/bin/zerofree
+
+if [[ $PACKER_BUILDER_TYPE == "vmware-iso" || $PACKER_BUILDER_TYPE == "qemu" ]]
+then
+   sudo vmware-toolbox-cmd disk shrink /
+fi

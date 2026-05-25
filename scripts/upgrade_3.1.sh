@@ -29,8 +29,8 @@ curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade
 # install the GNS3 server
 if [[ -z "$1" ]]
 then
-  # get the latest stable release of channel 3.0
-  RELEASE=`curl -Lk "$PYPI_GNS3SERVER_JSON_URL" | jq  -r '.releases | keys | .[]' | grep -E '^3.0' | grep -v '[abrd]' | sort -V | tail -n 1`
+  # get the latest stable release of channel 3.1
+  RELEASE=`curl -Lk "$PYPI_GNS3SERVER_JSON_URL" | jq  -r '.releases | keys | .[]' | grep -E '^3.1' | grep -v '[abrd]' | sort -V | tail -n 1`
 else
   RELEASE=$1
 fi
