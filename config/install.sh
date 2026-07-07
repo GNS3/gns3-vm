@@ -87,9 +87,9 @@ fi
 
 if [[ "$UNSTABLE_APT" == "1" ]]
 then
-  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/unstable/ubuntu"
+  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/unstable-v3/ubuntu"
 else
-  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/ppa/ubuntu"
+  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/ppa-v3/ubuntu"
 fi
 
 # Add the GNS3 PPA to the APT sources
