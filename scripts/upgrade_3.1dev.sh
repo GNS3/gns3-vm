@@ -59,7 +59,7 @@ else
   python3 -m pip install --proxy $HTTP_PROXY -U -r requirements.txt
 fi
 
-python3 -m pip install .
+python3 -m pip install .[ai-features]
 
 # update the web-ui as well
 if [[ -z "$1" ]] || [[ "$1" == "3.1" ]]
@@ -67,6 +67,9 @@ then
   cd ..
   if [[ ! -d "gns3-web-ui" ]]
   then
+    sudo apt update
+    sudo apt install -y npm
+    sudo npm install yarn --global
     git clone https://github.com/GNS3/gns3-web-ui.git gns3-web-ui
   fi
   sudo chown -R gns3:gns3 gns3-web-ui
@@ -76,9 +79,11 @@ then
   git fetch origin
   git checkout "3.1"
   git pull
-  WEB_UI_PATH=$(dirname `python3 -c "import gns3server; print(gns3server.__file__)"`)/static/web-ui
-  sudo rm -rf $WEB_UI_PATH/*
-  sudo cp -R dist/* $WEB_UI_PATH
+  yarn install
+  yarn ng build --source-map=false --configuration=production --base-href /static/web-ui/
+  BUNDLED_WEB_UI_PATH=$(dirname `python3 -c "import gns3server; print(gns3server.__file__)"`)/static/web-ui
+  sudo rm -rf $BUNDLED_WEB_UI_PATH/*
+  sudo cp -R dist/browser/* $BUNDLED_WEB_UI_PATH
   echo "Development Web-Ui installed"
 fi
 
