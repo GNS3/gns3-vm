@@ -2,7 +2,8 @@
   "variables": {
     "ssh_pass": "gns3",
     "ssh_name": "gns3",
-    "gns3_src": "{{env `GNS3_SRC`}}",
+    "gns3_version": "{{env `GNS3_VERSION`}}",
+    "gns3_release_channel": "{{env `GNS3_RELEASE_CHANNEL`}}",
     "memory": "2048",
     "cpus": "1",
     "cores": "1"
@@ -29,7 +30,7 @@
       "source": "scripts/welcome.py"
     },
     {
-      "inline": "sudo apt update && sudo apt install -y linux-virtual linux-cloud-tools-virtual linux-tools-virtual linux-cloud-tools-common && sudo update-initramfs -u",
+      "inline": "sudo apt update && sudo apt -y install linux-virtual linux-cloud-tools-virtual linux-tools-virtual",
       "type": "shell"
     },
     {
@@ -41,19 +42,11 @@
       ]
     },
     {
-      "type": "shell",
-      "script": "scripts/reboot.sh",
-      "expect_disconnect": true
-    },
-    {
-      "type": "shell",
-      "pause_before": "30s",
-      "scripts": [
-        "scripts/cleaner.sh"
-      ]
-    },
-    {
       "inline": "sudo apt purge -y open-vm-tools && sudo apt -y autoremove",
+      "type": "shell"
+    },
+    {
+      "inline": "sudo truncate -s 0 /etc/machine-id",
       "type": "shell"
     }
   ],
