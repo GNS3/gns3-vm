@@ -20,7 +20,7 @@
 set -e
 
 export BRANCH="resolute-stable"
-export RELEASE_CHANNEL="3.1dev"
+export GNS3_RELEASE_CHANNEL="3.1dev"
 export UNSTABLE_APT="0"
 export PYPI_GNS3SERVER_JSON_URL="https://pypi.org/pypi/gns3-server/json"
 

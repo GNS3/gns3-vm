@@ -20,7 +20,7 @@
 set -e
 
 export BRANCH="resolute-unstable"
-export RELEASE_CHANNEL="3.1dev"
+export GNS3_RELEASE_CHANNEL="3.1dev"
 export UNSTABLE_APT="1"
 
 # upgrade the GNS3 VM first
