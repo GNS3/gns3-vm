@@ -85,6 +85,8 @@ then
   chmod a+r /etc/apt/keyrings/gns3-ppa.asc
 fi
 
+echo "Adding GNS3 PPA for release channel $GNS3_RELEASE_CHANNEL"
+
 if [[ "$UNSTABLE_APT" == "1" ]]
 then
   if [[ "$GNS3_RELEASE_CHANNEL" == "2.2" ]]
