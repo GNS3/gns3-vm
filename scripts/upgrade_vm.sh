@@ -39,7 +39,7 @@ done
 
 # install required Ubuntu packages including GNS3 dependencies
 cd gns3-vm-${BRANCH}/config
-sudo -E bash -x install.sh
+sudo -E GNS3_RELEASE_CHANNEL="$GNS3_RELEASE_CHANNEL" UNSTABLE_APT="$UNSTABLE_APT" bash -x install.sh
 
 sudo dpkg --configure -a
 sudo apt -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade -y
