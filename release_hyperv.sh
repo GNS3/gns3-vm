@@ -21,7 +21,7 @@ export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
-export GNS3VM_VERSION='0.19.0'
+export GNS3VM_VERSION='0.20.0'
 
 if [[ "$GNS3_VM_FILE" == "" ]]
 then
@@ -55,16 +55,14 @@ mv ../gns3vm-disk1.vmdk .
 mv ../gns3vm-disk2.vmdk .
 
 for vmdk_file in gns3vm-disk{1,2}.vmdk; do
-    echo "Converting ${vmdk_file} to VHD format..."
+    echo "Converting ${vmdk_file} to VHDX format..."
     vhd_file=`basename "${vmdk_file}" .vmdk`
-    vboxmanage clonemedium --format vhd "${vmdk_file}" "${vhd_file}.vhd"
-    vboxmanage closemedium "${vmdk_file}"
-    vboxmanage closemedium "${vhd_file}.vhd"
+    qemu-img convert -f vmdk -O vhdx "${vmdk_file}" "${vhd_file}.vhdx"
 done
 
 cp ../create-vm.ps1 create-vm.ps1
 cp ../install-vm.bat install-vm.bat
-7z a -bsp1 -mx=1 "../GNS3.VM.Hyper-V.${GNS3_VERSION}.zip" *.vhd create-vm.ps1 install-vm.bat
+7z a -bsp1 -mx=1 "../GNS3.VM.Hyper-V.${GNS3_VERSION}.zip" *.vhdx create-vm.ps1 install-vm.bat
 
 cd ..
 rm -Rf output-vmware-iso

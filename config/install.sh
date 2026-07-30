@@ -87,9 +87,19 @@ fi
 
 if [[ "$UNSTABLE_APT" == "1" ]]
 then
-  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/unstable-v3/ubuntu"
+  if [[ "$GNS3_RELEASE_CHANNEL" == "2.2" ]]
+  then
+    GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/unstable/ubuntu"
+  else
+    GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/unstable-v3/ubuntu"
+  fi
 else
-  GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/ppa-v3/ubuntu"
+    if [[ "$GNS3_RELEASE_CHANNEL" == "2.2" ]]
+  then
+    GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/ppa/ubuntu"
+  else
+    GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/ppa-v3/ubuntu"
+  fi
 fi
 
 # Add the GNS3 PPA to the APT sources

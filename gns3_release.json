@@ -57,6 +57,7 @@
       "cpus": "{{user `cpus`}}",
       "cores": "{{user `cores`}}",
       "memory": "{{user `memory`}}",
+      "network_adapter_type": "vmxnet3",
       "disk_type_id": 0,
       "vmx_data": {
         "scsi0:0.present": "TRUE",
@@ -78,6 +79,7 @@
         "ethernet0.generatedAddressOffset": "0",
         "ethernet0.wakeOnPcktRcv": "FALSE",
         "ethernet0.pciSlotNumber": "32",
+        "ethernet0.virtualDev": "e1000",
         "ethernet1.present": "TRUE",
         "ethernet1.startConnected": "TRUE",
         "ethernet1.connectionType": "nat",
