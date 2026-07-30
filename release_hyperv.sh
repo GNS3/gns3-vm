@@ -21,7 +21,7 @@ export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
-export GNS3VM_VERSION='0.20.0'
+export GNS3VM_VERSION='0.21.0'
 
 if [[ "$GNS3_VM_FILE" == "" ]]
 then
