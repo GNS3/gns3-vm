@@ -197,3 +197,16 @@ chown root:root /etc/network/if-up.d/gns3-ifup
 cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
 chmod 755 /etc/sysctl.d/50-qlen_gns3.conf
 chown root:root /etc/network/if-up.d/gns3-ifup
+
+# System requirements for XRd (containerized IOS XR)
+cp 99-gns3-xrd.conf /etc/sysctl.d/99-gns3-xrd.conf
+chmod 644 /etc/sysctl.d/99-gns3-xrd.conf
+chown root:root /etc/sysctl.d/99-gns3-xrd.conf
+sysctl -p /etc/sysctl.d/99-gns3-xrd.conf || true
+
+# Load the FUSE kernel module at boot (required by XRd, /dev/fuse)
+mkdir -p /etc/modules-load.d
+cp fuse.conf /etc/modules-load.d/fuse.conf
+chmod 644 /etc/modules-load.d/fuse.conf
+chown root:root /etc/modules-load.d/fuse.conf
+modprobe fuse || true
