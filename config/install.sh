@@ -197,3 +197,10 @@ chown root:root /etc/network/if-up.d/gns3-ifup
 cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
 chmod 755 /etc/sysctl.d/50-qlen_gns3.conf
 chown root:root /etc/network/if-up.d/gns3-ifup
+
+# Do not pass bridged traffic (e.g. the Cloud node) to iptables/nftables
+cp 99-gns3-bridge.conf /etc/sysctl.d/99-gns3-bridge.conf
+chmod 644 /etc/sysctl.d/99-gns3-bridge.conf
+chown root:root /etc/sysctl.d/99-gns3-bridge.conf
+# The net.bridge.* keys only exist when the br_netfilter module is loaded
+sysctl -p /etc/sysctl.d/99-gns3-bridge.conf || true
