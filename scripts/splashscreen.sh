@@ -105,7 +105,7 @@ fun progress_callback (duration, progress) {
     # Setting the backgrounds
     Window.SetBackgroundTopColor(1.0, 1.0, 1.0);
     Window.SetBackgroundBottomColor(1.0, 1.0, 1.0);
- 
+
     # Print the logo
     logo.sprite = Sprite();
     logo.sprite.SetImage(logo.scaled);
