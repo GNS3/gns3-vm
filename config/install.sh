@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 #
-# Copyright (C) 2015 GNS3 Technologies Inc.
+# Copyright (C) 2022 GNS3 Technologies Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,183 +20,299 @@
 # the directory before running it
 #
 
-set +e
-
-export DEBIAN_FRONTEND="noninteractive"
-
-# Uninstall open-vm-tools because it created issues when upgrading.
-if [ -f /etc/init.d/open-vm-tools ]
-then
-    /etc/init.d/open-vm-tools stop
-fi
-apt-get remove -y --auto-remove open-vm-tools
-
+# Exit immediately if a command exits with a non-zero status.
 set -e
 
-# Sources.list
-cp sources.list /etc/apt/sources.list
-chmod 644 /etc/apt/sources.list
-chown root:root /etc/apt/sources.list
+export DEBIAN_FRONTEND="noninteractive"
+export UBUNTU_RELEASE=`lsb_release -c -s`
 
-# Add our ppa
-if [ ! -f /usr/bin/add-apt-repository ]
+#################
+## APT sources ##
+#################
+
+# Do not install recommended/suggested packages by default to save disk space
+tee > /etc/apt/apt.conf.d/99-no-install-recommends <<EOF
+APT::Install-Recommends "0";
+APT::Install-Suggests "0";
+EOF
+
+if [[ "$(dpkg --print-architecture)" == "arm64" ]]
 then
-    apt-get update
-    apt-get install -y software-properties-common
+
+# Use the Ubuntu ports repository for arm64 and the main repository for amd64
+tee /etc/apt/sources.list.d/ubuntu.sources <<EOF
+Types: deb
+URIs: http://ports.ubuntu.com/ubuntu-ports
+Suites: resolute resolute-updates resolute-backports
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+Architectures: arm64
+
+Types: deb
+URIs: http://ports.ubuntu.com/ubuntu-ports
+Suites: resolute-security
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+Architectures: arm64
+
+Types: deb
+URIs: http://archive.ubuntu.com/ubuntu
+Suites: resolute resolute-updates resolute-backports
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+Architectures: amd64
+
+Types: deb
+URIs: http://security.ubuntu.com/ubuntu/
+Suites: resolute-security
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+Architectures: amd64
+EOF
+
+# Activate amd64 for IOU support
+dpkg --add-architecture amd64
+
 fi
 
-# Use sudo -E in case there is a proxy config
-sudo -E add-apt-repository -y ppa:gns3/qemu
-
-if [ "$UNSTABLE_APT" = "1" ]
+# Add the GNS3 PPA official GPG key
+if [[ ! -f "/etc/apt/keyrings/gns3-ppa.asc" ]]
 then
-    sudo -E add-apt-repository -y ppa:gns3/ppa
-    add-apt-repository -y -r ppa:gns3/unstable
+  apt update
+  apt install -y ca-certificates curl
+  install -m 0755 -d /etc/apt/keyrings
+  curl -fsSL 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xB83AAABFFBD82D21B543C8EA86C22C2EC6A24D7F' -o /etc/apt/keyrings/gns3-ppa.asc
+  chmod a+r /etc/apt/keyrings/gns3-ppa.asc
+fi
+
+echo "Adding GNS3 PPA for release channel $GNS3_RELEASE_CHANNEL"
+
+if [[ "$UNSTABLE_APT" == "1" ]]
+then
+  if [[ "$GNS3_RELEASE_CHANNEL" == "2.2" ]]
+  then
+    GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/unstable/ubuntu"
+  else
+    GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/unstable-v3/ubuntu"
+  fi
 else
-    add-apt-repository -y -r ppa:gns3/ppa
-    sudo -E add-apt-repository -y ppa:gns3/unstable
+    if [[ "$GNS3_RELEASE_CHANNEL" == "2.2" ]]
+  then
+    GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/ppa/ubuntu"
+  else
+    GNS3_PPA_URI="https://ppa.launchpadcontent.net/gns3/ppa-v3/ubuntu"
+  fi
 fi
 
-dpkg --add-architecture i386
-apt-get update
+# Add the GNS3 PPA to the APT sources
+tee /etc/apt/sources.list.d/gns3-ppa.sources <<EOF
+Types: deb
+URIs: $(echo "${GNS3_PPA_URI}")
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: main
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/gns3-ppa.asc
+EOF
 
-# Do not ask users any question
-DEBIAN_FRONTEND=noninteractive apt-get -y -o DPkg::options::="--force-confdef" -o DPkg::options::="--force-confold" upgrade
-
-# VDE network
-apt-get install -y vde2 uml-utilities
-
-# VMware open-vm-tools
-apt-get purge -y --auto-remove open-vm-tools
-if [ -d /etc/vmware-tools ]
+# Add the Docker official GPG key
+if [[ ! -f "/etc/apt/keyrings/docker.asc" ]]
 then
-    rm -R /etc/vmware-tools
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+  chmod a+r /etc/apt/keyrings/docker.asc
 fi
-apt-get install -y open-vm-tools
+
+# Add the Docker repository to the APT sources
+tee /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+
+apt update
+
+# Install jq for upgrades
+apt install -y jq
+
+# Install virt-what
+apt install -y virt-what
 
 # Autologin
-apt-get install -y mingetty
+apt install -y mingetty
 
 # Python
-apt-get install -y python3-dev python3.4-dev python3-setuptools
+apt install -y python3-minimal python3-venv python3-pip
 
-# Install netifaces
-apt-get install -y python3-netifaces
+# Create virtualenv for gns3server
+if [[ ! -d "/home/gns3/.venv/gns3server-venv" ]]
+then
+  python3 -m venv /home/gns3/.venv/gns3server-venv
+  sudo chown -R gns3:gns3 /home/gns3/.venv
+fi
 
-# For nat interface
-apt-get install -y libvirt-bin
+# For the NAT node
+apt install -y libvirt-daemon-system
 
-# Install vpcs
-apt-get install -y vpcs
+# For admin password reset in the controller database
+apt install -y sqlite3
 
-# Install qemu
-apt-get install -y qemu-system-x86 qemu-system-arm qemu-kvm cpulimit
+##################
+## Qemu support ##
+##################
 
-# Install gns3 dependencies
-apt-get install -y dynamips iouyap ubridge
+# Install Qemu
+apt install -y qemu-system-x86 qemu-utils cpulimit swtpm
+sudo usermod -aG kvm gns3
+
+# GNS3 projects directory in the VM is located on a different partition than the partition for the root directory (/)
+# additional permissions need to be configured for swtpm in AppArmor
+echo "owner /opt/gns3/** rwk," | sudo tee /etc/apparmor.d/local/usr.bin.swtpm > /dev/null
+sudo service apparmor restart
+
+# Fix the KVM high CPU usage with some appliances
+# See https://github.com/GNS3/gns3-vm/issues/128
+if [[ ! $(cat /etc/modprobe.d/qemu-system-x86.conf | grep "halt_poll_ns") ]]; then
+   echo "options kvm halt_poll_ns=0" | sudo tee --append /etc/modprobe.d/qemu-system-x86.conf
+fi
+
+# Setup KVM permissions
+cp 60-qemu-system-common.rules /lib/udev/rules.d/60-qemu-system-common.rules
+chmod 644 /lib/udev/rules.d/60-qemu-system-common.rules
+chown root:root /lib/udev/rules.d/60-qemu-system-common.rules
+
+####################
+## Docker support ##
+####################
+
+# Install Docker
+set +e  # avoid service error on arm64
+apt install -y docker-ce docker-ce-cli containerd.io
+sudo usermod -aG docker gns3
+sudo service docker stop
+sudo rm -rf /var/lib/docker/aufs
+# Necessary to prevent Docker from being blocked
+systemctl mask systemd-networkd-wait-online.service
+set -e
+
+# Configure Docker to store its data in /opt/docker
+cp "daemon.json" "/etc/docker/daemon.json"
+chown root:root /etc/docker/daemon.json
+chmod 644 /etc/docker/daemon.json
 
 # Install VNC support for Docker
-apt-get install -y x11vnc xvfb
+apt install -y tigervnc-standalone-server
 
-# Install iou dependencies
-apt-get install -y gns3-iou 
+#################
+## IOU support ##
+#################
 
-# Setup Python 3
-apt-get install -y python3-pip
+if [[ "$(dpkg --print-architecture)" == "arm64" ]]
+then
+  # Install Qemu user emulation with binfmt_misc on arm64 (for IOU support)
+  apt install -y binfmt-support qemu-user qemu-user-binfmt
+  apt install -y libc6:i386 libc6:amd64
+  apt install -y gns3-iou:amd64
+fi
 
+# System tuning for IOU support
+cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
+chmod 755 /etc/sysctl.d/50-qlen_gns3.conf
+chown root:root /etc/sysctl.d/50-qlen_gns3.conf
+
+########################################
+## XRd (containerized IOS XR) support ##
+########################################
+
+cp 99-gns3-xrd.conf /etc/sysctl.d/99-gns3-xrd.conf
+chmod 644 /etc/sysctl.d/99-gns3-xrd.conf
+chown root:root /etc/sysctl.d/99-gns3-xrd.conf
+sysctl -p /etc/sysctl.d/99-gns3-xrd.conf || true
+
+# Load the FUSE kernel module at boot (required by XRd, /dev/fuse)
+mkdir -p /etc/modules-load.d
+cp fuse.conf /etc/modules-load.d/fuse.conf
+chmod 644 /etc/modules-load.d/fuse.conf
+chown root:root /etc/modules-load.d/fuse.conf
+modprobe fuse || true
+
+####################
+## Network config ##
+####################
+
+# Setup netplan
+cp "gns3vm_default_netcfg.yaml" "/etc/netplan/80_gns3vm_default_netcfg.yaml"
+chown root:root /etc/netplan/80_gns3vm_default_netcfg.yaml
+chmod 600 /etc/netplan/80_gns3vm_default_netcfg.yaml
+
+# Do not overwrite user static network config
+if [[ ! -f "/etc/netplan/90_gns3vm_static_netcfg.yaml" ]]
+then
+    cp "gns3vm_static_netcfg.yaml" "/etc/netplan/90_gns3vm_static_netcfg.yaml"
+    chown root:root /etc/netplan/90_gns3vm_static_netcfg.yaml
+    chmod 600 /etc/netplan/90_gns3vm_static_netcfg.yaml
+fi
+
+# Install other GNS3 dependencies
+apt install -y dynamips vpcs ubridge mtools
+
+# Install tshark for packet capture
+apt-get install -y tshark
+
+# Setup rc.local
 cp "rc.local" "/etc/rc.local"
 chmod 700 /etc/rc.local
 chown root:root /etc/rc.local
 
-# Setup dhclient
-cp "dhclient.conf" "/etc/dhcp/dhclient.conf"
-chown root:root /etc/dhcp/dhclient.conf
-chmod 644 /etc/dhcp/dhclient.conf
-
-# Setup grub
+# Setup Grub
 cp "grub" "/etc/default/grub"
 chown root:root /etc/default/grub
 chmod 700 /etc/default/grub
 update-grub
 
-# Setup upstart
-cp "gns3.conf" "/etc/init/gns3.conf"
-chown root:root /etc/init/gns3.conf
-chmod 644 /etc/init/gns3.conf
-
-# Workaround a bug in VMware suspend
-# https://github.com/GNS3/gns3-vm/issues/82
-cp "network-vmware-fix" "/etc/init.d/network"
-chown root:root /etc/init.d/network
-chmod 755 /etc/init.d/network
-
-# Configure network
-if [ -f /etc/network/interfaces ]
-then
-    # We need to detect if user has modify the config for eth0 (ESXi without vsphere)
-    if grep -q 'MANUAL=1' /etc/network/interfaces
-    then
-        echo "User asked for not replacing /etc/network/interfaces"
-    else
-        cp interfaces /etc/network/interfaces
-    fi
-else
-    cp interfaces /etc/network/interfaces
+# Setup libvirt network
+if virsh net-info default | grep -q '^Active:.*yes'; then
+    virsh net-undefine default || true
+    virsh net-destroy default
 fi
-chmod 644 /etc/network/interfaces
-chown root:root /etc/network/interfaces
+
+if [[ ! -f "/etc/libvirt/qemu/networks/gns3.xml" ]]
+then
+    cp gns3.xml /etc/libvirt/qemu/networks/gns3.xml
+    virsh net-define /etc/libvirt/qemu/networks/gns3.xml
+    virsh net-autostart gns3
+fi
+
+# Setup Console
+cp "console-setup" "/etc/default/console-setup"
+chown root:root /etc/default/console-setup
+chmod 644 /etc/default/console-setup
 
 # Zerofree
-cp zerofree /etc/init.d/zerofree
-chown root:root /etc/init.d/zerofree
-chmod 744 /etc/init.d/zerofree
-update-rc.d zerofree defaults 61
-if [ -f /etc/rc0.d/K61zerofree ]
-then
-    mv /etc/rc0.d/K61zerofree /etc/rc0.d/S61zerofree
-    mv /etc/rc6.d/K61zerofree /etc/rc6.d/S61zerofree
-fi
+cp zerofree /usr/local/bin/zerofree
+chown root:root /usr/local/bin/zerofree
+chmod 755 /usr/local/bin/zerofree
 
-cp tty1.conf /etc/init/tty1.conf
-cp tty2.conf /etc/init/tty2.conf
-
-# Dnsmasq
-cp dnsmasq.conf /etc/dnsmasq.conf
-chmod 644 /etc/dnsmasq.conf
-chown root:root /etc/dnsmasq.conf
-
-# We need to disallow apt-get to override the config file
-apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dnsmasq
-
-# Sysctl
+# Sysctl
 cp sysctl.conf /etc/sysctl.conf
 chmod 644 /etc/sysctl.conf
 chown root:root /etc/sysctl.conf
-
-# Iptables
-cp iptables /etc/network/if-pre-up.d/iptables
-chmod 755 /etc/network/if-pre-up.d/iptables
-chown root:root /etc/network/if-pre-up.d/iptables
 
 # GNS3 Restore
 cp gns3-restore.sh /usr/local/bin/gns3restore
 chmod 755 /usr/local/bin/gns3restore
 chown root:root /usr/local/bin/gns3restore
 
+# GNS3 VM
+cp gns3-vm.sh /usr/local/bin/gns3vm
+chmod 755 /usr/local/bin/gns3vm
+chown root:root /usr/local/bin/gns3vm
+
 # Bash profile
 cp bash_profile /home/gns3/.bash_profile
 chmod 700 /home/gns3/.bash_profile
 chown gns3:gns3 /home/gns3/.bash_profile
-
-# ifup script
-cp gns3-ifup /etc/network/if-up.d/gns3-ifup
-chmod 755 /etc/network/if-up.d/gns3-ifup
-chown root:root /etc/network/if-up.d/gns3-ifup
-
-# System tuning for IOU
-cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
-chmod 755 /etc/sysctl.d/50-qlen_gns3.conf
-chown root:root /etc/network/if-up.d/gns3-ifup
 
 # Do not pass bridged traffic (e.g. the Cloud node) to iptables/nftables
 cp 99-gns3-bridge.conf /etc/sysctl.d/99-gns3-bridge.conf
@@ -204,3 +320,41 @@ chmod 644 /etc/sysctl.d/99-gns3-bridge.conf
 chown root:root /etc/sysctl.d/99-gns3-bridge.conf
 # The net.bridge.* keys only exist when the br_netfilter module is loaded
 sysctl -p /etc/sysctl.d/99-gns3-bridge.conf || true
+
+# Open GNS3 menu at startup
+mkdir -p /etc/systemd/system/getty@tty1.service.d/
+cp tty.service /etc/systemd/system/getty@tty1.service.d/override.conf
+chmod -R 755  /etc/systemd/system/getty@tty1.service.d/
+chown -R root:root /etc/systemd/system/getty@tty1.service.d/
+
+mkdir -p /etc/systemd/system/getty@tty2.service.d/
+cp tty.service /etc/systemd/system/getty@tty2.service.d/override.conf
+chmod -R 755 /etc/systemd/system/getty@tty2.service.d/
+chown -R root:root /etc/systemd/system/getty@tty2.service.d/
+
+# Install GNS3 systemd service
+cp gns3.service /lib/systemd/system/gns3.service
+chmod 755 /lib/systemd/system/gns3.service
+chown root:root /lib/systemd/system/gns3.service
+systemctl enable gns3
+
+# Install GNS3 VM systemd service
+cp gns3vm.service /lib/systemd/system/gns3vm.service
+chmod 755 /lib/systemd/system/gns3vm.service
+chown root:root /lib/systemd/system/gns3vm.service
+systemctl enable gns3vm
+
+# Install SNMP agent but disable on boot
+apt install -y snmpd
+systemctl disable snmpd
+
+# Install NTP client
+apt install -y chrony
+
+# Disable cloud-init
+touch /etc/cloud/cloud-init.disabled
+
+# Restart systemd services
+#systemctl daemon-reload
+#systemctl restart gns3.service
+#systemctl restart gns3vm.service

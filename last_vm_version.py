@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Get the last GNS3 vm version number
+Get the last GNS3 VM version number
 """
 
 import urllib
@@ -27,4 +27,3 @@ f = urllib.urlopen("https://api.github.com/repos/GNS3/gns3-vm/releases")
 tag = json.loads(f.read())[0]["tag_name"]
 tag = tag[1:]
 sys.stdout.write(tag)
-

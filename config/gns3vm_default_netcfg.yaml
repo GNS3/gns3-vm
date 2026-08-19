@@ -1,0 +1,40 @@
+# This file describes the network interfaces available on your system
+# For more information, see netplan(5).
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+     dhcp4: yes
+     dhcp-identifier: mac
+    eth1:
+     dhcp4: yes
+     dhcp-identifier: mac
+    eth2:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
+    eth3:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
+    eth4:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
+    eth5:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
+    eth6:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
+    eth7:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac
+    eth8:
+     dhcp4: yes
+     optional: true
+     dhcp-identifier: mac

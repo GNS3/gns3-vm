@@ -25,6 +25,7 @@ import os
 import sys
 import tempfile
 import subprocess
+import hashlib
 from xml.etree import ElementTree as ET
 
 
@@ -51,9 +52,14 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     subprocess.call(["tar", "-xvf", sys.argv[1], "-C", tmp_dir])
 
     ovf_path = os.path.join(tmp_dir, 'GNS3 VM.ovf')
+    mf_path = os.path.join(tmp_dir, 'GNS3 VM.mf')
     print("=> Content of GNS3 VM.ovf")
+
     with open(ovf_path) as f:
-        print(f.read())
+        ovf_content = f.read()
+        print(ovf_content)
+        ovf_original_checksum = hashlib.sha256(ovf_content.encode()).hexdigest()
+        print("Original OVF checksum:", ovf_original_checksum)
 
     tree = ET.parse(ovf_path)
     root = tree.getroot()
@@ -88,13 +94,31 @@ with tempfile.TemporaryDirectory() as tmp_dir:
     for item in root.iter('{http://schemas.dmtf.org/ovf/envelope/1}Item'):
         connection = item.find('{http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData}Connection')
         if connection is not None and connection.text.lower() == "nat":
-            print("Remove nat adapter")
+            print("Remove NAT adapter")
             virtual_hardware.remove(item)
+
+    # Set the Video RAM to 4MB
+    for item in root.iter('{http://schemas.dmtf.org/ovf/envelope/1}Item'):
+        element_name = item.find('{http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData}ElementName')
+        if element_name is not None and element_name.text.lower() == "video":
+            config = item.find('vmw:Config[@vmw:key="videoRamSizeInKB"]', {'vmw': "http://www.vmware.com/schema/ovf"})
+            if config is not None:
+                print("Set Video RAM to 4MB")
+                config.attrib['{http://www.vmware.com/schema/ovf}value'] = '4096'
+                break
 
     for node in nodes_to_remove:
         virtual_hardware.remove(node)
 
-    #Add product informations require by VMware ESXi 6.5
+    # Set the Virtual Machine compatibility to version 11 (ESXi 6.0 and later)
+    # in order to fix this issue: https://github.com/GNS3/gns3-vm/issues/143
+    for item in root.iter('{http://schemas.dmtf.org/ovf/envelope/1}System'):
+        virtual_system_type = item.find('{http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData}VirtualSystemType')
+        if virtual_system_type is not None:
+            print("Set Virtual Machine compatibility to version 11")
+            virtual_system_type.text = "vmx-11"
+
+    # Add product information required by VMware ESXi 6.5
     virtual_system = root.find("{http://schemas.dmtf.org/ovf/envelope/1}VirtualSystem")
     product_section = ET.SubElement(virtual_system, '{http://schemas.dmtf.org/ovf/envelope/1}ProductSection')
     info = ET.SubElement(product_section, '{http://schemas.dmtf.org/ovf/envelope/1}Info')
@@ -104,9 +128,23 @@ with tempfile.TemporaryDirectory() as tmp_dir:
 
     #tree.write(os.path.join(tmp_dir, 'GNS3 VM.ovf'), default_namespace="http://schemas.dmtf.org/ovf/envelope/1")
     tree.write(ovf_path)
+
+    print("=> Patched GNS3 VM.ovf")
+    with open(ovf_path) as f:
+        ovf_content = f.read()
+        print(ovf_content)
+        ovf_new_checksum = hashlib.sha256(ovf_content.encode()).hexdigest()
+        print("New OVF checksum:", ovf_new_checksum)
+
+    with open(mf_path, "r+") as f:
+        mf_content = f.read()
+        mf_content = mf_content.replace(ovf_original_checksum, ovf_new_checksum)
+        f.seek(0)
+        f.truncate()
+        f.write(mf_content)
+
     subprocess.call(["ovftool",
                      "--overwrite",
-                     "--skipManifestCheck",
                      os.path.join(tmp_dir, 'GNS3 VM.ovf'),
                      sys.argv[2]])
 
