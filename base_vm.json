@@ -5,7 +5,8 @@
       "hostname" : "gns3vm",
       "memory": "2048",
       "cpus": "1",
-      "cores": "1"
+      "cores": "1",
+      "gns3_release_channel": "{{env `GNS3_RELEASE_CHANNEL`}}"
    },
    "provisioners" : [
       {
@@ -29,7 +30,10 @@
       },
       {
          "type" : "shell",
-         "script" : "scripts/provision.sh"
+         "script" : "scripts/provision.sh",
+         "environment_vars": [
+            "GNS3_RELEASE_CHANNEL={{user `gns3_release_channel`}}"
+         ]
       },
       {
         "inline": "sudo -u gns3 mkdir -p ~/.config/GNS3/",
