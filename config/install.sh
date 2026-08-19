@@ -314,6 +314,13 @@ cp bash_profile /home/gns3/.bash_profile
 chmod 700 /home/gns3/.bash_profile
 chown gns3:gns3 /home/gns3/.bash_profile
 
+# Do not pass bridged traffic (e.g. the Cloud node) to iptables/nftables
+cp 99-gns3-bridge.conf /etc/sysctl.d/99-gns3-bridge.conf
+chmod 644 /etc/sysctl.d/99-gns3-bridge.conf
+chown root:root /etc/sysctl.d/99-gns3-bridge.conf
+# The net.bridge.* keys only exist when the br_netfilter module is loaded
+sysctl -p /etc/sysctl.d/99-gns3-bridge.conf || true
+
 # Open GNS3 menu at startup
 mkdir -p /etc/systemd/system/getty@tty1.service.d/
 cp tty.service /etc/systemd/system/getty@tty1.service.d/override.conf
