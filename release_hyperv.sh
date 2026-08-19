@@ -2,12 +2,11 @@
 #
 # This script take a VM and install GNS3 server on it
 #
-# You need to pass the GNS3 version as parameter
+# You need to pass GNS3 version as parameter
 #
 
 set -e
 
-export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
 export GNS3_VM_FILE=$2
 
@@ -19,8 +18,10 @@ fi
 
 export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 
-echo "Building VMware VM for GNS3 $GNS3_VERSION"
+echo "Build VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
+
+export GNS3VM_VERSION='0.21.0'
 
 if [[ "$GNS3_VM_FILE" == "" ]]
 then
@@ -44,13 +45,24 @@ for qcow2_file in *.qcow2; do
     qemu-img convert -O vmdk "${qcow2_file}" "${vmdk_file}.vmdk"
 done
 
-packer build -only=vmware-iso gns3_release.json
+# Install the virtual kernel & tools, this is to support LIS (Linux Integration Services)
+# for Hyper-V to find the guest IP address.
+packer build -only=vmware-iso gns3_release_hyperv.json
 
 cd output-vmware-iso
 
-echo "Export to OVA"
-ovftool --noImageFiles --noNvramFile "GNS3 VM.vmx" "GNS3 VM.ova"
-7z a -bsp1 -mx=1 "../GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip" "GNS3 VM.ova"
+mv ../gns3vm-disk1.vmdk .
+mv ../gns3vm-disk2.vmdk .
+
+for vmdk_file in gns3vm-disk{1,2}.vmdk; do
+    echo "Converting ${vmdk_file} to VHDX format..."
+    vhd_file=`basename "${vmdk_file}" .vmdk`
+    qemu-img convert -f vmdk -O vhdx "${vmdk_file}" "${vhd_file}.vhdx"
+done
+
+cp ../create-vm.ps1 create-vm.ps1
+cp ../install-vm.bat install-vm.bat
+7z a -bsp1 -mx=1 "../GNS3.VM.Hyper-V.${GNS3_VERSION}.zip" *.vhdx create-vm.ps1 install-vm.bat
 
 cd ..
 rm -Rf output-vmware-iso

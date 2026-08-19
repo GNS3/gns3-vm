@@ -4,7 +4,6 @@
     "ssh_name": "gns3",
     "gns3_version": "{{env `GNS3_VERSION`}}",
     "gns3_release_channel": "{{env `GNS3_RELEASE_CHANNEL`}}",
-    "gns3_src": "{{env `GNS3_SRC`}}",
     "memory": "2048",
     "cpus": "1",
     "cores": "1"
@@ -31,12 +30,20 @@
       "source": "scripts/welcome.py"
     },
     {
+      "inline": "sudo apt update && sudo apt -y install linux-virtual linux-cloud-tools-virtual linux-tools-virtual",
+      "type": "shell"
+    },
+    {
       "type": "shell",
       "script": "scripts/provision_gns3.sh",
       "environment_vars": [
         "GNS3_RELEASE_CHANNEL={{user `gns3_release_channel`}}",
         "GNS3_VERSION={{user `gns3_version`}}"
       ]
+    },
+    {
+      "inline": "sudo apt purge -y open-vm-tools && sudo apt -y autoremove",
+      "type": "shell"
     },
     {
       "inline": "sudo truncate -s 0 /etc/machine-id",
@@ -94,63 +101,6 @@
       "shutdown_timeout": "60m",
       "ssh_username": "{{user `ssh_name`}}",
       "ssh_password": "{{user `ssh_pass`}}"
-    },
-    {
-      "type": "qemu",
-      "name": "qemu-arm64",
-      "vm_name": "GNS3 VM",
-      "qemu_binary": "qemu-system-aarch64",
-      "disk_compression": true,
-      "disk_image": true,
-      "headless": true,
-      "net_device": "virtio-net-pci",
-      "iso_url": "gns3vm-disk1.qcow2",
-      "iso_checksum": "none",
-      "use_default_display": true,
-      "qemuargs": [
-        [
-          "-drive",
-          "file=gns3vm-disk1.qcow2,if=virtio,format=qcow2,cache=none"
-        ],
-        [
-          "-drive",
-          "file=gns3vm-disk2.qcow2,if=virtio,format=qcow2,cache=none"
-        ],
-        [
-          "-serial",
-          "file:serial.out"
-        ],
-        [
-          "-machine",
-          "virt,gic-version=3,accel=kvm"
-        ],
-        [
-          "-cpu",
-          "max"
-        ],
-        [
-          "-smp",
-          "4"
-        ],
-        [
-          "-m",
-          "2048"
-        ],
-        [
-          "-bios",
-          "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd"
-        ],
-        [
-          "-boot",
-          "strict=off"
-        ]
-      ],
-      "shutdown_command": "echo {{user `ssh_name`}} | sudo -S shutdown -P now",
-      "shutdown_timeout": "20m",
-      "ssh_username": "{{user `ssh_name`}}",
-      "ssh_password": "{{user `ssh_pass`}}",
-      "ssh_timeout": "20m",
-      "ssh_handshake_attempts": "20"
     }
   ]
 }

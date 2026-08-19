@@ -7,41 +7,31 @@
 
 set -e
 
-export PATH=$PATH:/Applications/VMware\ OVF\ Tool/
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
+export GNS3_VM_FILE=$2
 
-if [ "$GNS3_VERSION" == "" ]
+if [[ "$GNS3_VERSION" == "" ]]
 then
     echo "You need to pass the GNS3 version as parameter"
     exit 1
 fi
 
-export GNS3_UPDATE_FLAVOR=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
-
-echo "Build VM for GNS3 $GNS3_VERSION"
-echo "Update flavor: $GNS3_UPDATE_FLAVOR"
-
-rm -Rf output-*
-#export GNS3VM_VERSION=`python last_vm_version.py`
-export GNS3VM_VERSION="0.10.14"
-export GNS3_SRC="/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.ova"
-
-if [[ ! -f $GNS3_SRC ]]
+if [[ "$GNS3_VM_FILE" == "" ]]
 then
-    export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3.VM.VirtualBox.${GNS3VM_VERSION}.zip"
-    echo "Download $GNS3VM_URL"
-    curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"
-    unzip -p "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip" "GNS3 VM.ova" > $GNS3_SRC
-    rm  "/tmp/GNS3VM.VirtualBox.${GNS3VM_VERSION}.zip"    
+    echo "You need to pass the GNS3 VM (VMware) file as parameter"
+    exit 1
 fi
 
-packer build -only=virtualbox-ovf gns3_release.json
+echo "Building VirtualBox VM for GNS3 $GNS3_VERSION"
+
+# Build the VM based on the VMware OVA
+7z e -y $GNS3_VM_FILE
+export GNS3_SRC="GNS3 VM.ova"
+packer build -only=virtualbox-ovf gns3_release_virtualbox.json
 
 cd output-virtualbox-ovf
-
-zip -9 "../GNS3 VM VirtualBox ${GNS3_VERSION}.zip" "GNS3 VM.ova"
+7z a -bsp1 -mx=1 "../GNS3.VM.VirtualBox.${GNS3_VERSION}.zip" "GNS3 VM.ova"
 
 cd ..
-rm -Rf output-*
-rm $GNS3_SRC
+rm -Rf output-virtualbox-ovf
 

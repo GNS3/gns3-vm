@@ -23,11 +23,15 @@ import sys
 import time
 import packet
 
-GNS3_HOSTNAME = 'gns3-vm-builder'
+from datetime import datetime, timedelta, timezone
 
 token = sys.argv[1]
 action = sys.argv[2]
 packet_project = sys.argv[3]
+server_type = sys.argv[4]
+metro = sys.argv[5]
+
+GNS3_HOSTNAME = 'gns3-vm-builder-{}'.format(server_type)
 
 
 def get_device(project, hostname):
@@ -50,14 +54,18 @@ def get():
     device = get_device(gns3_project, GNS3_HOSTNAME)
 
     if device is None:
-        # create device
+
+        # termination time is 1h 30min from now (UTC time)
+        termination_time = datetime.now(timezone.utc) + timedelta(hours=1, minutes=30)
+        #print("Creating device with termination time: {}".format(termination_time.isoformat()))
+
         device = manager.create_device(
             project_id=gns3_project.id,
             hostname=GNS3_HOSTNAME,
-            plan='c1.small.x86',
-            facility='any',
-            operating_system="ubuntu_16_04"
-        )
+            plan=server_type,
+            metro=metro,
+            operating_system="ubuntu_24_04",
+            termination_time=termination_time.isoformat())
 
     # wait max 20 min for being active
     check_every = 5  # seconds

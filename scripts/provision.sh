@@ -1,79 +1,39 @@
-export DEBIAN_FRONTEND="noninteractive"
+#!/bin/bash
 
+export DEBIAN_FRONTEND="noninteractive"
+export UBUNTU_RELEASE=`lsb_release -c -s`
+
+# Exit immediately if a command exits with a non-zero status.
 set -e
 
-# Update system
-sudo apt-get update
+# Update the system
+#sudo apt-get update
+#sudo apt-get upgrade -y
+#sudo apt-get dist-upgrade -y
 
-sudo apt-get upgrade -y
-sudo apt-get dist-upgrade -y
-
-sudo apt-get install -y curl software-properties-common
+# use the Ubuntu LTS enablement (also called HWE or Hardware Enablement) stack
+# sudo apt-get install -y --install-recommends linux-generic-hwe-22.04
 
 cd /tmp/config
-sudo bash install.sh
+sudo GNS3_RELEASE_CHANNEL="$GNS3_RELEASE_CHANNEL" bash install.sh
 
-# Install & compile psutil because it's require c dependencies
-sudo pip3 install psutil
+# Install the GNS3 VM menu dependency
+sudo apt install -y cpu-checker dialog
+sudo -H python3 -m pip install pythondialog bcrypt --break-system-packages
 
-# For the menu
-sudo apt-get install -y dialog
-sudo pip3 install pythondialog
-
-# VDE network
-sudo usermod -a -G vde2-net gns3
-
-# Block iou call. The server is down
-echo "127.0.0.254 xml.cisco.com" | sudo tee --append /etc/hosts
-
-# Force hostid for IOU
+# Force the hostid for IOU license check
 sudo dd if=/dev/zero bs=4 count=1 of=/etc/hostid
 
-# Install docker
-curl -sSLk https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.1~ce-0~ubuntu-trusty_amd64.deb > /tmp/docker.deb
-sudo apt-get install -y libltdl7 libsystemd-journal0
-sudo dpkg -i /tmp/docker.deb
-sudo usermod -aG docker gns3
-sudo service docker stop
-sudo rm -rf /var/lib/docker/aufs
-
-# Setup server
-if [[ -f ~/.config/GNS3/gns3_server.conf ]]
+if [[ $PACKER_BUILDER_TYPE == "vmware-iso" || $PACKER_BUILDER_TYPE == "qemu" ]]
 then
-    echo "Server is already configured"
-else
-    mkdir -p ~/.config/GNS3
-    cat > ~/.config/GNS3/gns3_server.conf << EOF
-[Server]
-host = 0.0.0.0
-images_path = /opt/gns3/images
-projects_path = /opt/gns3/projects
-report_errors = True
-EOF
-    if [[ $PACKER_BUILDER_TYPE == "vmware-iso" ]]
-    then
-        cat >> ~/.config/GNS3/gns3_server.conf << EOF
-
-[Qemu]
-enable_kvm = True
-EOF
-    else
-        cat >> ~/.config/GNS3/gns3_server.conf << EOF
-
-[Qemu]
-enable_kvm = False
-EOF
-    fi
+   # VMware open-vm-tools
+   sudo apt install --yes open-vm-tools
 fi
 
-# Create GNS3 folders
+# Create the GNS3 folders
 sudo mkdir -p /opt/gns3
 sudo chown -R gns3:gns3 /opt/gns3
 
-# Setup release flavor
-echo -n "stable" > ~/.config/GNS3/gns3_release
-
-
-# Menu
+# Install the GNS3 VM menu
 sudo mv "/tmp/gns3welcome.py" "/usr/local/bin/gns3welcome.py"
 sudo chmod 755 "/usr/local/bin/gns3welcome.py"
