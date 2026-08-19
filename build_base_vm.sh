@@ -3,6 +3,7 @@
 set -e
 
 export GNS3VM_VERSION=`cat version`
+export GNS3_RELEASE_CHANNEL=`cat release_channel`
 
 echo "Build Base VM $GNS3VM_VERSION for AMD64"
 

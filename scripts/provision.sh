@@ -15,7 +15,7 @@ set -e
 # sudo apt-get install -y --install-recommends linux-generic-hwe-22.04
 
 cd /tmp/config
-sudo bash install.sh
+sudo GNS3_RELEASE_CHANNEL="$GNS3_RELEASE_CHANNEL" bash install.sh
 
 # Install the GNS3 VM menu dependency
 sudo apt install -y cpu-checker dialog

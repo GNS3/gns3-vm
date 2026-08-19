@@ -221,6 +221,22 @@ cp 50-qlen_gns3.conf /etc/sysctl.d/50-qlen_gns3.conf
 chmod 755 /etc/sysctl.d/50-qlen_gns3.conf
 chown root:root /etc/sysctl.d/50-qlen_gns3.conf
 
+########################################
+## XRd (containerized IOS XR) support ##
+########################################
+
+cp 99-gns3-xrd.conf /etc/sysctl.d/99-gns3-xrd.conf
+chmod 644 /etc/sysctl.d/99-gns3-xrd.conf
+chown root:root /etc/sysctl.d/99-gns3-xrd.conf
+sysctl -p /etc/sysctl.d/99-gns3-xrd.conf || true
+
+# Load the FUSE kernel module at boot (required by XRd, /dev/fuse)
+mkdir -p /etc/modules-load.d
+cp fuse.conf /etc/modules-load.d/fuse.conf
+chmod 644 /etc/modules-load.d/fuse.conf
+chown root:root /etc/modules-load.d/fuse.conf
+modprobe fuse || true
+
 ####################
 ## Network config ##
 ####################
@@ -297,6 +313,13 @@ chown root:root /usr/local/bin/gns3vm
 cp bash_profile /home/gns3/.bash_profile
 chmod 700 /home/gns3/.bash_profile
 chown gns3:gns3 /home/gns3/.bash_profile
+
+# Do not pass bridged traffic (e.g. the Cloud node) to iptables/nftables
+cp 99-gns3-bridge.conf /etc/sysctl.d/99-gns3-bridge.conf
+chmod 644 /etc/sysctl.d/99-gns3-bridge.conf
+chown root:root /etc/sysctl.d/99-gns3-bridge.conf
+# The net.bridge.* keys only exist when the br_netfilter module is loaded
+sysctl -p /etc/sysctl.d/99-gns3-bridge.conf || true
 
 # Open GNS3 menu at startup
 mkdir -p /etc/systemd/system/getty@tty1.service.d/
