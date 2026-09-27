@@ -1,0 +1,13 @@
+[Unit]
+Description=GNS3 NAT bridge service
+After=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=/etc/gns3/gns3-bridge.conf
+ExecStart=/usr/local/bin/gns3-bridge start
+ExecStop=/usr/local/bin/gns3-bridge stop
+
+[Install]
+WantedBy=multi-user.target
