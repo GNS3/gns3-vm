@@ -18,7 +18,7 @@ network:
         forward-delay: 0
 EOF
 
-# Prevent the dnsmasq system-wide daemon from colliding with gns3-dnsmasq service
+# Prevent the dnsmasq system-wide daemon (if installed) from colliding with gns3-dnsmasq service
 if [ -d /etc/dnsmasq.d ]; then
 cat <<EOF | sudo tee /etc/dnsmasq.d/gns3 > /dev/null
 bind-interfaces

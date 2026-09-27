@@ -241,23 +241,24 @@ modprobe fuse || true
 # Uninstall libvirt-daemon-system to avoid conflicts with the GNS3 bridge
 apt -y remove --purge libvirt-daemon-system
 
-# Setup the bridge for the GNS3 VM (used by the NAT node)
+# Setup the GNS3 bridge (used by the NAT node in GNS3)
 cp "gns3vm_bridge_netcfg.yaml" "/etc/netplan/60_gns3vm_bridge_netcfg.yaml"
 chown root:root /etc/netplan/60_gns3vm_bridge_netcfg.yaml
 chmod 600 /etc/netplan/60_gns3vm_bridge_netcfg.yaml
 
-# Enable IP forwarding permanently for the NAT bridge to communicate with the host and the internet
+# Enable IP forwarding permanently for the GNS3 bridge to communicate with the host and the internet
 cp 40-ip-forwarding.conf /etc/sysctl.d/40-ip-forwarding.conf
 chmod 644 /etc/sysctl.d/40-ip-forwarding.conf
 chown root:root /etc/sysctl.d/40-ip-forwarding.conf
 sysctl -p /etc/sysctl.d/40-ip-forwarding.conf || true
 
-# Install GNS3 bridge systemd service
+# Install GNS3 bridge configuration file
 mkdir -p /etc/gns3
 cp gns3-bridge.conf /etc/gns3/gns3-bridge.conf
 chown root:root /etc/gns3/gns3-bridge.conf
 chmod 600 /etc/gns3/gns3-bridge.conf
 
+# Install GNS3 bridge systemd service
 cp gns3-bridge.sh /usr/local/bin/gns3-bridge
 chmod 755 /usr/local/bin/gns3-bridge
 chown root:root /usr/local/bin/gns3-bridge
@@ -267,6 +268,7 @@ chmod 755 /etc/systemd/system/gns3-bridge.service
 chown root:root /etc/systemd/system/gns3-bridge.service
 systemctl enable gns3-bridge
 
+# Install GNS3 bridge sync systemd service
 cp apply-gns3-bridge-config.sh /usr/local/bin/apply-gns3-bridge-config
 chmod 755 /usr/local/bin/apply-gns3-bridge-config
 chown root:root /usr/local/bin/apply-gns3-bridge-config
@@ -280,7 +282,7 @@ chmod 755 /etc/systemd/system/gns3-bridge-sync.path
 chown root:root /etc/systemd/system/gns3-bridge-sync.path
 systemctl enable gns3-bridge-sync.path
 
-# DHCP / DNS setup for the NAT node
+# Setup DHCP / DNS setup for GNS3 bridge
 apt install -y dnsmasq-base
 
 cp gns3-dnsmasq.conf /etc/gns3/gns3-dnsmasq.conf
