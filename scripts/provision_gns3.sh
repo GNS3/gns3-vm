@@ -49,6 +49,7 @@ port = 80
 images_path = /opt/gns3/images
 projects_path = /opt/gns3/projects
 report_errors = True
+default_nat_interface = gns3br0
 EOF
 
 # Make sure we have the latest version of the GNS3 VM menu
