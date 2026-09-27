@@ -50,5 +50,6 @@ sudo netplan apply
 sudo systemctl daemon-reload
 sudo systemctl restart gns3-dnsmasq.service
 sudo systemctl restart gns3-bridge.service
+sudo systemctl restart gns3.service
 
 echo "Bridge configuration updated successfully to: ${BRIDGE_NAME}"
