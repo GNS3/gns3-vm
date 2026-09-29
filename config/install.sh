@@ -152,9 +152,6 @@ then
   sudo chown -R gns3:gns3 /home/gns3/.venv
 fi
 
-# For the NAT node
-apt install -y libvirt-daemon-system
-
 # For admin password reset in the controller database
 apt install -y sqlite3
 
@@ -241,7 +238,64 @@ modprobe fuse || true
 ## Network config ##
 ####################
 
-# Setup netplan
+# Uninstall libvirt-daemon-system to avoid conflicts with the GNS3 bridge
+apt -y remove --purge libvirt-daemon-system
+
+# Setup the GNS3 bridge (used by the NAT node in GNS3)
+cp "gns3vm_bridge_netcfg.yaml" "/etc/netplan/60_gns3vm_bridge_netcfg.yaml"
+chown root:root /etc/netplan/60_gns3vm_bridge_netcfg.yaml
+chmod 600 /etc/netplan/60_gns3vm_bridge_netcfg.yaml
+
+# Enable IP forwarding permanently for the GNS3 bridge to communicate with the host and the internet
+cp 40-ip-forwarding.conf /etc/sysctl.d/40-ip-forwarding.conf
+chmod 644 /etc/sysctl.d/40-ip-forwarding.conf
+chown root:root /etc/sysctl.d/40-ip-forwarding.conf
+sysctl -p /etc/sysctl.d/40-ip-forwarding.conf || true
+
+# Install GNS3 bridge configuration file
+mkdir -p /etc/gns3
+cp gns3-bridge.conf /etc/gns3/gns3-bridge.conf
+chown root:root /etc/gns3/gns3-bridge.conf
+chmod 600 /etc/gns3/gns3-bridge.conf
+
+# Install GNS3 bridge systemd service
+cp gns3-bridge.sh /usr/local/bin/gns3-bridge
+chmod 755 /usr/local/bin/gns3-bridge
+chown root:root /usr/local/bin/gns3-bridge
+
+cp gns3-bridge.service /etc/systemd/system/gns3-bridge.service
+chmod 755 /etc/systemd/system/gns3-bridge.service
+chown root:root /etc/systemd/system/gns3-bridge.service
+systemctl enable gns3-bridge
+
+# Install GNS3 bridge sync systemd service
+cp apply-gns3-bridge-config.sh /usr/local/bin/apply-gns3-bridge-config
+chmod 755 /usr/local/bin/apply-gns3-bridge-config
+chown root:root /usr/local/bin/apply-gns3-bridge-config
+
+cp gns3-bridge-sync.service /etc/systemd/system/gns3-bridge-sync.service
+chmod 755 /etc/systemd/system/gns3-bridge-sync.service
+chown root:root /etc/systemd/system/gns3-bridge-sync.service
+
+cp gns3-bridge-sync.path /etc/systemd/system/gns3-bridge-sync.path
+chmod 755 /etc/systemd/system/gns3-bridge-sync.path
+chown root:root /etc/systemd/system/gns3-bridge-sync.path
+systemctl enable gns3-bridge-sync.path
+
+# Setup DHCP / DNS setup for GNS3 bridge
+apt install -y dnsmasq-base
+
+cp gns3-dnsmasq.conf /etc/gns3/gns3-dnsmasq.conf
+chown root:root /etc/gns3/gns3-dnsmasq.conf
+chmod 600 /etc/gns3/gns3-dnsmasq.conf
+
+# Install GNS3 dnsmasq systemd service
+cp gns3-dnsmasq.service /etc/systemd/system/gns3-dnsmasq.service
+chmod 755 /etc/systemd/system/gns3-dnsmasq.service
+chown root:root /etc/systemd/system/gns3-dnsmasq.service
+systemctl enable gns3-dnsmasq
+
+# Setup the network interfaces for the GNS3 VM
 cp "gns3vm_default_netcfg.yaml" "/etc/netplan/80_gns3vm_default_netcfg.yaml"
 chown root:root /etc/netplan/80_gns3vm_default_netcfg.yaml
 chmod 600 /etc/netplan/80_gns3vm_default_netcfg.yaml
@@ -260,6 +314,9 @@ apt install -y dynamips vpcs ubridge mtools
 # Install tshark for packet capture
 apt-get install -y tshark
 
+# Install wireshark-common for sharkd (marker replay engine)
+apt-get install -y wireshark-common
+
 # Setup rc.local
 cp "rc.local" "/etc/rc.local"
 chmod 700 /etc/rc.local
@@ -271,19 +328,6 @@ chown root:root /etc/default/grub
 chmod 700 /etc/default/grub
 update-grub
 
-# Setup libvirt network
-if virsh net-info default | grep -q '^Active:.*yes'; then
-    virsh net-undefine default || true
-    virsh net-destroy default
-fi
-
-if [[ ! -f "/etc/libvirt/qemu/networks/gns3.xml" ]]
-then
-    cp gns3.xml /etc/libvirt/qemu/networks/gns3.xml
-    virsh net-define /etc/libvirt/qemu/networks/gns3.xml
-    virsh net-autostart gns3
-fi
-
 # Setup Console
 cp "console-setup" "/etc/default/console-setup"
 chown root:root /etc/default/console-setup
@@ -293,11 +337,6 @@ chmod 644 /etc/default/console-setup
 cp zerofree /usr/local/bin/zerofree
 chown root:root /usr/local/bin/zerofree
 chmod 755 /usr/local/bin/zerofree
-
-# Sysctl
-cp sysctl.conf /etc/sysctl.conf
-chmod 644 /etc/sysctl.conf
-chown root:root /etc/sysctl.conf
 
 # GNS3 Restore
 cp gns3-restore.sh /usr/local/bin/gns3restore
