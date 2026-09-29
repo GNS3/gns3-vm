@@ -30,10 +30,6 @@
       "source": "scripts/welcome.py"
     },
     {
-      "inline": "sudo apt update && sudo apt -y install linux-virtual linux-cloud-tools-virtual linux-tools-virtual",
-      "type": "shell"
-    },
-    {
       "type": "shell",
       "script": "scripts/provision_gns3.sh",
       "environment_vars": [

@@ -57,12 +57,12 @@ mv ../gns3vm-disk2.vmdk .
 for vmdk_file in gns3vm-disk{1,2}.vmdk; do
     echo "Converting ${vmdk_file} to VHDX format..."
     vhd_file=`basename "${vmdk_file}" .vmdk`
-    qemu-img convert -f vmdk -O vhdx "${vmdk_file}" "${vhd_file}.vhdx"
+    qemu-img convert -f vmdk -O vhdx -o subformat=dynamic "${vmdk_file}" "${vhd_file}.vhdx"
 done
 
-cp ../create-vm.ps1 create-vm.ps1
-cp ../install-vm.bat install-vm.bat
-7z a -bsp1 -mx=1 "../GNS3.VM.Hyper-V.${GNS3_VERSION}.zip" *.vhdx create-vm.ps1 install-vm.bat
+cp ../setup-vm.ps1 setup-vm.ps1
+cp ../install-gns3-vm.cmd install-gns3-vm.cmd
+7z a -bsp1 -mx=1 "../GNS3.VM.Hyper-V.${GNS3_VERSION}.zip" *.vhdx setup-vm.ps1 install-gns3-vm.cmd
 
 cd ..
 rm -Rf output-vmware-iso
