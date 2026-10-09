@@ -390,6 +390,11 @@ systemctl disable snmpd
 # Install NTP client
 apt install -y chrony
 
+# Install Avahi daemon for mDNS support
+apt install -y avahi-daemon
+systemctl start avahi-daemon
+systemctl enable avahi-daemon
+
 # Disable cloud-init
 touch /etc/cloud/cloud-init.disabled
 
