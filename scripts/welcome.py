@@ -299,7 +299,7 @@ Uptime: {uptime}\n\n""".format(
     try:
         d.msgbox(content)
     except:
-        os.execvp("bash", ['/bin/bash'])
+        subprocess.run(["bash"])
 
 
 def migrate():
@@ -606,7 +606,8 @@ try:
         d.clear()
         if code == Dialog.OK:
             if tag == "Shell":
-                os.execvp("bash", ['/bin/bash'])
+                subprocess.run(["bash"])
+                d.clear()
             elif tag == "Channel":
                 set_release_channel()
             elif tag == "Restore":
