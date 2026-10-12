@@ -28,7 +28,7 @@ import json
 import bcrypt
 import shlex
 
-from dialog import Dialog, PythonDialogBug
+from dialog import Dialog
 
 try:
     locale.setlocale(locale.LC_ALL, '')
@@ -439,7 +439,11 @@ def log():
     """
 
     subprocess.run(["sudo", "chmod", "755", "/var/log/gns3/gns3.log"])
-    subprocess.run(["tail", "-n", "20", "-f", "/var/log/gns3/gns3.log"])
+    try:
+        subprocess.run(["tail", "-n", "20", "-f", "/var/log/gns3/gns3.log"])
+    except KeyboardInterrupt:
+        pass
+    d.clear()
 
 
 def edit_config():
@@ -611,11 +615,14 @@ try:
             elif tag == "Channel":
                 set_release_channel()
             elif tag == "Restore":
-                os.execvp("sudo", ['/usr/bin/sudo', "/usr/local/bin/gns3restore"])
+                if d.yesno("Are you sure you want to restore the VM?") == d.OK:
+                    os.execvp("sudo", ['/usr/bin/sudo', "/usr/local/bin/gns3restore"])
             elif tag == "Reboot":
-                os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
+                if d.yesno("Are you sure you want to reboot the VM?") == d.OK:
+                    os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
             elif tag == "Shutdown":
-                os.execvp("sudo", ['/usr/bin/sudo', "poweroff"])
+                if d.yesno("Are you sure you want to shutdown the VM?") == d.OK:
+                    os.execvp("sudo", ['/usr/bin/sudo', "poweroff"])
             elif tag == "Upgrade":
                 upgrade()
             elif tag == "Information":
@@ -644,5 +651,8 @@ try:
                 edit_proxy()
             elif tag == "Shrink":
                 shrink_disk()
-except KeyboardInterrupt:
+        else:
+            break
+finally:
+    d.clear()
     sys.exit(0)
