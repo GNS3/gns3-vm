@@ -446,6 +446,49 @@ def log():
     d.clear()
 
 
+def advanced_settings():
+    """
+    Advanced settings and configuration submenu.
+    """
+    while True:
+        code, tag = d.menu("Advanced Settings",
+                          choices=[("Security", "Configure server security"),
+                                   ("Reset", "Reset controller admin password"),
+                                   ("Keyboard", "Change keyboard layout"),
+                                   ("Console", "Change console settings (font size etc.)"),
+                                   ("Configure", "Edit server configuration (advanced users ONLY)"),
+                                   ("Proxy", "Configure proxy settings"),
+                                   ("Network", "Configure network settings"),
+                                   ("Migrate", "Migrate data to another GNS3 VM"),
+                                   ("Restore", "Restore the VM (if an upgrade has failed)"),
+                                   ("Shrink", "Shrink the VM disk")])
+        d.clear()
+        if code == Dialog.OK:
+            if tag == "Security":
+                set_security()
+            elif tag == "Reset":
+                reset_password()
+            elif tag == "Keyboard":
+                keyboard_configuration()
+            elif tag == "Console":
+                console_configuration()
+            elif tag == "Configure":
+                edit_config()
+            elif tag == "Network":
+                edit_network()
+            elif tag == "Proxy":
+                edit_proxy()
+            elif tag == "Migrate":
+                migrate()
+            elif tag == "Restore":
+                if d.yesno("Are you sure you want to restore the VM?") == d.OK:
+                    os.execvp("sudo", ['/usr/bin/sudo', "/usr/local/bin/gns3restore"])
+            elif tag == "Shrink":
+                shrink_disk()
+        else:
+            break
+
+
 def edit_config():
     """
     Edits GNS3 server configuration file.
@@ -593,18 +636,9 @@ try:
                             ("Upgrade", "Upgrade the GNS3 VM"),
                             ("Shell", "Open a shell"),
                             ("Log", "Show the GNS3 server log"),
-                            ("Web Wireshark", "Install web-wireshark"),
                             ("Test", "Check Internet connection"),
-                            ("Security", "Configure server security"),
-                            ("Reset", "Reset controller admin password"),
-                            ("Keyboard", "Change keyboard layout"),
-                            ("Console", "Change console settings (font size etc.)"),
-                            ("Configure", "Edit server configuration (advanced users ONLY)"),
-                            ("Proxy", "Configure proxy settings"),
-                            ("Network", "Configure network settings"),
-                            ("Migrate", "Migrate data to another GNS3 VM"),
-                            ("Restore", "Restore the VM (if an upgrade has failed)"),
-                            ("Shrink", "Shrink the VM disk"),
+                            ("Web Wireshark", "Install web-wireshark"),
+                            ("Advanced", "Advanced settings and configuration"),
                             ("Reboot", "Reboot the VM"),
                             ("Shutdown", "Shutdown the VM")])
         d.clear()
@@ -614,9 +648,6 @@ try:
                 d.clear()
             elif tag == "Channel":
                 set_release_channel()
-            elif tag == "Restore":
-                if d.yesno("Are you sure you want to restore the VM?") == d.OK:
-                    os.execvp("sudo", ['/usr/bin/sudo', "/usr/local/bin/gns3restore"])
             elif tag == "Reboot":
                 if d.yesno("Are you sure you want to reboot the VM?") == d.OK:
                     os.execvp("sudo", ['/usr/bin/sudo', "reboot"])
@@ -627,30 +658,14 @@ try:
                 upgrade()
             elif tag == "Information":
                 vm_information()
-            elif tag == "Migrate":
-                migrate()
             elif tag == "Web Wireshark":
                 web_wireshark()
             elif tag == "Log":
                 log()
-            elif tag == "Configure":
-                edit_config()
-            elif tag == "Network":
-                edit_network()
-            elif tag == "Security":
-                set_security()
-            elif tag == "Reset":
-                reset_password()
-            elif tag == "Keyboard":
-                keyboard_configuration()
-            elif tag == "Console":
-                console_configuration()
             elif tag == "Test":
                 check_internet_connectivity()
-            elif tag == "Proxy":
-                edit_proxy()
-            elif tag == "Shrink":
-                shrink_disk()
+            elif tag == "Advanced":
+                advanced_settings()
         else:
             break
 finally:
