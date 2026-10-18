@@ -1,0 +1,13 @@
+[Unit]
+Description=ptp4l (PTP) on the GNS3 VM management network
+After=network-online.target
+Wants=network-online.target
+Conflicts=systemd-timesyncd.service chrony.service chronyd.service ntp.service
+
+[Service]
+ExecStart=/usr/local/bin/ptp4l-mgmt
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

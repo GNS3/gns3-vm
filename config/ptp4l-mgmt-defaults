@@ -1,0 +1,8 @@
+# Settings for /usr/local/bin/ptp4l-mgmt (ptp4l-mgmt.service).
+#
+# PTP4L_MGMT_NET is an IPv4 address prefix: ptp4l runs on the first
+# interface that has an address in this prefix. When no interface
+# matches, the interface owning the default route is used.
+PTP4L_MGMT_NET="192.168.101."
+# Seconds to wait at boot for the address to appear (DHCP race).
+PTP4L_MGMT_WAIT=60
