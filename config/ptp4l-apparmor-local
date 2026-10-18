@@ -1,0 +1,15 @@
+# ptp4l runs with software timestamping on the GNS3 VM and adjusts the
+# system clock itself. The distribution profile is written for the
+# hardware-timestamping architecture (clock control belongs to phc2sys,
+# which is where sys_time is granted), so the missing permissions are
+# added here through the local/ override mechanism -- safe across
+# package upgrades.
+capability sys_time,
+# pmc queries ptp4l over a unix datagram socket; its client socket binds
+# to /run/pmc.<pid>. The denied sendmsg shows up as class="file" in the
+# audit log, but plain file path rules do not allow it: the fine-grained
+# unix rule below is required. ptp4l must be (re)started after this
+# profile is reloaded, so that its socket is created under the new
+# policy (hot-reloading a profile does not affect existing sockets).
+@{run}/pmc.[0-9]* rw,
+unix (create, bind, connect, send, receive, getattr) type=dgram,
