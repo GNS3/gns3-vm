@@ -159,6 +159,9 @@ apt install -y sqlite3
 ## Qemu support ##
 ##################
 
+# TODO: consider switching the Virtualization Hardware Enablement Stack (HWE)
+# https://ubuntu.com/server/docs/how-to/virtualisation/virt-hwe/
+
 # Install Qemu
 apt install -y qemu-system-x86 qemu-utils cpulimit swtpm
 sudo usermod -aG kvm gns3
@@ -209,8 +212,7 @@ if [[ "$(dpkg --print-architecture)" == "arm64" ]]
 then
   # Install Qemu user emulation with binfmt_misc on arm64 (for IOU support)
   apt install -y binfmt-support qemu-user qemu-user-binfmt
-  apt install -y libc6:i386 libc6:amd64
-  apt install -y gns3-iou:amd64
+  apt install -y libc6:amd64
 fi
 
 # System tuning for IOU support
@@ -389,6 +391,63 @@ systemctl disable snmpd
 
 # Install NTP client
 apt install -y chrony
+
+#################
+## PTP support ##
+#################
+
+# The VMs can alternatively synchronize with each other using PTP
+# (ptp4l, software timestamping, BMCA) on the management network
+# instead of polling external NTP servers. The service is installed
+# disabled: switch from the console menu (Advanced Settings -> Time
+# sync) or the batch deploy script. See /etc/linuxptp/ptp4l-mgmt.conf
+# and /usr/local/bin/ptp4l-mgmt.
+
+# Install linuxptp (ptp4l and pmc)
+apt install -y linuxptp
+
+# The distribution AppArmor profile assumes hardware timestamping;
+# running with software timestamping needs capability sys_time plus
+# unix datagram rules for pmc, added via the local/ override.
+if [[ -f /etc/apparmor.d/usr.sbin.ptp4l ]]
+then
+    mkdir -p /etc/apparmor.d/local
+    cp ptp4l-apparmor-local /etc/apparmor.d/local/usr.sbin.ptp4l
+    chown root:root /etc/apparmor.d/local/usr.sbin.ptp4l
+    chmod 644 /etc/apparmor.d/local/usr.sbin.ptp4l
+    apparmor_parser -r --skip-read-cache /etc/apparmor.d/usr.sbin.ptp4l || true
+fi
+
+# Install the ptp4l configuration for the management network
+mkdir -p /etc/linuxptp
+cp ptp4l-mgmt.conf /etc/linuxptp/ptp4l-mgmt.conf
+chown root:root /etc/linuxptp/ptp4l-mgmt.conf
+chmod 644 /etc/linuxptp/ptp4l-mgmt.conf
+
+cp ptp4l-mgmt-defaults /etc/default/ptp4l-mgmt
+chown root:root /etc/default/ptp4l-mgmt
+chmod 644 /etc/default/ptp4l-mgmt
+
+# The management interface is not known at build time: the wrapper
+# resolves it at every start (address in PTP4L_MGMT_NET, or the default
+# route) and waits for DHCP, then execs ptp4l.
+cp ptp4l-mgmt /usr/local/bin/ptp4l-mgmt
+chown root:root /usr/local/bin/ptp4l-mgmt
+chmod 755 /usr/local/bin/ptp4l-mgmt
+
+cp ptp4l-mgmt.service /etc/systemd/system/ptp4l-mgmt.service
+chown root:root /etc/systemd/system/ptp4l-mgmt.service
+chmod 755 /etc/systemd/system/ptp4l-mgmt.service
+systemctl daemon-reload
+
+# When upgrading a running VM that has already switched to PTP, restart
+# the service after the AppArmor reload above, so ptp4l rebuilds its
+# unix socket under the new policy (hot-reloading a profile does not
+# affect existing sockets).
+if systemctl is-active --quiet ptp4l-mgmt
+then
+    systemctl restart ptp4l-mgmt
+fi
 
 # Install Avahi daemon for mDNS support
 apt install -y avahi-daemon

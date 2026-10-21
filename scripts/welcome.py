@@ -19,6 +19,7 @@
 import re
 import locale
 import os
+import platform
 import sys
 import time
 import subprocess
@@ -261,6 +262,7 @@ def vm_information():
 Release channel: {release_channel}
 VM version: {gns3vm_version}
 Ubuntu version: {ubuntu_version}
+System architecture: {architecture}
 Qemu version: {qemu_version}
 Virtualization: {virt}
 KVM support available: {kvm}
@@ -269,6 +271,7 @@ Uptime: {uptime}\n\n""".format(
             release_channel=get_release_channel(),
             gns3_version=version,
             ubuntu_version=ubuntu_version(),
+            architecture=platform.machine(),
             qemu_version=qemu_version(),
             virt=virt_what(),
             kvm=kvm_support(),
@@ -433,6 +436,45 @@ def web_wireshark():
     subprocess.run(["bash", "-c", "source /home/gns3/.venv/gns3server-venv/bin/activate && gns3server-web-wireshark-setup && exit"])
 
 
+def time_sync():
+    """
+    Switch the time synchronization method between chrony (NTP) and ptp4l (PTP).
+    """
+
+    def active(service):
+        return subprocess.run(["systemctl", "is-active", "--quiet", service]).returncode == 0
+
+    if active("ptp4l-mgmt"):
+        current = "ptp4l (PTP)"
+    elif active("chrony") or active("systemd-timesyncd"):
+        current = "chrony (NTP)"
+    else:
+        current = "none"
+    code, tag = d.menu("Time synchronization (currently: {})".format(current),
+                       choices=[("NTP", "Synchronize with external NTP servers using chrony"),
+                                ("PTP", "Synchronize with the other GNS3 VMs using ptp4l (IEEE 1588 PTP)")])
+    if code != Dialog.OK:
+        return
+    d.clear()
+    if tag == "PTP":
+        subprocess.run(["sudo", "systemctl", "disable", "--now", "chrony", "systemd-timesyncd"],
+                       stderr=subprocess.DEVNULL)
+        subprocess.run(["sudo", "timedatectl", "set-ntp", "false"], stderr=subprocess.DEVNULL)
+        if subprocess.run(["sudo", "systemctl", "enable", "--now", "ptp4l-mgmt"]).returncode != 0:
+            d.msgbox("Could not start ptp4l-mgmt (is linuxptp installed?)")
+            return
+        d.msgbox("Time synchronization switched to ptp4l (PTP).\n\n"
+                 "The VMs elect a master among themselves (BMCA) and converge\n"
+                 "within ~25 s. Check the status with\n"
+                 "'sudo pmc -u -b 0 \"GET PORT_DATA_SET\"'")
+    else:
+        subprocess.run(["sudo", "systemctl", "disable", "--now", "ptp4l-mgmt"], stderr=subprocess.DEVNULL)
+        if subprocess.run(["sudo", "systemctl", "enable", "--now", "chrony"]).returncode != 0:
+            d.msgbox("Could not start chrony (is it installed?)")
+            return
+        d.msgbox("Time synchronization switched to chrony (NTP).")
+
+
 def log():
     """
     Displays the GNS3 server log.
@@ -461,7 +503,8 @@ def advanced_settings():
                                    ("Network", "Configure network settings"),
                                    ("Migrate", "Migrate data to another GNS3 VM"),
                                    ("Restore", "Restore the VM (if an upgrade has failed)"),
-                                   ("Shrink", "Shrink the VM disk")])
+                                   ("Shrink", "Shrink the VM disk"),
+                                   ("Time sync", "Switch time synchronization (chrony NTP / ptp4l PTP)")])
         d.clear()
         if code == Dialog.OK:
             if tag == "Security":
@@ -485,6 +528,8 @@ def advanced_settings():
                     os.execvp("sudo", ['/usr/bin/sudo', "/usr/local/bin/gns3restore"])
             elif tag == "Shrink":
                 shrink_disk()
+            elif tag == "Time sync":
+                time_sync()
         else:
             break
 
@@ -569,7 +614,10 @@ def virt_what():
     Returns the virtualization technology used to run the GNS3 VM.
     """
 
-    return subprocess.check_output(["sudo", "virt-what"]).strip().decode()
+    virt = subprocess.check_output(["sudo", "virt-what"]).strip().decode()
+    if virt == "":
+        virt = "unknown"
+    return virt
 
 
 def uptime():

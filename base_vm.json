@@ -51,7 +51,7 @@
       },
       {
          "type": "shell",
-         "pause_before": "30s",
+         "pause_before": "240s",
          "scripts": [
             "scripts/cleaner.sh"
          ]
@@ -107,8 +107,9 @@
          "use_default_display": true,
          "qemuargs": [
                 ["-serial", "file:serial.out"],
-                ["-machine", "virt,gic-version=3,accel=kvm"],
-                ["-cpu", "max"],
+                ["-machine", "virt"],
+                ["-accel", "tcg,thread=multi"],
+                ["-cpu", "neoverse-n1"],
                 ["-smp", "4"],
                 ["-m", "4096"],
                 ["-bios", "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd"],

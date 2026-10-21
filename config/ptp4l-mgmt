@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#
+# Resolve the management interface and run ptp4l on it.
+#
+# The interface is not known at image build time, so it is resolved at
+# every start: the first interface with an IPv4 address in
+# PTP4L_MGMT_NET, falling back to the interface owning the default
+# route. The address can appear late (DHCP), so wait up to
+# PTP4L_MGMT_WAIT seconds before giving up; systemd then retries the
+# unit (Restart=on-failure, RestartSec=5).
+
+set -u
+
+[ -f /etc/default/ptp4l-mgmt ] && . /etc/default/ptp4l-mgmt
+
+PTP4L_MGMT_NET="${PTP4L_MGMT_NET:-192.168.101.}"
+PTP4L_MGMT_WAIT="${PTP4L_MGMT_WAIT:-60}"
+PTP4L="${PTP4L:-/usr/sbin/ptp4l}"
+PTP4L_MGMT_CONF="${PTP4L_MGMT_CONF:-/etc/linuxptp/ptp4l-mgmt.conf}"
+
+find_iface() {
+    # 1. first interface with an address in the management prefix
+    local iface
+    iface=$(ip -4 -o addr show | awk -v net="$PTP4L_MGMT_NET" '$4 ~ ("^" net) {print $2}' | head -1)
+    if [[ -z "$iface" ]]; then
+        # 2. fallback: interface owning the default route
+        iface=$(ip -4 route show default | head -1 | awk '{print $5}')
+        [[ "$iface" == "lo" ]] && iface=""
+    fi
+    printf '%s' "$iface"
+}
+
+IFACE=""
+waited=0
+while [[ $waited -lt $PTP4L_MGMT_WAIT ]]; do
+    IFACE=$(find_iface)
+    [[ -n "$IFACE" ]] && break
+    sleep 2
+    waited=$((waited + 2))
+done
+
+if [[ -z "$IFACE" ]]; then
+    echo "ptp4l-mgmt: no interface with a ${PTP4L_MGMT_NET}x address and no default route after ${PTP4L_MGMT_WAIT}s" >&2
+    exit 1
+fi
+
+echo "ptp4l-mgmt: running ptp4l on $IFACE"
+exec "$PTP4L" -f "$PTP4L_MGMT_CONF" -i "$IFACE" -m
