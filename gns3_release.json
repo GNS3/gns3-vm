@@ -107,6 +107,7 @@
       "iso_url": "gns3vm-disk1.qcow2",
       "iso_checksum": "none",
       "use_default_display": true,
+      "skip_resize_disk": true,
       "qemuargs": [
         [
           "-drive",
@@ -122,11 +123,15 @@
         ],
         [
           "-machine",
-          "virt,gic-version=3,accel=kvm"
+          "virt"
+        ],
+        [
+          "-accel",
+          "tcg,thread=multi"
         ],
         [
           "-cpu",
-          "max"
+          "neoverse-n1"
         ],
         [
           "-smp",

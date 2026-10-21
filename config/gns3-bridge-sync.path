@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch /etc/gns3/gns3-bridge.conf for modifications
+
+[Path]
+PathModified=/etc/gns3/gns3-bridge.conf
+Unit=gns3-bridge-sync.service
+
+[Install]
+WantedBy=multi-user.target

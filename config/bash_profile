@@ -5,4 +5,4 @@ case $- in
 esac
 
 /usr/local/bin/gns3welcome.py
-echo "Please run 'sudo gns3restore' in case the menu is no longer showing"
+echo "Please run gns3welcome.py to start the menu or 'sudo gns3restore' in case the menu is no longer showing"

@@ -1,0 +1,13 @@
+# This file describes the network interfaces available on your system
+# For more information, see netplan(5).
+network:
+  version: 2
+  renderer: networkd
+  bridges:
+    gns3br0:
+      dhcp4: no
+      addresses:
+        - 192.168.122.1/24
+      parameters:
+        stp: false
+        forward-delay: 0

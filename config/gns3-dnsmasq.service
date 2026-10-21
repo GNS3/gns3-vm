@@ -1,0 +1,12 @@
+[Unit]
+Description=Isolated DNS/DHCP server for GNS3 NAT Bridge
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/sbin/dnsmasq --conf-file=/etc/gns3/gns3-dnsmasq.conf
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
