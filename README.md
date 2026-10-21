@@ -1,84 +1,110 @@
 # FOR DEVELOPMENT ONLY
 
-Go to http://www.gns3.com if you are looking for 
-the GNS3 VM. Otherwise GNS3 will not be included in the
-VM.
+The GNS3 VM is a virtual machine that runs the GNS3 server and allows you to run network simulations with GNS3.
+GNS3 VMs are released on GitHub (https://github.com/GNS3/gns3-gui/releases) and can be downloaded from the GNS3 website (https://www.gns3.com/software).
 
 # GNS3 VM
 
-Build a GNS3 Virtual Machine 
+GNS3 Virtual Machine (GNS3 VM) features:
 
-* Support Qemu, dynamips, VPCS, IOU and Docker
-* It's based on a ubuntu-server LTS 14.04 64 bits
-* Support GNS3 update without losing your data
-* No need to release a new VM when a new release is out
-* By default you can use it in gns3 and access to the internet
-* The VM as Nat and HostOnly adapter
-* sudo is allowed without password
-* Default account: gns3 / gns3
-* A graphical interface allow gns3 management
-* GNS3 data are installed in /opt on a seperate disk
-* An optional eth2 is configured allowing user to add a bridge interface
+* Includes dependencies like uBridge, Qemu, Dynamips, VPCS and Docker.
+* Based on the latest Linux Ubuntu LTS.
+* Menu to configure the GNS3 VM.
+* Optimizations for better performance.
+* Support GNS3 updates.
+* The VM has NAT and HostOnly adapter.
+* Default account: gns3 / gns3.
+* GNS3 data is stored in `/opt` on a separate disk.
+* mDNS is enabled to allow to discover the GNS3 VM on the network (gns3vm.local).
+* NTP is enabled to synchronize the time with Internet time servers.
+* SNMP is installed but not enabled by default.
+* XRd (containerized IOS XR) support.
+
+# Supported platforms
+
+* Hyper-V, to run GNS3 on Windows using the Hyper-V hypervisor.
+* VMware Workstation, to run GNS3 on Windows and Linux using the VMware Workstation hypervisor.
+* VMware ESXi, to run GNS3 on a VMware ESXi server.
+* VirtualBox, to run GNS3 on Windows, Linux, and macOS using the VirtualBox hypervisor.
+* KVM (x86_64 only), to run GNS3 on Linux using the KVM hypervisor.
+* UTM (ARM64 only), to run GNS3 on macOS (Apple Silicon) using the UTM hypervisor (https://mac.getutm.app/).
 
 ## Building 
 
-You need to install packer before.
+Building is only supported on Linux.
+
+Packer needs to be installed on your system. You can download it from https://www.packer.io/downloads.
+
+Plugins for VirtualBox, VMware, and QEMU need to be installed. You can install them with the following commands:
+
+```commandline
+packer plugins install github.com/hashicorp/virtualbox
+packer plugins install github.com/hashicorp/vmware
+packer plugins install github.com/hashicorp/qemu
+```
+
+Qemu needs to be installed on your system. You can install it with the following command:
+
+```commandline
+apt install -y genisoimage qemu-utils qemu-system-x86 qemu-kvm qemu-system-aarch64
+```
+
+## Base VM
+
+A base VM is built with Packer and can be used to build the GNS3 VM for different hypervisors.
+
+Run this script to build the x86_64 base VM:
+```
+./build_base_vm.sh
+```
+
+Run this script to build the ARM64 base VM:
+```
+./build_base_vm.sh
+```
+
+### VMware Workstation
+
+Run:
+```
+./release_vmware.sh ${GNS3_VERSION} GNS3VM.Base.$(cat version).zip
+```
 
 ### VirtualBox
 
-Run:
-```
-./virtualbox.sh
-```
-
-
-This step will build the base VM as an OVA without install gns3 on it.
-
-If you want to install GNS3 you need to unzip the OVA and run:
-```
-./release_virtualbox.sh 1.4.0 GNS3\ VM.ova
-```
-
-### VMware
+The VirtualBox release script uses the VMware VM as a base for creating the VirtualBox VM.
 
 Run:
 ```
-./vmware.sh
+./release_virtualbox.sh ${GNS3_VERSION} GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip
 ```
 
-For exporting to OVA you need to install:
-https://my.vmware.com/web/vmware/details?downloadGroup=OVFTOOL400&productId=353
-
-
-This step will build the base VM as an OVA without install gns3 on it.
-
-If you want to install GNS3 you need to unzip the OVA and run:
-```
-./release_vmware.sh 1.4.0 GNS3\ VM.ova
-```
-
-#### Upload to ESXi
+### Hyper-V
 
 ```
-ovftool --allowAllExtraConfig -dm=thin  -ds=datastore1 "GNS3 VM.ova" "vi://root:PASSWORD@HOST"
+./release_hyperv.sh ${GNS3_VERSION} GNS3VM.Base.$(cat version).zip
 ```
 
-## Tools
+### KVM
 
-### ova.py
+The KVM release script requires the VirtualBox zip file to be copied to /tmp before running the script. This is because the KVM release script uses the VirtualBox VM file as a base for creating the KVM VM.
 
-Show content of an ova file
+```
+cp GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip /tmp/GNS3VM.VirtualBox.${GNS3_NUMBER}.zip
+./release_kvm.sh ${GNS3_VERSION}
+```
 
-### workstation_to_esxi.py
+### VMware ESXi
 
-Convert the ova from vmware workstation to esxi
+The VMware ESXi release script requires the VMware zip file to be copied to /tmp before running the script. This is because the ESXi release script uses the VMware Workstation VM file as a base for creating the ESXi VM.
 
-### last_vm_version.py
+```
+cp GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip /tmp/GNS3VM.VMware.${GNS3_NUMBER}.zip
+./release_esxi.sh ${GNS3_VERSION}
+```
 
-Get last vm version on Github
+### UTM (macOS Apple Silicon)
 
-
-### push_config_to_vm.sh
-
-Sync local configuration via SSH to a VM. Use for testing modifications.
-
+```
+./release_qemu_arm64.sh ${GNS3_VERSION} GNS3VM.Base.ARM64.$(cat version).zip
+```

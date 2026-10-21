@@ -159,6 +159,9 @@ apt install -y sqlite3
 ## Qemu support ##
 ##################
 
+# TODO: consider switching the Virtualization Hardware Enablement Stack (HWE)
+# https://ubuntu.com/server/docs/how-to/virtualisation/virt-hwe/
+
 # Install Qemu
 apt install -y qemu-system-x86 qemu-utils cpulimit swtpm
 sudo usermod -aG kvm gns3
@@ -209,8 +212,7 @@ if [[ "$(dpkg --print-architecture)" == "arm64" ]]
 then
   # Install Qemu user emulation with binfmt_misc on arm64 (for IOU support)
   apt install -y binfmt-support qemu-user qemu-user-binfmt
-  apt install -y libc6:i386 libc6:amd64
-  apt install -y gns3-iou:amd64
+  apt install -y libc6:amd64
 fi
 
 # System tuning for IOU support
