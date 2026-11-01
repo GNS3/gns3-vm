@@ -164,6 +164,10 @@ apt install -y sqlite3
 
 # Install Qemu
 apt install -y qemu-system-x86 qemu-utils cpulimit swtpm
+
+# Install firmware for UEFI support
+apt install -y ovmf qemu-efi-aarch64
+
 sudo usermod -aG kvm gns3
 
 # GNS3 projects directory in the VM is located on a different partition than the partition for the root directory (/)
