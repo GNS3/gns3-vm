@@ -163,7 +163,7 @@ apt install -y sqlite3
 # https://ubuntu.com/server/docs/how-to/virtualisation/virt-hwe/
 
 # Install Qemu
-apt install -y qemu-system-x86 qemu-utils cpulimit swtpm
+apt install -y qemu-system-x86 qemu-system-arm qemu-utils cpulimit swtpm
 
 # Install firmware for UEFI support
 apt install -y ovmf qemu-efi-aarch64
