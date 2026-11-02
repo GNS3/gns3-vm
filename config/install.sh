@@ -317,6 +317,33 @@ fi
 # Install other GNS3 dependencies
 apt install -y dynamips vpcs ubridge mtools
 
+# Install websocat (not packaged in Ubuntu, including 26.04): use the
+# upstream static musl binary from GitHub releases
+WEBSOCAT_VERSION="1.14.1"
+case "$(dpkg --print-architecture)" in
+  amd64)
+    WEBSOCAT_TARGET="x86_64-unknown-linux-musl"
+    WEBSOCAT_SHA256="66f8dd3a0394761556339117f8bb5123bddefd44e087af2a72ec22b0bd08d514"
+    ;;
+  arm64)
+    WEBSOCAT_TARGET="aarch64-unknown-linux-musl"
+    WEBSOCAT_SHA256="711a69576a2ff473fb01a90ffafb571c2ed019e55479d7ae71b12c2eadeb7011"
+    ;;
+  *)
+    echo "Unsupported architecture for websocat: $(dpkg --print-architecture)" >&2
+    exit 1
+    ;;
+esac
+WEBSOCAT_URL="https://github.com/vi/websocat/releases/download/v${WEBSOCAT_VERSION}/websocat.${WEBSOCAT_TARGET}"
+WEBSOCAT_TMP="$(mktemp)"
+trap 'rm -f "${WEBSOCAT_TMP}"' EXIT
+curl -fsSL --retry 3 --retry-delay 2 --connect-timeout 30 "${WEBSOCAT_URL}" -o "${WEBSOCAT_TMP}"
+echo "${WEBSOCAT_SHA256}  ${WEBSOCAT_TMP}" | sha256sum -c -
+install -m 0755 -o root -g root "${WEBSOCAT_TMP}" /usr/local/bin/websocat
+rm -f "${WEBSOCAT_TMP}"
+trap - EXIT
+websocat --version
+
 # Install tshark for packet capture
 apt-get install -y tshark
 
