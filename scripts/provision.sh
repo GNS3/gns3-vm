@@ -6,13 +6,8 @@ export UBUNTU_RELEASE=`lsb_release -c -s`
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-# Update the system
-#sudo apt-get update
-#sudo apt-get upgrade -y
-#sudo apt-get dist-upgrade -y
-
 # use the Ubuntu LTS enablement (also called HWE or Hardware Enablement) stack
-# sudo apt-get install -y --install-recommends linux-generic-hwe-22.04
+# sudo apt install -y --install-recommends linux-generic-hwe-22.04
 
 cd /tmp/config
 sudo GNS3_RELEASE_CHANNEL="$GNS3_RELEASE_CHANNEL" bash install.sh

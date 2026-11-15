@@ -48,7 +48,7 @@ do
 done
 
 cp gns3vm*.img "GNS3 VM.utm/Data"
-echo "Compressing RAW files to GNS3.VM.UTM.ARM64.${GNS3_VERSION}.tar.gz..."
-tar -Sczf "GNS3.VM.UTM.ARM64.${GNS3_VERSION}.tar.gz" "GNS3 VM.utm"
+echo "Compressing RAW files to GNS3.VM.UTM.ARM64.${GNS3_VERSION}.tar.xz..."
+tar -ScJf "GNS3.VM.UTM.ARM64.${GNS3_VERSION}.tar.xz" "GNS3 VM.utm"
 
 exit 0

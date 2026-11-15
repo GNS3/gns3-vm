@@ -43,6 +43,6 @@ cp ../gns3vm_libvirt.xml .
 # Update disk paths in the libvirt XML with the current GNS3 version
 sed -i "s|GNS3\.VM\.KVM\.[0-9.]\+|GNS3.VM.KVM.${GNS3_VERSION}|g" gns3vm_libvirt.xml
 
-7z a -bsp1 -mx=1 "../GNS3.VM.KVM.${GNS3_VERSION}.zip" *.qcow2 gns3vm_libvirt.xml ../start-gns3vm.sh
+tar -ScJf "GNS3.VM.KVM.${GNS3_VERSION}.tar.xz" *.qcow2 gns3vm_libvirt.xml ../start-gns3vm.sh
 
 rm "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
