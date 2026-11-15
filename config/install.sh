@@ -78,7 +78,7 @@ fi
 # Add the GNS3 PPA official GPG key
 if [[ ! -f "/etc/apt/keyrings/gns3-ppa.asc" ]]
 then
-  apt update
+  apt update --error-on=any
   apt install -y ca-certificates curl
   install -m 0755 -d /etc/apt/keyrings
   curl -fsSL 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xB83AAABFFBD82D21B543C8EA86C22C2EC6A24D7F' -o /etc/apt/keyrings/gns3-ppa.asc
@@ -131,7 +131,7 @@ Architectures: $(dpkg --print-architecture)
 Signed-By: /etc/apt/keyrings/docker.asc
 EOF
 
-apt update
+apt update --error-on=any
 
 # Install jq for upgrades
 apt install -y jq
@@ -345,10 +345,10 @@ trap - EXIT
 websocat --version
 
 # Install tshark for packet capture
-apt-get install -y tshark
+apt install -y tshark
 
 # Install wireshark-common for sharkd (marker replay engine)
-apt-get install -y wireshark-common
+apt install -y wireshark-common
 
 # Setup rc.local
 cp "rc.local" "/etc/rc.local"

@@ -29,7 +29,7 @@ curl -Lk "https://raw.githubusercontent.com/GNS3/gns3-vm/$BRANCH/scripts/upgrade
 # install the GNS3 server
 if [[ ! -d "gns3-server" ]]
 then
-    sudo apt update
+    sudo apt update --error-on=any
     sudo apt install -y git
     git clone https://github.com/GNS3/gns3-server.git gns3-server
 fi
@@ -68,7 +68,7 @@ then
   cd ..
   if [[ ! -d "gns3-web-ui" ]]
   then
-    sudo apt update
+    sudo apt update --error-on=any
     sudo apt install -y npm
     sudo npm install yarn --global
     git clone https://github.com/GNS3/gns3-web-ui.git gns3-web-ui
