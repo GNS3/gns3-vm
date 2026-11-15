@@ -295,7 +295,13 @@ Uptime: {uptime}\n\n""".format(
 
     ip = get_ip()
     if ip:
-        content += "IP: {ip} PORT: {server_port}\n\nTo log in using SSH: ssh gns3@{ip}\nPassword: gns3\n\nTo launch the Web-Ui, use gns3vm.local or {protocol}://{ip}{url_port} (default username/password is admin/admin)\n\nImages and projects are stored in '/opt/gns3'""".format(protocol=protocol, ip=ip, server_port=server_port, url_port=port_string)
+        mdns_hostname = None
+        try:
+            mdns_hostname = json.loads(subprocess.check_output(["busctl", "--json=short", "call", "org.freedesktop.Avahi", "/", "org.freedesktop.Avahi.Server", "GetHostNameFqdn"]))["data"][0]
+        finally:
+            if not mdns_hostname:
+                mdns_hostname = "gns3vm.local"
+        content += "IP: {ip} PORT: {server_port}\n\nTo log in using SSH: ssh gns3@{ip}\nPassword: gns3\n\nTo launch the Web-Ui, use {hostname} or {protocol}://{ip}{url_port} (default username/password is admin/admin)\n\nImages and projects are stored in '/opt/gns3'""".format(hostname=mdns_hostname, protocol=protocol, ip=ip, server_port=server_port, url_port=port_string)
     else:
         content += "eth0 is not configured (no IP address found). Please manually configure by selecting the 'Network' entry in the menu."
 
