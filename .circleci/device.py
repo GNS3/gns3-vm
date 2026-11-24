@@ -15,94 +15,161 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""
-Utility script for managing devices on packet.net
-"""
+"""Provision and terminate job-scoped EC2 builders using standard AWS credentials."""
 
+import argparse
+import hashlib
+import os
 import sys
-import time
-import packet
 
-from datetime import datetime, timedelta, timezone
-
-token = sys.argv[1]
-action = sys.argv[2]
-packet_project = sys.argv[3]
-server_type = sys.argv[4]
-metro = sys.argv[5]
-
-GNS3_HOSTNAME = 'gns3-vm-builder-{}'.format(server_type)
+import boto3
+from botocore.exceptions import BotoCoreError, ClientError
 
 
-def get_device(project, hostname):
-    devices = [d for d in manager.list_devices(project.id)
-               if d.hostname == hostname]
-    return len(devices) > 0 and devices[0] or None
+MANAGED_BY = 'gns3-vm-circleci'
+USER_DATA = """#!/bin/bash
+set -eu
+systemd-run --unit=gns3-builder-shutdown --on-active=90m /sbin/shutdown -h now
+"""
 
 
-manager = packet.Manager(auth_token=token)
-
-gns3_projects = [p for p in manager.list_projects()
-                 if p.name == packet_project]
-if len(gns3_projects) > 0:
-    gns3_project = gns3_projects[0]
-else:
-    sys.exit("Project `{}` doesn't exist on packet.net. Please create it.".format(packet_project))
+def required_env(name):
+    value = os.environ.get(name)
+    if not value:
+        raise RuntimeError('Required environment variable {} is not set.'.format(name))
+    return value
 
 
-def get():
-    device = get_device(gns3_project, GNS3_HOSTNAME)
+def find_instances(ec2, build_id):
+    pages = ec2.get_paginator('describe_instances').paginate(Filters=[
+        {'Name': 'tag:ManagedBy', 'Values': [MANAGED_BY]},
+        {'Name': 'tag:BuildID', 'Values': [build_id]},
+        {'Name': 'instance-state-name',
+         'Values': ['pending', 'running', 'stopping', 'stopped']},
+    ])
+    return [instance for page in pages
+            for reservation in page['Reservations']
+            for instance in reservation['Instances']]
 
-    if device is None:
 
-        # termination time is 1h 30min from now (UTC time)
-        termination_time = datetime.now(timezone.utc) + timedelta(hours=1, minutes=30)
-        #print("Creating device with termination time: {}".format(termination_time.isoformat()))
+def launch_instance(ec2, build_id):
+    architecture = required_env('EC2_ARCHITECTURE')
+    defaults = {'x86_64': 'c5.metal', 'arm64': 'c6g.metal'}
+    if architecture not in defaults:
+        raise RuntimeError('EC2_ARCHITECTURE must be x86_64 or arm64.')
+    instance_type = os.environ.get('EC2_INSTANCE_TYPE_' + architecture.upper(),
+                                   defaults[architecture])
+    details = ec2.describe_instance_types(
+        InstanceTypes=[instance_type])['InstanceTypes'][0]
+    if (not details['BareMetal'] or
+            architecture not in details['ProcessorInfo']['SupportedArchitectures']):
+        raise RuntimeError('Instance type must be bare metal and support {}.'.format(architecture))
 
-        device = manager.create_device(
-            project_id=gns3_project.id,
-            hostname=GNS3_HOSTNAME,
-            plan=server_type,
-            metro=metro,
-            operating_system="ubuntu_24_04",
-            termination_time=termination_time.isoformat())
-
-    # wait max 20 min for being active
-    check_every = 5  # seconds
-    for i in range(int(60*20/check_every)):
-        if device is None:
-            sys.exit("Device has been deleted during script execution.")
-
-        if device.state in ['queued', 'provisioning']:
-            time.sleep(check_every)
-            device = get_device(gns3_project, GNS3_HOSTNAME)
-        elif device.state == 'active':
-            break
-        else:
-            sys.exit("Device is in wrong `{}` state.".format(device.state))
-
-    public_addresses = ([a for a in device.ip_addresses
-                         if a['address_family'] == 4 and a['public'] is True])
-
-    if len(public_addresses) > 0:
-        address = public_addresses[0]['address']
+    image_id = os.environ.get('EC2_AMI_ID_' + architecture.upper())
+    if image_id:
+        images = ec2.describe_images(ImageIds=[image_id])['Images']
     else:
-        sys.exit("Haven't found public addresses related to device.")
+        image_arch = 'amd64' if architecture == 'x86_64' else 'arm64'
+        images = ec2.describe_images(
+            Owners=['099720109477'],
+            Filters=[
+                {'Name': 'name', 'Values': [
+                    'ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-{}-server-*'.format(image_arch)]},
+                {'Name': 'architecture', 'Values': [architecture]},
+                {'Name': 'state', 'Values': ['available']},
+                {'Name': 'root-device-type', 'Values': ['ebs']},
+                {'Name': 'virtualization-type', 'Values': ['hvm']},
+            ])['Images']
+    if not images:
+        raise RuntimeError('No Ubuntu 24.04 AMI found in this AWS region.')
+    image = max(images, key=lambda candidate: candidate['CreationDate'])
+    if image['Architecture'] != architecture or image['RootDeviceType'] != 'ebs':
+        raise RuntimeError('AMI must be EBS-backed and match EC2_ARCHITECTURE.')
 
-    print(address)
+    volume_size = int(os.environ.get('EC2_VOLUME_SIZE', '200'))
+    root_size = next(mapping['Ebs']['VolumeSize']
+                     for mapping in image['BlockDeviceMappings']
+                     if mapping['DeviceName'] == image['RootDeviceName'])
+    if volume_size < root_size:
+        raise RuntimeError('EC2_VOLUME_SIZE is smaller than the AMI root volume.')
+
+    tags = [
+        {'Key': 'Name', 'Value': 'gns3-vm-builder-' + architecture},
+        {'Key': 'ManagedBy', 'Value': MANAGED_BY},
+        {'Key': 'BuildID', 'Value': build_id},
+    ]
+    response = ec2.run_instances(
+        ImageId=image['ImageId'],
+        InstanceType=instance_type,
+        KeyName=required_env('EC2_KEY_NAME'),
+        MinCount=1,
+        MaxCount=1,
+        ClientToken=hashlib.sha256(build_id.encode()).hexdigest(),
+        NetworkInterfaces=[{
+            'DeviceIndex': 0,
+            'SubnetId': required_env('EC2_SUBNET_ID'),
+            'Groups': [required_env('EC2_SECURITY_GROUP_ID')],
+            'AssociatePublicIpAddress': True,
+            'DeleteOnTermination': True,
+        }],
+        BlockDeviceMappings=[{
+            'DeviceName': image['RootDeviceName'],
+            'Ebs': {'VolumeSize': volume_size, 'VolumeType': 'gp3',
+                    'DeleteOnTermination': True, 'Encrypted': True},
+        }],
+        MetadataOptions={'HttpTokens': 'required', 'HttpEndpoint': 'enabled'},
+        InstanceInitiatedShutdownBehavior='terminate',
+        UserData=USER_DATA,
+        TagSpecifications=[
+            {'ResourceType': 'instance', 'Tags': tags},
+            {'ResourceType': 'volume', 'Tags': tags},
+        ],
+    )
+    return response['Instances'][0]
 
 
-def destroy():
-    device = get_device(gns3_project, GNS3_HOSTNAME)
-    if device is not None:
-        device.delete()
+def get(ec2, build_id):
+    instances = find_instances(ec2, build_id)
+    if len(instances) > 1:
+        raise RuntimeError('Multiple EC2 builders found for this job; run destroy.')
+    instance = instances[0] if instances else launch_instance(ec2, build_id)
+    if instance['State']['Name'] not in ['pending', 'running']:
+        raise RuntimeError('EC2 builder is not pending or running; run destroy.')
+    instance_id = instance['InstanceId']
+    ec2.get_waiter('instance_status_ok').wait(
+        InstanceIds=[instance_id], IncludeAllInstances=True,
+        WaiterConfig={'Delay': 10, 'MaxAttempts': 120})
+    instance = ec2.describe_instances(
+        InstanceIds=[instance_id])['Reservations'][0]['Instances'][0]
+    if not instance.get('PublicIpAddress'):
+        raise RuntimeError('EC2 builder has no public IPv4 address.')
+    print(instance['PublicIpAddress'])
 
 
-if action == 'get':
-    get()
-elif action == 'destroy':
-    destroy()
+def destroy(ec2, build_id):
+    instances = find_instances(ec2, build_id)
+    if instances:
+        instance_ids = [instance['InstanceId'] for instance in instances]
+        ec2.terminate_instances(InstanceIds=instance_ids)
+        ec2.get_waiter('instance_terminated').wait(
+            InstanceIds=instance_ids,
+            WaiterConfig={'Delay': 10, 'MaxAttempts': 120})
 
 
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('action', choices=['get', 'destroy'])
+    args = parser.parse_args()
+    try:
+        build_id = os.environ.get('EC2_BUILD_ID') or required_env('CIRCLE_WORKFLOW_JOB_ID')
+        ec2 = boto3.client('ec2')
+        if args.action == 'get':
+            get(ec2, build_id)
+        else:
+            destroy(ec2, build_id)
+    except (BotoCoreError, ClientError, RuntimeError, ValueError) as error:
+        sys.exit(str(error))
 
 
+if __name__ == '__main__':
+    main()
