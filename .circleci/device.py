@@ -61,9 +61,9 @@ def launch_instance(ec2, build_id):
                                    defaults[architecture])
     details = ec2.describe_instance_types(
         InstanceTypes=[instance_type])['InstanceTypes'][0]
-    if (not details['BareMetal'] or
-            architecture not in details['ProcessorInfo']['SupportedArchitectures']):
-        raise RuntimeError('Instance type must be bare metal and support {}.'.format(architecture))
+    #if (not details['BareMetal'] or
+    #        architecture not in details['ProcessorInfo']['SupportedArchitectures']):
+    #    raise RuntimeError('Instance type must be bare metal and support {}.'.format(architecture))
 
     image_id = os.environ.get('EC2_AMI_ID_' + architecture.upper())
     if image_id:
