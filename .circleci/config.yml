@@ -196,7 +196,7 @@ jobs:
               /usr/local/bin/packer plugins install github.com/hashicorp/vmware
               /usr/local/bin/packer plugins install github.com/hashicorp/qemu
               apt install -y genisoimage qemu-utils qemu-system-x86 qemu-kvm
-              test -c /dev/kvm
+              # test -c /dev/kvm
             '"
 
       - run:

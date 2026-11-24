@@ -54,7 +54,7 @@ def find_instances(ec2, build_id):
 
 def launch_instance(ec2, build_id):
     architecture = required_env('EC2_ARCHITECTURE')
-    defaults = {'x86_64': 'c5.metal', 'arm64': 'c6g.metal'}
+    defaults = {'x86_64': 'm8i-flex.large', 'arm64': 't4g.large'}
     if architecture not in defaults:
         raise RuntimeError('EC2_ARCHITECTURE must be x86_64 or arm64.')
     instance_type = os.environ.get('EC2_INSTANCE_TYPE_' + architecture.upper(),
