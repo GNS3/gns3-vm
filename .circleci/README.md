@@ -1,7 +1,7 @@
 # CircleCI EC2 builders
 
 The tag-triggered CircleCI jobs provision Ubuntu 24.04 EC2 bare-metal instances:
-`c5.metal` for x86_64 and `c6g.metal` for ARM64. Bare metal provides the hardware
+`c5n.metal` for x86_64 and `c6g.metal` for ARM64. Bare metal provides the hardware
 virtualization needed by the x86 hypervisors; the ARM64 build retains its existing
 QEMU software-emulation configuration. Check regional availability, EC2 quotas,
 and pricing before running a build.

@@ -54,16 +54,16 @@ def find_instances(ec2, build_id):
 
 def launch_instance(ec2, build_id):
     architecture = required_env('EC2_ARCHITECTURE')
-    defaults = {'x86_64': 'm8i-flex.large', 'arm64': 't4g.large'}
+    defaults = {'x86_64': 'c5n.metal', 'arm64': 'c6g.metal'}
     if architecture not in defaults:
         raise RuntimeError('EC2_ARCHITECTURE must be x86_64 or arm64.')
     instance_type = os.environ.get('EC2_INSTANCE_TYPE_' + architecture.upper(),
                                    defaults[architecture])
     details = ec2.describe_instance_types(
         InstanceTypes=[instance_type])['InstanceTypes'][0]
-    #if (not details['BareMetal'] or
-    #        architecture not in details['ProcessorInfo']['SupportedArchitectures']):
-    #    raise RuntimeError('Instance type must be bare metal and support {}.'.format(architecture))
+    if (not details['BareMetal'] or
+           architecture not in details['ProcessorInfo']['SupportedArchitectures']):
+       raise RuntimeError('Instance type must be bare metal and support {}.'.format(architecture))
 
     image_id = os.environ.get('EC2_AMI_ID_' + architecture.upper())
     if image_id:
