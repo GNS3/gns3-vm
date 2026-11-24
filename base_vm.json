@@ -108,8 +108,8 @@
          "qemuargs": [
                 ["-serial", "file:serial.out"],
                 ["-machine", "virt"],
-                ["-accel", "tcg,thread=multi"],
-                ["-cpu", "neoverse-n1"],
+                ["-accel", "kvm"],
+                ["-cpu", "max"],
                 ["-smp", "4"],
                 ["-m", "4096"],
                 ["-bios", "/usr/share/qemu-efi-aarch64/QEMU_EFI.fd"],

@@ -127,11 +127,11 @@
         ],
         [
           "-accel",
-          "tcg,thread=multi"
+          "kvm"
         ],
         [
           "-cpu",
-          "neoverse-n1"
+          "max"
         ],
         [
           "-smp",
