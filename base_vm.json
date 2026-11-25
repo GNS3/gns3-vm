@@ -51,7 +51,7 @@
       },
       {
          "type": "shell",
-         "pause_before": "240s",
+         "pause_before": "60s",
          "scripts": [
             "scripts/cleaner.sh"
          ]

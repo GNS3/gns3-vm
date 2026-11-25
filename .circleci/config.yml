@@ -108,9 +108,12 @@ commands:
           command: |
             cd artifacts
             shopt -s nullglob
-            files=(*.zip *.tar.xz)
+            files=()
+            for file in *.zip *.tar.xz; do
+              [[ "$file" == GNS3VM.Base* ]] || files+=("$file")
+            done
             if [ "${#files[@]}" -eq 0 ]; then
-              echo "No build artifacts were collected" >&2
+              echo "No eligible build artifacts were collected" >&2
               exit 1
             fi
             for file in "${files[@]}"
@@ -182,13 +185,12 @@ jobs:
 
               if [ ! -f "/tmp/VMWare.bundle" ]
               then
-                wget https://github.com/201853910/VMwareWorkstation/releases/download/17.0/VMware-Workstation-Full-17.6.4-24832109.x86_64.bundle -O /tmp/VMWare.bundle
+                wget https://github.com/201853910/VMwareWorkstation/releases/download/26H1/VMware-Workstation-Full-26H1u1-25688693.x86_64.bundle -O /tmp/VMWare.bundle
               fi
 
               chmod a+x /tmp/VMWare.bundle
 
               /tmp/VMWare.bundle --eulas-agreed --required --console
-              /usr/lib/vmware/bin/vmware-vmx --new-sn ${VMWARE_17_SERIAL}
               /etc/init.d/vmware restart
             " > script.sh
             scp script.sh ubuntu@${DEVICE_IP}:
@@ -309,7 +311,7 @@ jobs:
 
               if [ ! -f "/tmp/packer.zip" ]
               then
-                wget https://releases.hashicorp.com/packer/1.12.0/packer_1.12.0_linux_arm64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.16.0/packer_1.16.0_linux_arm64.zip -O /tmp/packer.zip
               fi
 
               7z e -y /tmp/packer.zip -o/usr/local/bin/
@@ -339,12 +341,12 @@ jobs:
 workflows:
   build_only_on_tag:
     jobs:
-      - x86-build:
-          filters:
-            tags:
-              only: /v3.*/
-            branches:
-              ignore: /.*/
+#      - x86-build:
+#          filters:
+#            tags:
+#              only: /v3.*/
+#            branches:
+#              ignore: /.*/
       - arm64-build:
           filters:
             tags:
