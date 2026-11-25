@@ -72,6 +72,8 @@ class DeviceTests(unittest.TestCase):
         self.assertEqual(request['MaxCount'], 1)
         self.assertEqual(request['InstanceInitiatedShutdownBehavior'], 'terminate')
         self.assertIn('--on-active=90m', request['UserData'])
+        self.assertIn('--unit=gns3-builder-watchdog', request['UserData'])
+        self.assertIn(device.HEARTBEAT_FILE, request['UserData'])
         self.assertEqual(request['MetadataOptions']['HttpTokens'], 'required')
         self.assertEqual(request['NetworkInterfaces'], [{
             'DeviceIndex': 0, 'SubnetId': 'subnet-test', 'Groups': ['sg-test'],

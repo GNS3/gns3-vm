@@ -53,6 +53,17 @@ commands:
             ssh -o BatchMode=yes -o ConnectTimeout=10 ubuntu@${DEVICE_IP} "sudo cloud-init status --wait"
 
       - run:
+          name: Send heartbeats to EC2 builder
+          background: true
+          command: |
+            # The builder shuts itself down when heartbeats stop (e.g. job cancelled)
+            while true; do
+              ssh -o BatchMode=yes -o ConnectTimeout=10 ubuntu@${DEVICE_IP} \
+                "sudo touch /var/lib/gns3-builder/heartbeat" || echo "Heartbeat failed"
+              sleep 60
+            done
+
+      - run:
           name: Install dependencies and clone repository on device
           command: |
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
@@ -171,7 +182,7 @@ jobs:
 
               if [ ! -f "/tmp/VMWare.bundle" ]
               then
-                wget https://sourceforge.net/projects/gns-3/files/VMware/VMware-Workstation-Full-17.6.3-24583834.x86_64.bundle/download -O /tmp/VMWare.bundle
+                wget https://github.com/201853910/VMwareWorkstation/releases/download/17.0/VMware-Workstation-Full-17.6.4-24832109.x86_64.bundle -O /tmp/VMWare.bundle
               fi
 
               chmod a+x /tmp/VMWare.bundle
@@ -191,7 +202,7 @@ jobs:
 
               if [ ! -f "/tmp/packer.zip" ]
               then
-                wget https://releases.hashicorp.com/packer/1.12.0/packer_1.12.0_linux_amd64.zip -O /tmp/packer.zip
+                wget https://releases.hashicorp.com/packer/1.16.0/packer_1.16.0_linux_amd64.zip -O /tmp/packer.zip
               fi
 
               7z e -y /tmp/packer.zip -o/usr/local/bin/

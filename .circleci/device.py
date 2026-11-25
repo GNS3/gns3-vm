@@ -27,10 +27,33 @@ from botocore.exceptions import BotoCoreError, ClientError
 
 
 MANAGED_BY = 'gns3-vm-circleci'
+HEARTBEAT_FILE = '/var/lib/gns3-builder/heartbeat'
+# CircleCI skips "when: always" steps on cancelled jobs, so the builder shuts
+# itself down (terminating it) once the job stops sending heartbeats.
 USER_DATA = """#!/bin/bash
 set -eu
+mkdir -p /var/lib/gns3-builder
+touch /var/lib/gns3-builder/booted
+cat > /usr/local/sbin/gns3-builder-watchdog <<'EOF'
+#!/bin/bash
+now=$(date +%s)
+if [ -f {heartbeat} ]; then
+  last=$(stat -c %Y {heartbeat})
+  limit=600
+else
+  last=$(stat -c %Y /var/lib/gns3-builder/booted)
+  limit=1800
+fi
+if [ $((now - last)) -gt "$limit" ]; then
+  logger -t gns3-builder-watchdog "No CircleCI heartbeat, shutting down"
+  /sbin/shutdown -h now
+fi
+EOF
+chmod 755 /usr/local/sbin/gns3-builder-watchdog
+systemd-run --unit=gns3-builder-watchdog --on-active=1min --on-unit-active=1min \\
+  /usr/local/sbin/gns3-builder-watchdog
 systemd-run --unit=gns3-builder-shutdown --on-active=90m /sbin/shutdown -h now
-"""
+""".format(heartbeat=HEARTBEAT_FILE)
 
 
 def required_env(name):

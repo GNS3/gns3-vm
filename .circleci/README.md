@@ -34,11 +34,14 @@ and the unique CircleCI job ID, so concurrent jobs do not share or terminate eac
 other's builders. The jobs collect artifacts over SSH as `ubuntu`, use sudo for
 build commands, and always attempt termination during finalization. Root volumes
 are deleted on termination. Both x86 ZIP and ARM64 UTM `.tar.xz` release archives
-are collected, checksummed, and published. A boot-time systemd timer shuts down
-the instance after 90 minutes, with EC2 configured to terminate on shutdown, as
-a safeguard against interrupted jobs. This timer depends on successful guest
-boot and user-data execution; monitor tagged instances for failed boots or
-failed cleanup.
+are collected, checksummed, and published. Because CircleCI does not run
+`when: always` steps when a job is cancelled, the job sends an SSH heartbeat to
+the builder every minute and a watchdog on the instance shuts it down after 10
+minutes without a heartbeat (30 minutes after boot if no heartbeat was ever
+received). A boot-time systemd timer also shuts down the instance after 90
+minutes. EC2 is configured to terminate on shutdown. These safeguards depend on
+successful guest boot and user-data execution; monitor tagged instances for
+failed boots or failed cleanup.
 
 For manual provisioning, install `boto3`, set the variables above, and provide a
 unique `EC2_BUILD_ID` and `EC2_ARCHITECTURE` (`x86_64` or `arm64`). Run from the
