@@ -8,6 +8,7 @@
 set -e
 
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
+export GNS3_OVA_FILE=$2
 
 if [[ "$GNS3_VERSION" == "" ]]
 then
@@ -15,24 +16,24 @@ then
     exit 1
 fi
 
-echo "Building ESXi VM for GNS3 $GNS3_VERSION"
-echo "Release channel: $GNS3_RELEASE_CHANNEL"
-
-if [[ ! -f "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" ]]
+if [[ "$GNS3_OVA_FILE" == "" ]]
 then
-    echo "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip does not exist"
+    echo "You need to pass the GNS3 VM OVA (VMware) file as parameter"
     exit 1
 fi
 
-7z e -y "/tmp/GNS3VM.VMware.${GNS3_VERSION}.zip" "GNS3 VM.ova"
-mv "GNS3 VM.ova" "/tmp/GNS3VM.VMWare.${GNS3_VERSION}.ova"
+echo "Building ESXi VM for GNS3 $GNS3_VERSION using $GNS3_OVA_FILE"
+
+start=$SECONDS
 
 echo "Upgrading OVA for VMware ESXi"
 rm -Rf output-esxi
 mkdir output-esxi
+cp "$GNS3_OVA_FILE" output-esxi/GNS3-VM.ova
 cd output-esxi
-python3 ../workstation_to_esxi.py "/tmp/GNS3VM.VMWare.${GNS3_VERSION}.ova" "GNS3 VM.ova"
-7z a -bsp1 -mx=1 "../GNS3.VM.VMware.ESXI.${GNS3_VERSION}.zip" "GNS3 VM.ova"
-
+python3 ../workstation_to_esxi.py "GNS3-VM.ova" "GNS3.VM.VMware.ESXI.${GNS3_VERSION}.ova"
+mv "GNS3.VM.VMware.ESXI.${GNS3_VERSION}.ova" ../
 cd ..
 rm -Rf output-esxi
+
+echo "ESXi VM build completed in $((SECONDS - start)) seconds"

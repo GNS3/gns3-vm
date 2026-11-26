@@ -40,7 +40,7 @@ rm -Rf output-qemu-arm64
 packer build -only=qemu-arm64 gns3_release.json
 
 # Apple Virtualization requires RAW format, so we need to convert the QCOW2 files to RAW format
-for qcow2_file in *.qcow2
+for qcow2_file in gns3vm-disk{1,2}.qcow2
 do
     echo "Converting ${qcow2_file} to RAW format..."
     raw_file=`basename "${qcow2_file}" .qcow2`
@@ -49,6 +49,7 @@ done
 
 cp gns3vm*.img "GNS3 VM.utm/Data"
 echo "Compressing RAW files to GNS3.VM.UTM.ARM64.${GNS3_VERSION}.tar.xz..."
-tar -ScJf "GNS3.VM.UTM.ARM64.${GNS3_VERSION}.tar.xz" "GNS3 VM.utm"
+set -o pipefail
+tar -Scf - "GNS3 VM.utm" | pv -f -b -t -r | xz --threads=0 > "GNS3.VM.UTM.ARM64.${GNS3_VERSION}.tar.xz"
 
 exit 0

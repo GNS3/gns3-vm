@@ -5,38 +5,9 @@
     "gns3_version": "{{env `GNS3_VERSION`}}",
     "gns3_release_channel": "{{env `GNS3_RELEASE_CHANNEL`}}",
     "memory": "2048",
-    "cpus": "1",
-    "cores": "1"
+    "cpus": "2"
   },
   "provisioners": [
-    {
-      "inline": "sudo rm -rf /tmp/*",
-      "type": "shell"
-    },
-    {
-      "inline": "sudo apt install -y open-vm-tools",
-      "type": "shell",
-      "only": [
-        "vmware-iso"
-      ]
-    },
-    {
-      "inline": "echo -n \"{{user `gns3_release_channel`}}\" > /home/gns3/.config/GNS3/gns3_release_channel",
-      "type": "shell"
-    },
-    {
-      "destination": "/tmp/gns3welcome.py",
-      "type": "file",
-      "source": "scripts/welcome.py"
-    },
-    {
-      "type": "shell",
-      "script": "scripts/provision_gns3.sh",
-      "environment_vars": [
-        "GNS3_RELEASE_CHANNEL={{user `gns3_release_channel`}}",
-        "GNS3_VERSION={{user `gns3_version`}}"
-      ]
-    },
     {
       "inline": "sudo apt purge -y open-vm-tools && sudo apt -y autoremove",
       "type": "shell"
@@ -58,7 +29,6 @@
       "iso_url": "gns3vm-disk1.vmdk",
       "iso_checksum": "none",
       "cpus": "{{user `cpus`}}",
-      "cores": "{{user `cores`}}",
       "memory": "{{user `memory`}}",
       "network_adapter_type": "vmxnet3",
       "disk_type_id": 0,
@@ -82,7 +52,7 @@
         "ethernet0.generatedAddressOffset": "0",
         "ethernet0.wakeOnPcktRcv": "FALSE",
         "ethernet0.pciSlotNumber": "32",
-        "ethernet0.virtualDev": "e1000",
+        "ethernet0.virtualDev": "vmxnet3",
         "ethernet1.present": "TRUE",
         "ethernet1.startConnected": "TRUE",
         "ethernet1.connectionType": "nat",
@@ -90,7 +60,7 @@
         "ethernet1.generatedAddressOffset": "10",
         "ethernet1.wakeOnPcktRcv": "FALSE",
         "ethernet1.pciSlotNumber": "33",
-        "ethernet1.virtualDev": "e1000"
+        "ethernet1.virtualDev": "vmxnet3"
       },
       "headless": true,
       "shutdown_command": "sudo /sbin/shutdown -h now",

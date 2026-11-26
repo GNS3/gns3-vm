@@ -15,6 +15,6 @@ then
 fi
 
 qemu-system-x86_64 -name "GNS3 VM" -m 2048M -cpu host -enable-kvm -machine smm=off -boot order=c \
--drive file="GNS3 VM-disk001.qcow2",if=virtio,index=0,media=disk \
--drive file="GNS3 VM-disk002.qcow2",if=virtio,index=1,media=disk \
+-drive file="gns3vm-disk1.qcow2",if=virtio,index=0,media=disk \
+-drive file="gns3vm-disk2.qcow2",if=virtio,index=1,media=disk \
 -device virtio-net-pci,netdev=nic0 -netdev tap,id=nic0,ifname=tap-gns3vm,script=no,downscript=no

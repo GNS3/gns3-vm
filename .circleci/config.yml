@@ -69,7 +69,7 @@ commands:
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
               set -e
               apt update
-              apt install -y 7zip git
+              apt install -y 7zip git pv
               if [ ! -d gns3-vm ]
               then
                 git clone https://github.com/GNS3/gns3-vm.git
@@ -109,7 +109,7 @@ commands:
             cd artifacts
             shopt -s nullglob
             files=()
-            for file in *.zip *.tar.xz; do
+            for file in *.zip *.tar.xz *.ova; do
               [[ "$file" == GNS3VM.Base* ]] || files+=("$file")
             done
             if [ "${#files[@]}" -eq 0 ]; then
@@ -139,10 +139,10 @@ commands:
             echo "Deploying version ${CIRCLE_TAG} on GitHub"
             ls -l artifacts
             shopt -s nullglob
-            for file in artifacts/GNS3.VM.*.{zip,tar.xz,sha256}
+            for file in artifacts/GNS3.VM.*.{zip,tar.xz,ova,sha256}
             do
               echo "Uploading $file to GitHub"
-              python3 gns3-build/upload.py ${CIRCLE_TAG} $file
+              python3 gns3-build/upload.py ${CIRCLE_TAG} $file gns3-vm
             done
 
             echo "Deploying version ${CIRCLE_TAG} on SourceForge"
@@ -159,7 +159,7 @@ jobs:
 
     environment:
         EC2_ARCHITECTURE: x86_64
-        ARTIFACT_GLOB: "GNS3*.zip"
+        ARTIFACT_GLOB: "GNS3.VM.*.{zip,tar.xz,ova}"
 
     steps:
       - checkout
@@ -223,24 +223,10 @@ jobs:
 
               cd gns3-vm
 
-              if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" ];
+              if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.ova\" ];
               then
                 ./build_base_vm.sh
-                ./release_vmware.sh ${GNS3_VERSION} GNS3VM.Base.$(cat version).zip
-              fi
-            '"
-
-      - run:
-          name: Release VirtualBox VM
-          command: |
-            ssh ubuntu@${DEVICE_IP} "sudo bash -c '
-              set -e
-
-              cd gns3-vm
-
-              if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" ];
-              then
-                ./release_virtualbox.sh ${GNS3_VERSION} GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip
+                ./release_vmware.sh ${GNS3_VERSION}
               fi
             '"
 
@@ -254,7 +240,7 @@ jobs:
 
               if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
               then
-                ./release_hyperv.sh ${GNS3_VERSION} GNS3VM.Base.$(cat version).zip
+                ./release_hyperv.sh ${GNS3_VERSION}
               fi
             '"
 
@@ -266,11 +252,23 @@ jobs:
 
               cd gns3-vm
 
-              cp \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.zip\" /tmp/GNS3VM.VirtualBox.${GNS3_NUMBER}.zip
-
               if [ ! -e \"GNS3.VM.KVM.${GNS3_NUMBER}.zip\" ];
               then
                 ./release_kvm.sh ${GNS3_VERSION}
+              fi
+            '"
+
+      - run:
+          name: Release VirtualBox VM
+          command: |
+            ssh ubuntu@${DEVICE_IP} "sudo bash -c '
+              set -e
+
+              cd gns3-vm
+
+              if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.ova\" ];
+              then
+                ./release_virtualbox.sh ${GNS3_VERSION} GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.ova
               fi
             '"
 
@@ -282,11 +280,9 @@ jobs:
 
               cd gns3-vm
 
-              cp \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.zip\" /tmp/GNS3VM.VMware.${GNS3_NUMBER}.zip
-
-              if [ ! -e \"GNS3.VM.VMware.ESXI.${GNS3_NUMBER}.zip\" ];
+              if [ ! -e \"GNS3.VM.VMware.ESXI.${GNS3_NUMBER}.ova\" ];
               then
-                ./release_vmware_esxi.sh ${GNS3_VERSION}
+                ./release_vmware_esxi.sh ${GNS3_VERSION} GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.ova
               fi
             '"
 
@@ -341,15 +337,15 @@ jobs:
 workflows:
   build_only_on_tag:
     jobs:
-#      - x86-build:
-#          filters:
-#            tags:
-#              only: /v3.*/
-#            branches:
-#              ignore: /.*/
-      - arm64-build:
+      - x86-build:
           filters:
             tags:
               only: /v3.*/
             branches:
               ignore: /.*/
+#      - arm64-build:
+#          filters:
+#            tags:
+#              only: /v3.*/
+#            branches:
+#              ignore: /.*/

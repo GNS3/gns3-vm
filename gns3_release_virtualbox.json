@@ -4,8 +4,7 @@
       "ssh_name" : "gns3",
       "gns3_src": "{{env `GNS3_SRC`}}",
       "memory": "2048",
-      "cpus": "1",
-      "cores": "1"
+      "cpus": "2"
    },
    "provisioners" : [
      {
@@ -38,12 +37,20 @@
           "guest_additions_mode": "upload",
           "guest_additions_path": "/tmp/VBoxGuestAdditions.iso",
           "vboxmanage" : [
-             [
-               "modifyvm",
-               "{{.Name}}",
-               "--nic1",
-               "nat"
-             ]
+              [
+                "modifyvm",
+                "{{.Name}}",
+                "--memory",
+                "{{user `memory`}}",
+                "--cpus",
+                "{{user `cpus`}}"
+              ],
+              [
+                "modifyvm",
+                "{{.Name}}",
+                "--nic1",
+                "nat"
+              ]
           ],
           "vboxmanage_post" : [
              [
@@ -56,7 +63,7 @@
                "modifyvm",
                "{{.Name}}",
                "--nictype1",
-               "82540EM"
+               "virtio-net"
              ],
              [
                 "modifyvm",
@@ -74,7 +81,7 @@
                "modifyvm",
                "{{.Name}}",
                "--nictype2",
-               "82540EM"
+               "virtio-net"
              ],
              [
                "modifyvm",

@@ -8,7 +8,7 @@
 set -e
 
 export GNS3_VERSION=`echo $1 | sed "s/^v//"`
-export GNS3_VM_FILE=$2
+export GNS3_OVA_FILE=$2
 
 if [[ "$GNS3_VERSION" == "" ]]
 then
@@ -16,22 +16,24 @@ then
     exit 1
 fi
 
-if [[ "$GNS3_VM_FILE" == "" ]]
+if [[ "$GNS3_OVA_FILE" == "" ]]
 then
-    echo "You need to pass the GNS3 VM (VMware) file as parameter"
+    echo "You need to pass the GNS3 VM OVA (VMware) file as parameter"
     exit 1
 fi
+
+start=$SECONDS
 
 echo "Building VirtualBox VM for GNS3 $GNS3_VERSION"
 
 # Build the VM based on the VMware OVA
-7z e -y $GNS3_VM_FILE
-export GNS3_SRC="GNS3 VM.ova"
+export GNS3_SRC="$GNS3_OVA_FILE"
 packer build -only=virtualbox-ovf gns3_release_virtualbox.json
 
 cd output-virtualbox-ovf
-7z a -bsp1 -mx=1 "../GNS3.VM.VirtualBox.${GNS3_VERSION}.zip" "GNS3 VM.ova"
+mv "GNS3 VM.ova" "../GNS3.VM.VirtualBox.${GNS3_VERSION}.ova"
 
 cd ..
 rm -Rf output-virtualbox-ovf
 
+echo "VirtualBox VM build completed in $((SECONDS - start)) seconds"
