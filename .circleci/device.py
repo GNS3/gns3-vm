@@ -68,7 +68,7 @@ def find_instances(ec2, build_id):
         {'Name': 'tag:ManagedBy', 'Values': [MANAGED_BY]},
         {'Name': 'tag:BuildID', 'Values': [build_id]},
         {'Name': 'instance-state-name',
-         'Values': ['pending', 'running', 'stopping', 'stopped']},
+         'Values': ['pending', 'running', 'stopping', 'stopped', 'shutting-down']},
     ])
     return [instance for page in pages
             for reservation in page['Reservations']
@@ -171,12 +171,10 @@ def get(ec2, build_id):
 
 def destroy(ec2, build_id):
     instances = find_instances(ec2, build_id)
-    if instances:
-        instance_ids = [instance['InstanceId'] for instance in instances]
-        ec2.terminate_instances(InstanceIds=instance_ids)
-        ec2.get_waiter('instance_terminated').wait(
-            InstanceIds=instance_ids,
-            WaiterConfig={'Delay': 10, 'MaxAttempts': 120})
+    to_terminate = [instance['InstanceId'] for instance in instances
+                    if instance['State']['Name'] != 'shutting-down']
+    if to_terminate:
+        ec2.terminate_instances(InstanceIds=to_terminate)
 
 
 def main():

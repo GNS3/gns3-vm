@@ -89,6 +89,7 @@ commands:
               echo "No EC2 builder IP is available for artifact collection" >&2
               exit 1
             fi
+            ssh -o BatchMode=yes -o ConnectTimeout=10 "ubuntu@${DEVICE_IP}" "ls -lah gns3-vm"
             scp -o BatchMode=yes -o ConnectTimeout=10 ubuntu@${DEVICE_IP}:"gns3-vm/${ARTIFACT_GLOB}" artifacts
 
       - run:
@@ -170,11 +171,14 @@ jobs:
           command: |
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
               set -e
-              apt -y install linux-headers-\$(uname -r)
+              apt -y install build-essential dkms linux-headers-$(uname -r)
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox_2016.asc | apt-key add -
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc | apt-key add -
               apt-add-repository \"deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian \$(lsb_release -cs) contrib\"
               apt update && apt -y install virtualbox-7.0
+              /sbin/vboxconfig
+              modprobe vboxdrv
+              lsmod | grep vboxdrv
             '"
 
       - run:

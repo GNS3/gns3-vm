@@ -54,3 +54,5 @@ python3 .circleci/device.py destroy
 
 Use the same region and build ID for cleanup. `destroy` needs only AWS credentials
 and the build ID, so it also works after provisioning fails before returning an IP.
+It requests termination asynchronously and does not wait for instances to reach
+the terminated state.

@@ -156,6 +156,9 @@ class DeviceTests(unittest.TestCase):
         filters = self.ec2.get_paginator.return_value.paginate.call_args.kwargs['Filters']
         self.assertIn({'Name': 'tag:BuildID', 'Values': ['job-1']}, filters)
         self.assertIn({'Name': 'tag:ManagedBy', 'Values': [device.MANAGED_BY]}, filters)
+        self.assertIn({'Name': 'instance-state-name',
+                       'Values': ['pending', 'running', 'stopping', 'stopped', 'shutting-down']},
+                      filters)
 
     def test_get_waits_and_prints_only_public_ip(self):
         self.ec2.describe_instances.return_value = {'Reservations': [{
@@ -179,10 +182,11 @@ class DeviceTests(unittest.TestCase):
             device.get(self.ec2, 'job-1')
         self.ec2.run_instances.assert_not_called()
 
-    def test_get_rejects_duplicate_or_stopped_instances(self):
+    def test_get_rejects_duplicate_or_inactive_instances(self):
         for instances in [
                 [self.instance, self.instance],
-                [dict(self.instance, State={'Name': 'stopped'})]]:
+                [dict(self.instance, State={'Name': 'stopped'})],
+                [dict(self.instance, State={'Name': 'shutting-down'})]]:
             with self.subTest(instances=instances):
                 self.set_instances(instances)
                 with self.assertRaises(RuntimeError):
@@ -209,8 +213,24 @@ class DeviceTests(unittest.TestCase):
         device.destroy(self.ec2, 'job-1')
         self.ec2.terminate_instances.assert_called_once_with(
             InstanceIds=['i-test', 'i-other'])
-        self.ec2.get_waiter.assert_called_once_with('instance_terminated')
+        self.ec2.get_waiter.assert_not_called()
         self.ec2.describe_images.assert_not_called()
+
+    def test_destroy_skips_shutting_down_instances(self):
+        shutting_down = dict(self.instance, InstanceId='i-shutting-down',
+                             State={'Name': 'shutting-down'})
+        self.set_instances([shutting_down])
+        device.destroy(self.ec2, 'job-1')
+        self.ec2.terminate_instances.assert_not_called()
+        self.ec2.get_waiter.assert_not_called()
+
+    def test_destroy_terminates_active_and_skips_shutting_down(self):
+        shutting_down = dict(self.instance, InstanceId='i-shutting-down',
+                             State={'Name': 'shutting-down'})
+        self.set_instances([self.instance, shutting_down])
+        device.destroy(self.ec2, 'job-1')
+        self.ec2.terminate_instances.assert_called_once_with(InstanceIds=['i-test'])
+        self.ec2.get_waiter.assert_not_called()
 
     def test_destroy_is_idempotent(self):
         device.destroy(self.ec2, 'job-1')
