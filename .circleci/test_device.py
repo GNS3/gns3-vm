@@ -96,6 +96,8 @@ class DeviceTests(unittest.TestCase):
         self.assertEqual(self.ec2.run_instances.call_args.kwargs['InstanceType'], 'c6g.metal')
         filters = self.ec2.describe_images.call_args.kwargs['Filters']
         self.assertIn({'Name': 'architecture', 'Values': ['arm64']}, filters)
+        self.assertIn({'Name': 'name', 'Values': [
+            'ubuntu/images/hvm-ssd-gp3/ubuntu-resolute-26.04-arm64-server-*']}, filters)
 
     def test_overrides(self):
         os.environ.update({
@@ -115,6 +117,9 @@ class DeviceTests(unittest.TestCase):
         device.launch_instance(self.ec2, 'job-1')
         self.assertEqual(self.ec2.run_instances.call_args.kwargs['ImageId'], 'ami-newer')
         self.assertEqual(self.ec2.describe_images.call_args.kwargs['Owners'], ['099720109477'])
+        filters = self.ec2.describe_images.call_args.kwargs['Filters']
+        self.assertIn({'Name': 'name', 'Values': [
+            'ubuntu/images/hvm-ssd-gp3/ubuntu-resolute-26.04-amd64-server-*']}, filters)
 
     def test_reject_invalid_launch_configuration(self):
         cases = [
@@ -144,7 +149,7 @@ class DeviceTests(unittest.TestCase):
 
     def test_no_images(self):
         self.ec2.describe_images.return_value['Images'] = []
-        with self.assertRaisesRegex(RuntimeError, 'No Ubuntu'):
+        with self.assertRaisesRegex(RuntimeError, 'No Ubuntu 26\\.04 AMI'):
             device.launch_instance(self.ec2, 'job-1')
 
     def test_lookup_is_scoped_and_paginated(self):

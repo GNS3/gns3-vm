@@ -54,6 +54,7 @@ cd output-vmware-iso
 
 echo "Export to OVA"
 ovftool --noImageFiles --noNvramFile "GNS3 VM.vmx" "GNS3 VM.ova"
+chmod 644 "GNS3 VM.ova"
 mv "GNS3 VM.ova" "../GNS3.VM.VMware.Workstation.${GNS3_VERSION}.ova"
 
 cd ..

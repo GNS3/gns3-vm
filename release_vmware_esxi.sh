@@ -32,6 +32,7 @@ mkdir output-esxi
 cp "$GNS3_OVA_FILE" output-esxi/GNS3-VM.ova
 cd output-esxi
 python3 ../workstation_to_esxi.py "GNS3-VM.ova" "GNS3.VM.VMware.ESXI.${GNS3_VERSION}.ova"
+chmod 644 "GNS3.VM.VMware.ESXI.${GNS3_VERSION}.ova"
 mv "GNS3.VM.VMware.ESXI.${GNS3_VERSION}.ova" ../
 cd ..
 rm -Rf output-esxi

@@ -1,6 +1,6 @@
 # CircleCI EC2 builders
 
-The tag-triggered CircleCI jobs provision Ubuntu 24.04 EC2 bare-metal instances:
+The tag-triggered CircleCI jobs provision Ubuntu 26.04 EC2 bare-metal instances:
 `c5n.metal` for x86_64 and `c6g.metal` for ARM64. Bare metal provides the hardware
 virtualization needed by the x86 hypervisors; the ARM64 build retains its existing
 QEMU software-emulation configuration. Check regional availability, EC2 quotas,
@@ -17,7 +17,7 @@ Configure these CircleCI project or context environment variables:
 | `EC2_SECURITY_GROUP_ID` | Security group allowing SSH from the CircleCI executor and outbound build/download traffic. |
 | `EC2_KEY_NAME` | Existing EC2 key pair in that region. |
 | `EC2_INSTANCE_TYPE_X86_64`, `EC2_INSTANCE_TYPE_ARM64` | Optional bare-metal instance type overrides for each architecture. |
-| `EC2_AMI_ID_X86_64`, `EC2_AMI_ID_ARM64` | Optional Ubuntu 24.04 AMI overrides; otherwise the latest matching Canonical AMI is selected. Custom images must support the `ubuntu` user, passwordless sudo, cloud-init, and systemd. |
+| `EC2_AMI_ID_X86_64`, `EC2_AMI_ID_ARM64` | Optional Ubuntu 26.04 AMI overrides; otherwise the latest matching Canonical AMI is selected. Custom images must support the `ubuntu` user, passwordless sudo, cloud-init, and systemd. |
 | `EC2_VOLUME_SIZE` | Optional root EBS volume size in GiB (default: `200`). |
 
 Add the private SSH key matching `EC2_KEY_NAME` to the project's **Additional SSH

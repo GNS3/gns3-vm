@@ -31,6 +31,7 @@ export GNS3_SRC="$GNS3_OVA_FILE"
 packer build -only=virtualbox-ovf gns3_release_virtualbox.json
 
 cd output-virtualbox-ovf
+chmod 644 "GNS3 VM.ova"
 mv "GNS3 VM.ova" "../GNS3.VM.VirtualBox.${GNS3_VERSION}.ova"
 
 cd ..

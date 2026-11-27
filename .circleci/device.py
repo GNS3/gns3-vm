@@ -97,14 +97,14 @@ def launch_instance(ec2, build_id):
             Owners=['099720109477'],
             Filters=[
                 {'Name': 'name', 'Values': [
-                    'ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-{}-server-*'.format(image_arch)]},
+                    'ubuntu/images/hvm-ssd-gp3/ubuntu-resolute-26.04-{}-server-*'.format(image_arch)]},
                 {'Name': 'architecture', 'Values': [architecture]},
                 {'Name': 'state', 'Values': ['available']},
                 {'Name': 'root-device-type', 'Values': ['ebs']},
                 {'Name': 'virtualization-type', 'Values': ['hvm']},
             ])['Images']
     if not images:
-        raise RuntimeError('No Ubuntu 24.04 AMI found in this AWS region.')
+        raise RuntimeError('No Ubuntu 26.04 AMI found in this AWS region.')
     image = max(images, key=lambda candidate: candidate['CreationDate'])
     if image['Architecture'] != architecture or image['RootDeviceType'] != 'ebs':
         raise RuntimeError('AMI must be EBS-backed and match EC2_ARCHITECTURE.')
