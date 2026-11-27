@@ -70,13 +70,8 @@ commands:
               set -e
               apt update
               apt install -y 7zip git pv
-              if [ ! -d gns3-vm ]
-              then
-                git clone https://github.com/GNS3/gns3-vm.git
-              fi
-              cd gns3-vm
-              git checkout ${CIRCLE_SHA1}
             '"
+            ssh ubuntu@${DEVICE_IP} "sudo bash -s -- /mnt/gns3-builder ${CIRCLE_SHA1}" < .circleci/setup_workspace.sh
 
   finalize:
     steps:
@@ -89,8 +84,8 @@ commands:
               echo "No EC2 builder IP is available for artifact collection" >&2
               exit 1
             fi
-            ssh -o BatchMode=yes -o ConnectTimeout=10 "ubuntu@${DEVICE_IP}" "ls -lah gns3-vm"
-            scp -o BatchMode=yes -o ConnectTimeout=10 ubuntu@${DEVICE_IP}:"gns3-vm/${ARTIFACT_GLOB}" artifacts
+            ssh -o BatchMode=yes -o ConnectTimeout=10 "ubuntu@${DEVICE_IP}" "ls -lah /mnt/gns3-builder/gns3-vm"
+            scp -o BatchMode=yes -o ConnectTimeout=10 ubuntu@${DEVICE_IP}:"/mnt/gns3-builder/gns3-vm/${ARTIFACT_GLOB}" artifacts
 
       - run:
           name: Terminate EC2 builder
@@ -172,6 +167,8 @@ jobs:
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
               set -e
               apt update && apt -y install virtualbox
+              export TMPDIR=/mnt/gns3-builder/tmp
+              VBoxManage setproperty machinefolder /mnt/gns3-builder/virtualbox
             '"
 
       - run:
@@ -218,7 +215,8 @@ jobs:
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
               set -e
 
-              cd gns3-vm
+              cd /mnt/gns3-builder/gns3-vm
+              export TMPDIR=/mnt/gns3-builder/tmp
 
               if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.ova\" ];
               then
@@ -233,7 +231,8 @@ jobs:
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
               set -e
 
-              cd gns3-vm
+              cd /mnt/gns3-builder/gns3-vm
+              export TMPDIR=/mnt/gns3-builder/tmp
 
               if [ ! -e \"GNS3.VM.Hyper-V.${GNS3_NUMBER}.zip\" ];
               then
@@ -247,7 +246,8 @@ jobs:
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
               set -e
 
-              cd gns3-vm
+              cd /mnt/gns3-builder/gns3-vm
+              export TMPDIR=/mnt/gns3-builder/tmp
 
               if [ ! -e \"GNS3.VM.KVM.${GNS3_NUMBER}.zip\" ];
               then
@@ -261,7 +261,8 @@ jobs:
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
               set -e
 
-              cd gns3-vm
+              cd /mnt/gns3-builder/gns3-vm
+              export TMPDIR=/mnt/gns3-builder/tmp
 
               if [ ! -e \"GNS3.VM.VMware.ESXI.${GNS3_NUMBER}.ova\" ];
               then
@@ -275,7 +276,8 @@ jobs:
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
               set -e
 
-              cd gns3-vm
+              cd /mnt/gns3-builder/gns3-vm
+              export TMPDIR=/mnt/gns3-builder/tmp
 
               if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.ova\" ];
               then
@@ -319,7 +321,8 @@ jobs:
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
               set -e
 
-              cd gns3-vm
+              cd /mnt/gns3-builder/gns3-vm
+              export TMPDIR=/mnt/gns3-builder/tmp
 
               if [ ! -e \"GNS3.VM.UTM.ARM64.${GNS3_NUMBER}.tar.xz\" ];
               then

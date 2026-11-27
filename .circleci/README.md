@@ -33,8 +33,19 @@ Instances and encrypted gp3 volumes are tagged with `ManagedBy=gns3-vm-circleci`
 and the unique CircleCI job ID, so concurrent jobs do not share or terminate each
 other's builders. The jobs collect artifacts over SSH as `ubuntu`, use sudo for
 build commands, and always attempt termination during finalization. Root volumes
-are deleted on termination. Both x86 ZIP and ARM64 UTM `.tar.xz` release archives
-are collected, checksummed, and published. Because CircleCI does not run
+are deleted on termination.
+
+The repository, VM build outputs, build processes' `TMPDIR`, and VirtualBox VM
+directory reside on a tmpfs mounted at `/mnt/gns3-builder`, limited to 75% of
+the instance's RAM. System installations and tools that use fixed paths can
+still write to the root volume. Choose an instance with enough memory for the
+workspace as well as running guests and compression; tmpfs can also use swap if
+the image enables it. Artifacts are copied off the instance before termination,
+because the tmpfs contents are volatile. Setup refuses to mount over a non-empty
+directory or use a non-tmpfs mount at that path.
+
+Both x86 ZIP and ARM64 UTM `.tar.xz` release archives are collected, checksummed,
+and published. Because CircleCI does not run
 `when: always` steps when a job is cancelled, the job sends an SSH heartbeat to
 the builder every minute and a watchdog on the instance shuts it down after 10
 minutes without a heartbeat (30 minutes after boot if no heartbeat was ever
