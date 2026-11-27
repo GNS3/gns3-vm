@@ -176,9 +176,6 @@ jobs:
               wget -q -O- http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc | apt-key add -
               apt-add-repository \"deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian \$(lsb_release -cs) contrib\"
               apt update && apt -y install virtualbox-7.0
-              /sbin/vboxconfig
-              modprobe vboxdrv
-              lsmod | grep vboxdrv
             '"
 
       - run:
@@ -263,20 +260,6 @@ jobs:
             '"
 
       - run:
-          name: Release VirtualBox VM
-          command: |
-            ssh ubuntu@${DEVICE_IP} "sudo bash -c '
-              set -e
-
-              cd gns3-vm
-
-              if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.ova\" ];
-              then
-                ./release_virtualbox.sh ${GNS3_VERSION} GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.ova
-              fi
-            '"
-
-      - run:
           name: Release VMWare ESXI VM
           command: |
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
@@ -287,6 +270,20 @@ jobs:
               if [ ! -e \"GNS3.VM.VMware.ESXI.${GNS3_NUMBER}.ova\" ];
               then
                 ./release_vmware_esxi.sh ${GNS3_VERSION} GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.ova
+              fi
+            '"
+
+      - run:
+          name: Release VirtualBox VM
+          command: |
+            ssh ubuntu@${DEVICE_IP} "sudo bash -c '
+              set -e
+
+              cd gns3-vm
+
+              if [ ! -e \"GNS3.VM.VirtualBox.${GNS3_NUMBER}.ova\" ];
+              then
+                ./release_virtualbox.sh ${GNS3_VERSION} GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.ova
               fi
             '"
 
