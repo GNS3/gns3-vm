@@ -63,7 +63,7 @@
                "modifyvm",
                "{{.Name}}",
                "--nictype1",
-               "virtio-net"
+               "virtio"
              ],
              [
                 "modifyvm",
@@ -81,7 +81,7 @@
                "modifyvm",
                "{{.Name}}",
                "--nictype2",
-               "virtio-net"
+               "virtio"
              ],
              [
                "modifyvm",
