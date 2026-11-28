@@ -15,34 +15,28 @@ then
     exit 1
 fi
 
-echo "Creating KVM VM for GNS3 $GNS3_VERSION"
-echo "Release channel: $GNS3_RELEASE_CHANNEL"
-
-if [[ ! -f "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip" ]]
-then
-    echo "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip does not exist"
-    exit 1
-fi
-
-7z e -y "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.zip" "GNS3 VM.ova"
-mv "GNS3 VM.ova" "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
+start=$SECONDS
 
 rm -Rf kvm-build
 mkdir kvm-build
 cd kvm-build
 
-tar -xvf "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
-for vmdk_file in GNS3\ VM*.vmdk; do
+cp ../gns3vm-disk1.vmdk .
+cp ../gns3vm-disk2.vmdk .
+
+for vmdk_file in gns3vm-disk{1,2}.vmdk; do
     echo "Converting ${vmdk_file} to Qcow2 format..."
     qcow2_file=`basename "${vmdk_file}" .vmdk`
     qemu-img convert -O qcow2 "${vmdk_file}" "${qcow2_file}.qcow2"
 done
 
+cp ../start-gns3vm.sh .
 cp ../gns3vm_libvirt.xml .
 
 # Update disk paths in the libvirt XML with the current GNS3 version
 sed -i "s|GNS3\.VM\.KVM\.[0-9.]\+|GNS3.VM.KVM.${GNS3_VERSION}|g" gns3vm_libvirt.xml
 
-tar -ScJf "GNS3.VM.KVM.${GNS3_VERSION}.tar.xz" *.qcow2 gns3vm_libvirt.xml ../start-gns3vm.sh
+set -o pipefail
+tar -Scf - gns3vm-disk{1,2}.qcow2 gns3vm_libvirt.xml start-gns3vm.sh | pv -f -b -t -r | xz --threads=0 > ../"GNS3.VM.KVM.${GNS3_VERSION}.tar.xz"
 
-rm "/tmp/GNS3VM.VirtualBox.${GNS3_VERSION}.ova"
+echo "KVM VM for GNS3 $GNS3_VERSION created in $((SECONDS - start)) seconds"

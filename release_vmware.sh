@@ -22,35 +22,42 @@ export GNS3_RELEASE_CHANNEL=`echo -n $GNS3_VERSION | sed "s/\.[^.]*$//"`
 echo "Building VMware VM for GNS3 $GNS3_VERSION"
 echo "Release channel: $GNS3_RELEASE_CHANNEL"
 
-if [[ "$GNS3_VM_FILE" == "" ]]
-then
-    export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.Base.${GNS3VM_VERSION}.zip"
-    echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
-    if [[ ! -f "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip" ]]
-    then
-        echo "Downloading $GNS3VM_URL"
-        curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
-    fi
-else
-    echo "GNS3 VM file: $GNS3_VM_FILE"
-    cp "$GNS3_VM_FILE" "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
-fi
+#if [[ "$GNS3_VM_FILE" == "" ]]
+#then
+#    export GNS3VM_URL="https://github.com/GNS3/gns3-vm/releases/download/v${GNS3VM_VERSION}/GNS3VM.Base.${GNS3VM_VERSION}.zip"
+#    echo "Download the base GNS3 VM version ${GNS3VM_VERSION} from GitHub"
+#    if [[ ! -f "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip" ]]
+#    then
+#        echo "Downloading $GNS3VM_URL"
+#        curl -Lk "$GNS3VM_URL" > "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
+#    fi
+#else
+#    echo "GNS3 VM file: $GNS3_VM_FILE"
+#    cp "$GNS3_VM_FILE" "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
+#fi
+#
+#7z e -y "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
 
-7z e -y "/tmp/GNS3VM.Base.${GNS3VM_VERSION}.zip"
+start=$SECONDS
 
-for qcow2_file in *.qcow2; do
+for qcow2_file in gns3vm-base-disk{1,2}.qcow2; do
     echo "Converting ${qcow2_file} to VMDK format..."
     vmdk_file=`basename "${qcow2_file}" .qcow2`
     qemu-img convert -O vmdk "${qcow2_file}" "${vmdk_file}.vmdk"
 done
 
+mv gns3vm-base-disk1.vmdk gns3vm-disk1.vmdk
+mv gns3vm-base-disk2.vmdk gns3vm-disk2.vmdk
 packer build -only=vmware-iso gns3_release.json
 
 cd output-vmware-iso
 
 echo "Export to OVA"
 ovftool --noImageFiles --noNvramFile "GNS3 VM.vmx" "GNS3 VM.ova"
-7z a -bsp1 -mx=1 "../GNS3.VM.VMware.Workstation.${GNS3_VERSION}.zip" "GNS3 VM.ova"
+chmod 644 "GNS3 VM.ova"
+mv "GNS3 VM.ova" "../GNS3.VM.VMware.Workstation.${GNS3_VERSION}.ova"
 
 cd ..
 rm -Rf output-vmware-iso
+
+echo "VMware Workstation VM build completed in $((SECONDS - start)) seconds"

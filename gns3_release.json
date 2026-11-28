@@ -6,8 +6,7 @@
     "gns3_release_channel": "{{env `GNS3_RELEASE_CHANNEL`}}",
     "gns3_src": "{{env `GNS3_SRC`}}",
     "memory": "2048",
-    "cpus": "1",
-    "cores": "1"
+    "cpus": "2"
   },
   "provisioners": [
     {
@@ -55,7 +54,6 @@
       "iso_url": "gns3vm-disk1.vmdk",
       "iso_checksum": "none",
       "cpus": "{{user `cpus`}}",
-      "cores": "{{user `cores`}}",
       "memory": "{{user `memory`}}",
       "network_adapter_type": "vmxnet3",
       "disk_type_id": 0,
@@ -79,7 +77,7 @@
         "ethernet0.generatedAddressOffset": "0",
         "ethernet0.wakeOnPcktRcv": "FALSE",
         "ethernet0.pciSlotNumber": "32",
-        "ethernet0.virtualDev": "e1000",
+        "ethernet0.virtualDev": "vmxnet3",
         "ethernet1.present": "TRUE",
         "ethernet1.startConnected": "TRUE",
         "ethernet1.connectionType": "nat",
@@ -87,7 +85,7 @@
         "ethernet1.generatedAddressOffset": "10",
         "ethernet1.wakeOnPcktRcv": "FALSE",
         "ethernet1.pciSlotNumber": "33",
-        "ethernet1.virtualDev": "e1000"
+        "ethernet1.virtualDev": "vmxnet3"
       },
       "headless": true,
       "shutdown_command": "sudo /sbin/shutdown -h now",
@@ -106,6 +104,8 @@
       "net_device": "virtio-net-pci",
       "iso_url": "gns3vm-disk1.qcow2",
       "iso_checksum": "none",
+      "cpus": "{{user `cpus`}}",
+      "memory": "{{user `memory`}}",
       "use_default_display": true,
       "skip_resize_disk": true,
       "qemuargs": [
@@ -127,19 +127,11 @@
         ],
         [
           "-accel",
-          "tcg,thread=multi"
+          "kvm"
         ],
         [
           "-cpu",
-          "neoverse-n1"
-        ],
-        [
-          "-smp",
-          "4"
-        ],
-        [
-          "-m",
-          "2048"
+          "max"
         ],
         [
           "-bios",
