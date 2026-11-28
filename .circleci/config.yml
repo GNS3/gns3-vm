@@ -34,14 +34,14 @@ commands:
           name: Install GitHub CLI
           command: |
             (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
-	          && sudo mkdir -p -m 755 /etc/apt/keyrings \
-	          && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-	          && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-	          && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-	          && sudo mkdir -p -m 755 /etc/apt/sources.list.d \
-	          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-	          && sudo apt update \
-	          && sudo apt install gh -y
+            && sudo mkdir -p -m 755 /etc/apt/keyrings \
+            && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+            && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+            && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+            && sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+            && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+            && sudo apt update \
+            && sudo apt install gh -y
 
       - run:
           name: Get EC2 builder
@@ -132,10 +132,10 @@ commands:
             fi
             for file in "${files[@]}"
             do
-              sha256sum "$file" >> "GNS3.VM.checksums.sha256"
+              sha256sum "$file" >> "SHA256SUMS"
             done
-            cat "GNS3.VM.checksums.sha256"
-            sha256sum -c "GNS3.VM.checksums.sha256"
+            cat "SHA256SUMS"
+            sha256sum -c "SHA256SUMS"
             ls -l
             cd -
 
@@ -146,15 +146,19 @@ commands:
             echo "Deploying version ${CIRCLE_TAG} on GitHub"
             ls -l artifacts
             shopt -s nullglob
-            for file in artifacts/GNS3.VM.*.{zip,tar.xz,ova,sha256}
+            artifacts=(artifacts/GNS3.VM.*.{zip,tar.xz,ova,sha256})
+            if [ -f artifacts/SHA256SUMS ]; then
+              artifacts+=(artifacts/SHA256SUMS)
+            fi
+            for file in "${artifacts[@]}"
             do
               echo "Uploading $file to GitHub"
-              gh release upload ${CIRCLE_TAG} $file --clobber
+              gh release upload "${CIRCLE_TAG}" "$file" --clobber
             done
 
             echo "Deploying version ${CIRCLE_TAG} on SourceForge"
             ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
-            scp artifacts/GNS3.VM.* gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
+            scp "${artifacts[@]}" gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
 
       - store_artifacts:
           path: artifacts

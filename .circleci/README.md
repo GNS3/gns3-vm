@@ -34,8 +34,9 @@ and the unique CircleCI job ID, so concurrent jobs do not share or terminate eac
 other's builders. The jobs collect artifacts over SSH as `ubuntu`, use sudo for
 build commands, and always attempt termination during finalization. Root volumes
 are deleted on termination. Both x86 ZIP and ARM64 UTM `.tar.xz` release archives
-are collected, checksummed, and published. Because CircleCI does not run
-`when: always` steps when a job is cancelled, the job sends an SSH heartbeat to
+are collected, checksummed, and published with a `SHA256SUMS` manifest. Because
+CircleCI does not run `when: always` steps when a job is cancelled, the job sends
+an SSH heartbeat to
 the builder every minute and a watchdog on the instance shuts it down after 10
 minutes without a heartbeat (30 minutes after boot if no heartbeat was ever
 received). A boot-time systemd timer also shuts down the instance after 90
