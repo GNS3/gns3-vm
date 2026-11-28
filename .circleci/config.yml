@@ -194,7 +194,7 @@ jobs:
             ssh ubuntu@${DEVICE_IP} "sudo bash script.sh"
 
       - run:
-          name: Install Packer for amd64 & Qemu
+          name: Install Packer for AMD64 & Qemu
           command: |
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
               set -e
@@ -213,6 +213,16 @@ jobs:
             '"
 
       - run:
+          name: Build base x86_64 VM
+          command: |
+            ssh ubuntu@${DEVICE_IP} "sudo bash -c '
+              set -e
+
+              cd gns3-vm
+              ./build_base_vm.sh
+            '"
+
+      - run:
           name: Release VMWare VM
           command: |
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
@@ -222,7 +232,6 @@ jobs:
 
               if [ ! -e \"GNS3.VM.VMware.Workstation.${GNS3_NUMBER}.ova\" ];
               then
-                ./build_base_vm.sh
                 ./release_vmware.sh ${GNS3_VERSION}
               fi
             '"
@@ -297,7 +306,7 @@ jobs:
       - setup
 
       - run:
-          name: Install Packer for ARM64
+          name: Install Packer for ARM64 & Qemu
           command: |
             ssh ubuntu@${DEVICE_IP} "sudo bash -c '
               set -e
@@ -310,6 +319,18 @@ jobs:
               7z e -y /tmp/packer.zip -o/usr/local/bin/
               /usr/local/bin/packer plugins install github.com/hashicorp/qemu
               apt install -y xorriso # needed by packer
+              apt install -y qemu-utils qemu-system-arm qemu-efi-aarch64
+            '"
+
+      - run:
+          name: Build base ARM64 VM
+          no_output_timeout: 20m
+          command: |
+            ssh ubuntu@${DEVICE_IP} "sudo bash -c '
+              set -e
+
+              cd gns3-vm
+              ./build_base_vm_arm64.sh
             '"
 
       - run:
@@ -320,12 +341,9 @@ jobs:
               set -e
 
               cd gns3-vm
-
               if [ ! -e \"GNS3.VM.UTM.ARM64.${GNS3_NUMBER}.tar.xz\" ];
               then
-                apt install -y qemu-utils qemu-system-arm qemu-efi-aarch64
-                ./build_base_vm_arm64.sh
-                ./release_qemu_arm64.sh ${GNS3_VERSION} GNS3VM.Base.ARM64.$(cat version).zip
+                ./release_qemu_arm64.sh ${GNS3_VERSION}
               fi
             '"
 
@@ -334,15 +352,15 @@ jobs:
 workflows:
   build_only_on_tag:
     jobs:
-      - x86-build:
-          filters:
-            tags:
-              only: /v3.*/
-            branches:
-              ignore: /.*/
-#      - arm64-build:
+#      - x86-build:
 #          filters:
 #            tags:
 #              only: /v3.*/
 #            branches:
 #              ignore: /.*/
+      - arm64-build:
+          filters:
+            tags:
+              only: /v3.*/
+            branches:
+              ignore: /.*/
