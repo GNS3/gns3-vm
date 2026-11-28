@@ -33,10 +33,12 @@ Instances and encrypted gp3 volumes are tagged with `ManagedBy=gns3-vm-circleci`
 and the unique CircleCI job ID, so concurrent jobs do not share or terminate each
 other's builders. The jobs collect artifacts over SSH as `ubuntu`, use sudo for
 build commands, and always attempt termination during finalization. Root volumes
-are deleted on termination. Both x86 ZIP and ARM64 UTM `.tar.xz` release archives
-are collected, checksummed, and published with a `SHA256SUMS` manifest. Because
-CircleCI does not run `when: always` steps when a job is cancelled, the job sends
-an SSH heartbeat to
+are deleted on termination. Each successful build persists its release artifacts
+in a separate CircleCI workspace directory. After both builds succeed, the
+release job checks for the expected archives, combines them, and publishes them
+with a single verified `SHA256SUMS` manifest to GitHub and SourceForge. If either
+build fails, the release job does not run. Because CircleCI does not run
+`when: always` steps when a job is cancelled, the job sends an SSH heartbeat to
 the builder every minute and a watchdog on the instance shuts it down after 10
 minutes without a heartbeat (30 minutes after boot if no heartbeat was ever
 received). A boot-time systemd timer also shuts down the instance after 90

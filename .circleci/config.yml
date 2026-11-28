@@ -13,6 +13,21 @@ executors:
 
 commands:
 
+  install-github-cli:
+    steps:
+      - run:
+          name: Install GitHub CLI
+          command: |
+            (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
+            && sudo mkdir -p -m 755 /etc/apt/keyrings \
+            && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+            && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+            && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+            && sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+            && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+            && sudo apt update \
+            && sudo apt install gh -y
+
   setup:
     steps:
       - add_ssh_keys
@@ -29,19 +44,6 @@ commands:
             python3 -m venv env
             source env/bin/activate
             python3 -m pip install boto3
-
-      - run:
-          name: Install GitHub CLI
-          command: |
-            (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
-            && sudo mkdir -p -m 755 /etc/apt/keyrings \
-            && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
-            && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
-            && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
-            && sudo mkdir -p -m 755 /etc/apt/sources.list.d \
-            && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-            && sudo apt update \
-            && sudo apt install gh -y
 
       - run:
           name: Get EC2 builder
@@ -92,18 +94,21 @@ commands:
             '"
 
   finalize:
+    parameters:
+      architecture:
+        type: string
     steps:
       - run:
           name: Gather artifacts from device
           when: always
           command: |
-            mkdir -p artifacts
+            mkdir -p "artifacts/<< parameters.architecture >>"
             if [ -z "${DEVICE_IP:-}" ]; then
               echo "No EC2 builder IP is available for artifact collection" >&2
               exit 1
             fi
             ssh -o BatchMode=yes -o ConnectTimeout=10 "ubuntu@${DEVICE_IP}" "ls -lah gns3-vm"
-            scp -o BatchMode=yes -o ConnectTimeout=10 ubuntu@${DEVICE_IP}:"gns3-vm/${ARTIFACT_GLOB}" artifacts
+            scp -o BatchMode=yes -o ConnectTimeout=10 ubuntu@${DEVICE_IP}:"gns3-vm/${ARTIFACT_GLOB}" "artifacts/<< parameters.architecture >>/"
 
       - run:
           name: Terminate EC2 builder
@@ -116,53 +121,14 @@ commands:
               echo "Skipping EC2 cleanup because builder provisioning did not start"
             fi
 
-      - run:
-          name: Generate SHA256 checksums
-          when: always
-          command: |
-            cd artifacts
-            shopt -s nullglob
-            files=()
-            for file in *.zip *.tar.xz *.ova; do
-              [[ "$file" == GNS3VM.Base* ]] || files+=("$file")
-            done
-            if [ "${#files[@]}" -eq 0 ]; then
-              echo "No eligible build artifacts were collected" >&2
-              exit 1
-            fi
-            for file in "${files[@]}"
-            do
-              sha256sum "$file" >> "SHA256SUMS"
-            done
-            cat "SHA256SUMS"
-            sha256sum -c "SHA256SUMS"
-            ls -l
-            cd -
-
-      - run:
-          name: Deploying on Github and SourceForge
-          when: always
-          command: |
-            echo "Deploying version ${CIRCLE_TAG} on GitHub"
-            ls -l artifacts
-            shopt -s nullglob
-            artifacts=(artifacts/GNS3.VM.*.{zip,tar.xz,ova,sha256})
-            if [ -f artifacts/SHA256SUMS ]; then
-              artifacts+=(artifacts/SHA256SUMS)
-            fi
-            for file in "${artifacts[@]}"
-            do
-              echo "Uploading $file to GitHub"
-              gh release upload "${CIRCLE_TAG}" "$file" --clobber
-            done
-
-            echo "Deploying version ${CIRCLE_TAG} on SourceForge"
-            ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
-            scp "${artifacts[@]}" gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
-
       - store_artifacts:
           path: artifacts
           destination: artifacts
+
+      - persist_to_workspace:
+          root: artifacts
+          paths:
+            - << parameters.architecture >>
 
 jobs:
   x86-build:
@@ -302,7 +268,8 @@ jobs:
               fi
             '"
 
-      - finalize
+      - finalize:
+          architecture: x86_64
 
   arm64-build:
     executor: docker-executor
@@ -357,18 +324,94 @@ jobs:
               fi
             '"
 
-      - finalize
+      - finalize:
+          architecture: arm64
+
+  publish-release:
+    executor: docker-executor
+    steps:
+      - add_ssh_keys
+      - attach_workspace:
+          at: workspace
+
+      - run:
+          name: Install GitHub CLI
+          command: |
+            (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
+            && sudo mkdir -p -m 755 /etc/apt/keyrings \
+            && out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+            && cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+            && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+            && sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+            && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+            && sudo apt update \
+            && sudo apt install gh -y
+
+      - run:
+          name: Combine artifacts and generate SHA256SUMS
+          command: |
+            mkdir -p artifacts
+            shopt -s nullglob
+            for architecture in x86_64 arm64; do
+              files=(workspace/"$architecture"/GNS3.VM.*.{zip,tar.xz,ova})
+              if [ "${#files[@]}" -eq 0 ]; then
+                echo "No release artifacts were collected for $architecture" >&2
+                exit 1
+              fi
+              for file in "${files[@]}"; do
+                name=${file##*/}
+                if [ -e "artifacts/$name" ]; then
+                  echo "Duplicate release artifact: $name" >&2
+                  exit 1
+                fi
+                mv -- "$file" "artifacts/$name"
+              done
+            done
+            cd artifacts
+            files=(GNS3.VM.*.{zip,tar.xz,ova})
+            sha256sum -- "${files[@]}" > SHA256SUMS
+            cat SHA256SUMS
+            sha256sum -c SHA256SUMS
+
+      - run:
+          name: Deploying on Github and SourceForge
+          command: |
+            echo "Deploying version ${CIRCLE_TAG} on GitHub"
+            shopt -s nullglob
+            artifacts=(artifacts/GNS3.VM.*.{zip,tar.xz,ova} artifacts/SHA256SUMS)
+            for file in "${artifacts[@]}"; do
+              echo "Uploading $file to GitHub"
+              gh release upload "${CIRCLE_TAG}" "$file" --clobber
+            done
+
+            echo "Deploying version ${CIRCLE_TAG} on SourceForge"
+            mkdir -p ~/.ssh
+            ssh-keyscan -H frs.sourceforge.net >> ~/.ssh/known_hosts
+            scp "${artifacts[@]}" gns3build@frs.sourceforge.net:"/home/frs/project/gns-3/Releases/${CIRCLE_TAG}/"
+
+      - store_artifacts:
+          path: artifacts
+          destination: artifacts
 
 workflows:
   build_only_on_tag:
     jobs:
-#      - x86-build:
-#          filters:
-#            tags:
-#              only: /v3.*/
-#            branches:
-#              ignore: /.*/
+      - x86-build:
+          filters:
+            tags:
+              only: /v3.*/
+            branches:
+              ignore: /.*/
       - arm64-build:
+          filters:
+            tags:
+              only: /v3.*/
+            branches:
+              ignore: /.*/
+      - publish-release:
+          requires:
+            - x86-build
+            - arm64-build
           filters:
             tags:
               only: /v3.*/
